@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 if [[ -z $STOW_FOLDERS ]]; then
-    STOW_FOLDERS="bin,i3,netflix,nvim,personal,tmux,uwuntu,xkb,zsh"
+    STOW_FOLDERS="bin,i3,nvim,personal,tmux,uwuntu,zsh"
 fi
 
 if [[ -z $DOTFILES ]]; then
@@ -8,4 +8,3 @@ if [[ -z $DOTFILES ]]; then
 fi
 
 STOW_FOLDERS=$STOW_FOLDERS DOTFILES=$DOTFILES $DOTFILES/install
-
