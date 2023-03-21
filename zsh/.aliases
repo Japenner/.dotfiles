@@ -1,0 +1,69 @@
+################# Config Files #######################
+
+alias als="code ~/dotfiles-local/aliases.local"
+alias ohmyzsh="code ~/.oh-my-zsh"
+alias zshconfig="code ~/.zshrc"
+
+##################### Git ############################
+
+alias pub="git add .; git commit; git push; gh-c"
+alias rebase:develop="git fetch origin; git rebase origin/develop"
+alias rebase="git fetch origin; git rebase origin/master"
+alias reset:develop="git reset origin/develop"
+alias reset="git reset origin/master"
+alias update:develop="rebase:develop; git push -f"
+alias update="rebase; git push -f"
+alias updateall="bash ~/Repos/ramsey/misc/update_git_repos.sh"
+
+####################### JavaScript ####################
+
+alias yarn:clean="rm -rf node_modules; yarn cache clean; yarn install"
+
+###################### Productivity ###################
+
+alias todo='$EDITOR ~/.todo'
+
+###################### Rails ##########################
+
+alias b="bundle"
+alias bb="b; yarn install"
+alias bc="bundle exec rubocop"
+alias bs="bb; bc; bundle exec rspec"
+alias c="bin/rails c"
+alias cqa="RAILS_ENV=qa; c"
+alias ct="RAILS_ENV=test; c"
+alias cto="RAILS_ENV=test_one; c"
+alias db:reset:dev="bin/rails db:environment:set RAILS_ENV=development; bin/rails db:reset"
+alias db:reset:test="RAILS_ENV=test bin/rails db:reset"
+alias fs="bb; bin/foreman start"
+alias migrate="rake db:migrate db:rollback && rake db:migrate db:test:prepare"
+alias s="bb; bin/rails s"
+alias servers="lsof -wni tcp:3000"
+alias sqa="bb; RAILS_ENV=qa bin/rails s"
+alias st="bb; RAILS_ENV=test_one bin/rails s"
+alias t="bb; bundle exec rails test"
+
+###################### Utility ########################
+
+alias path='echo $PATH | tr -s ":" "\n"'
+alias sto="bb; RAILS_ENV=test_one bin/rails s"
+alias t="bb; bundle exec rails test"
+
+######################## JAVA #########################
+
+alias js="docker container prune; docker image prune; mvn clean package -DskipTests && docker-compose up --build service"
+
+###################### Utility ########################
+
+alias chrome="open -a 'Google Chrome'"
+alias cpwd="pwd | pbcopy"
+
+####################### Unix ##########################
+
+alias e="$EDITOR"
+alias ll="ls -al"
+alias ln="ln -v"
+alias mkdir="mkdir -p"
+alias v="$VISUAL"
+
+#######################################################
