@@ -1,0 +1,69 @@
+###################### Functions #####################
+
+fixissues () {
+  git stash; gco master; git pull; gco -b jap/elp-rubocop-fixes
+  yarn install; bundle install
+  rubocop -a
+  ga .; gc -m "fix: Changes to clean up Rubocop issues found"; git push
+  gh-c
+}
+
+# Open current branch in browser on Github
+gh-b () {
+  file=${1:-""}
+  git_branch=${2:-$(git symbolic-ref --quiet --short HEAD)}
+  git_project_root=$(git config remote.origin.url | sed "s~git@\(.*\):\(.*\)~https://\1/\2~" | sed "s~\(.*\).git\$~\1~")
+  git_directory=$(git rev-parse --show-prefix)
+  open ${git_project_root}/tree/${git_branch}/${git_directory}${file}
+}
+
+# Open Github compare page between current branch and default branch in browser
+
+gh-c() {
+  git_branch=${2:-$(git symbolic-ref --quiet --short HEAD)}
+  git_project_root=$(git config remote.origin.url | sed "s~git@\(.*\):\(.*\)~https://\1/\2~" | sed "s~\(.*\).git\$~\1~")
+  git_directory=$(git rev-parse --show-prefix)
+  open ${git_project_root}/compare/${git_branch}/${git_directory}?expand=1
+}
+
+_git_delete_branch ()
+{
+  __gitcomp "$(__git_heads)"
+}
+
+# Change file extensions recursively in current directory
+#
+#   change-extension erb haml
+
+function change-extension() {
+  foreach f (**/*.$1)
+    mv $f $f:r.$2
+  end
+}
+
+# Load .env file into shell session for environment variables
+
+function envup() {
+  if [ -f .env ]; then
+    export $(sed '/^ *#/ d' .env)
+  else
+    echo 'No .env file found' 1>&2
+    return 1
+  fi
+}
+
+# No arguments: `git status`
+# With arguments: acts like `git`
+g() {
+  if [[ $# -gt 0 ]]; then
+    git "$@"
+  else
+    git status
+  fi
+}
+
+# Make directory and change into it.
+
+function mcd() {
+  mkdir -p "$1" && cd "$1";
+}
