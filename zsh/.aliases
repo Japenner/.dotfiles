@@ -1,19 +1,18 @@
 ################# Config Files #######################
 
-alias als="code ~/dotfiles-local/aliases.local"
-alias ohmyzsh="code ~/.oh-my-zsh"
-alias zshconfig="code ~/.zshrc"
+alias config:als="code ~/dotfiles-local/aliases.local"
+alias config:omz="code ~/.oh-my-zsh"
+alias config:zsh="code ~/.zshrc"
 
 ##################### Git ############################
 
 alias pub="git add .; git commit; git push; gh-c"
-alias rebase:develop="git fetch origin; git rebase origin/develop"
+alias rebase:dev="git fetch origin; git rebase origin/develop"
 alias rebase="git fetch origin; git rebase origin/master"
-alias reset:develop="git reset origin/develop"
+alias reset:dev="git reset origin/develop"
 alias reset="git reset origin/master"
-alias update:develop="rebase:develop; git push -f"
+alias update:dev="rebase:dev; git push -f"
 alias update="rebase; git push -f"
-alias updateall="bash ~/Repos/ramsey/misc/update_git_repos.sh"
 
 ######################## Java #########################
 
@@ -34,17 +33,13 @@ alias bb="b; yarn install"
 alias bc="bundle exec rubocop"
 alias bs="bb; bc; bundle exec rspec"
 alias c="bin/rails c"
-alias cqa="RAILS_ENV=qa; c"
 alias ct="RAILS_ENV=test; c"
-alias cto="RAILS_ENV=test_one; c"
 alias db:reset:dev="bin/rails db:environment:set RAILS_ENV=development; bin/rails db:reset"
 alias db:reset:test="RAILS_ENV=test bin/rails db:reset"
 alias fs="bb; bin/foreman start"
 alias migrate="rake db:migrate db:rollback && rake db:migrate db:test:prepare"
 alias s="bb; bin/rails s"
 alias servers="lsof -wni tcp:3000"
-alias sqa="bb; RAILS_ENV=qa bin/rails s"
-alias st="bb; RAILS_ENV=test_one bin/rails s"
 alias t="bb; bundle exec rails test"
 
 ####################### Unix ##########################
@@ -61,7 +56,5 @@ alias chrome="open -a 'Google Chrome'"
 alias cpwd="pwd | pbcopy"
 alias nato="echo 'A Alpha\nB Bravo\nC Charlie\nD Delta\nE Echo\nF Foxtrot\nG Golf\nH Hotel\nI India\nJ Juliet\nK Kilo\nL Lima\nM Mike\nN November\nO Oscar\nP Papa\nQ Quebec\nR Romeo\nS Sierra\nT Tango\nU Uniform\nV Victor\nW Whiskey\nX X-ray\nY Yankee\nZ Zulu'"
 alias path='echo $PATH | tr -s ":" "\n"'
-alias sto="bb; RAILS_ENV=test_one bin/rails s"
-alias t="bb; bundle exec rails test"
 
 #######################################################
