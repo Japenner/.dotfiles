@@ -15,6 +15,10 @@ alias update:develop="rebase:develop; git push -f"
 alias update="rebase; git push -f"
 alias updateall="bash ~/Repos/ramsey/misc/update_git_repos.sh"
 
+######################## Java #########################
+
+alias js="docker container prune; docker image prune; mvn clean package -DskipTests && docker-compose up --build service"
+
 ####################### JavaScript ####################
 
 alias yarn:clean="rm -rf node_modules; yarn cache clean; yarn install"
@@ -43,21 +47,6 @@ alias sqa="bb; RAILS_ENV=qa bin/rails s"
 alias st="bb; RAILS_ENV=test_one bin/rails s"
 alias t="bb; bundle exec rails test"
 
-###################### Utility ########################
-
-alias path='echo $PATH | tr -s ":" "\n"'
-alias sto="bb; RAILS_ENV=test_one bin/rails s"
-alias t="bb; bundle exec rails test"
-
-######################## JAVA #########################
-
-alias js="docker container prune; docker image prune; mvn clean package -DskipTests && docker-compose up --build service"
-
-###################### Utility ########################
-
-alias chrome="open -a 'Google Chrome'"
-alias cpwd="pwd | pbcopy"
-
 ####################### Unix ##########################
 
 alias e="$EDITOR"
@@ -65,5 +54,14 @@ alias ll="ls -al"
 alias ln="ln -v"
 alias mkdir="mkdir -p"
 alias v="$VISUAL"
+
+###################### Utility ########################
+
+alias chrome="open -a 'Google Chrome'"
+alias cpwd="pwd | pbcopy"
+alias nato="echo 'A Alpha\nB Bravo\nC Charlie\nD Delta\nE Echo\nF Foxtrot\nG Golf\nH Hotel\nI India\nJ Juliet\nK Kilo\nL Lima\nM Mike\nN November\nO Oscar\nP Papa\nQ Quebec\nR Romeo\nS Sierra\nT Tango\nU Uniform\nV Victor\nW Whiskey\nX X-ray\nY Yankee\nZ Zulu'"
+alias path='echo $PATH | tr -s ":" "\n"'
+alias sto="bb; RAILS_ENV=test_one bin/rails s"
+alias t="bb; bundle exec rails test"
 
 #######################################################
