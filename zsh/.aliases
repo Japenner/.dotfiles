@@ -37,7 +37,6 @@ alias bc="bundle exec rubocop"                                                  
 alias bs="bb && bc && bundle exec rspec"                                                       # Install, check, and test
 alias cqa="RAILS_ENV=qa bin/rails c"                                                           # Rails console for QA environment
 alias ct="RAILS_ENV=test bin/rails c"                                                          # Rails console for test environment
-alias cto="RAILS_ENV=test_one bin/rails c"                                                     # Rails console for test_one environment
 alias db:reset:dev="RAILS_ENV=development bin/rails db:reset"                                  # Reset dev database
 alias db:reset:test="RAILS_ENV=test bin/rails db:reset"                                        # Reset test database
 alias fs="bb && bin/foreman start"                                                             # Install and start Foreman
