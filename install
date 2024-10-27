@@ -1,17 +1,15 @@
 #!/usr/bin/env zsh
-# I am using zsh instead of bash.  I was having some troubles
-# using bash with arrays.  Didn't want to investigate, so I
-# just did zsh
-pushd $DOTFILES
-for folder in $(echo $STOW_FOLDERS | sed "s/,/ /g")
-do
-    echo "stow $folder"
-    stow -D $folder
-    stow $folder
-done
-popd
+# Improved version to forcefully override existing stow folders
 
-pushd ./netflix
-./stow
-popd
+pushd $DOTFILES || exit 1
+
+# Convert comma-separated list into an array
+folders=("${(@s/,/)STOW_FOLDERS}")
+
+for folder in "${folders[@]}"; do
+    echo "Restowing $folder"
+    stow -R "$folder" || echo "Failed to restow $folder."
+done
+
+popd || exit 1
 
