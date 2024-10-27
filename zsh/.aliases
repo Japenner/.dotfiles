@@ -6,10 +6,6 @@ alias zshconfig="code ~/.zshrc"                 # Edit .zshrc file
 
 ##################### Git ############################
 
-alias ga="git add"                                                   # Git add
-alias gc="git commit -m"                                             # Git commit with message
-alias gcb="git checkout -b"                                          # Git create branch
-alias gco="git checkout"                                             # Git checkout
 alias gl="git log --oneline --graph --decorate"                      # Compact, decorated git log
 alias gp="git push"                                                  # Git push
 alias gs="git status"                                                # Git status

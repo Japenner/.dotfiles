@@ -1,65 +1,71 @@
-####################### Initial setup ########################
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
-# Load custom executable functions
-source ~/.functions
+# ================== Initial Setup ================== #
 
-######################### Oh My Zsh ##########################
+[ -f ~/.functions ] && source ~/.functions # Load custom functions if available
 
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
+# =================== Oh My Zsh ===================== #
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="spaceship"
-ZSH_TMUX_AUTOSTART="true"
-SPACESHIP_PROMPT_ADD_NEWLINE="true"
-SPACESHIP_CHAR_SYMBOL="\uf0e7"
-SPACESHIP_CHAR_PREFIX="\uf296"
-SPACESHIP_CHAR_SUFFIX=(" ")
-SPACESHIP_CHAR_COLOR_SUCCESS="yellow"
-SPACESHIP_PROMPT_DEFAULT_PREFIX="$USER"
-SPACESHIP_PROMPT_FIRST_PREFIX_SHOW="true"
-SPACESHIP_USER_SHOW="true"
+export ZSH="$HOME/.oh-my-zsh"           # Path to Oh My Zsh installation
+ZSH_THEME="powerlevel10k/powerlevel10k" # Set theme (e.g., Powerlevel10k for customization)
+ZSH_TMUX_AUTOSTART="true"               # Start tmux automatically with Zsh
 
+# Plugins for Oh My Zsh
 plugins=(
+  ansible
   asdf
   git
+  node
+  ruby
   zsh-autosuggestions
-  zsh-nvm
   zsh-syntax-highlighting
 )
 
-source $ZSH/oh-my-zsh.sh
+# Load Oh My Zsh
+source "$ZSH/oh-my-zsh.sh"
 
-######################### User config #########################
+# ================ Zsh Configuration ================ #
 
-source ~/.zsh_profile
-source ~/.aliases
+# History and navigation configurations
+HISTFILE=~/.zsh_history       # File to store command history
+HISTSIZE=10000                # Maximum history entries in memory
+SAVEHIST=10000                # Maximum history entries to save to file
+setopt INC_APPEND_HISTORY     # Share command history across sessions
+setopt SHARE_HISTORY          # Share history between all sessions
+setopt HIST_EXPIRE_DUPS_FIRST # Remove duplicate entries first
+setopt HIST_FIND_NO_DUPS      # Ignore duplicate entries when searching history
 
-# Setup zsh for asdf
-if [ -f /usr/local/opt/asdf/asdf.sh ]; then
-  source /usr/local/opt/asdf/asdf.sh
-fi
+# Enable command correction and autosuggestions
+setopt CORRECT                          # Auto-correct minor typos
+setopt AUTO_CD                          # Change to a directory without needing `cd`
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=10" # Color for autosuggestions
 
-########################### Exports ###########################
+# ================ Load Configs and Plugins ================ #
 
-export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"
-export PATH="~/bin:$PATH"
+# Load additional config files if available
+[ -f ~/.zsh_profile ] && source ~/.zsh_profile
+[ -f ~/.aliases ] && source ~/.aliases
 
-export LIBRARY_PATH=$LIBRARY_PATH:/usr/local/opt/openssl/lib/
-export PATH=~/.local/bin:$PATH
-export PATH=$PATH:~/bin
+# Load asdf if available
+[ -f /usr/local/opt/asdf/asdf.sh ] && source /usr/local/opt/asdf/asdf.sh
 
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-export EDITOR="code"
-export BUNDLER_EDITOR="code"
+# Load Starship prompt if installed
+# command -v starship >/dev/null && eval "$(starship init zsh)"
 
-export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
+# ======= Paths and Environment-Specific Configurations ======= #
 
-##############################################################
+export PATH="$HOME/bin:/usr/local/opt/openssl@1.1/bin:/usr/local/opt/openssl/lib:$HOME/.local/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$GOPATH/bin:$PATH"
 
-# https://starship.rs/
-eval "$(starship init zsh)"
+export LIBRARY_PATH="$LIBRARY_PATH:/usr/local/opt/openssl/lib" # Library paths for OpenSSL
+export EDITOR="code"                                           # Set default editor to VS Code
+export BUNDLER_EDITOR="code"                                   # Set Bundler editor to VS Code
+export GOPATH="$HOME/go"                                       # Set GOPATH for Go
+. "$HOME/.asdf/asdf.sh"
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

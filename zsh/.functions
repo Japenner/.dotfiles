@@ -1,16 +1,22 @@
 ###################### Functions #####################
 
+# Unalias g if it exists
 unalias g 2>/dev/null
 
-fixissues() {
+# Dynamically set the default branch based on the remote's HEAD
+get_default_branch() {
+  git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
+}
+
+fix_issues() {
   git stash
-  default_branch=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+  default_branch=$(get_default_branch)
   git checkout "$default_branch"
   git pull
-  git checkout -b jap/elp-rubocop-fixes
+  git checkout -b jap/rubocop-fixes
   yarn install
   bundle install
-  rubocop -a
+  rubocop -A
   git add .
   git commit -m "fix: Changes to clean up Rubocop issues found"
   git push
@@ -21,7 +27,7 @@ fixissues() {
 open_cmd="open"
 command -v open >/dev/null 2>&1 || open_cmd="xdg-open"
 
-# Open current branch in browser on Github
+# Open current branch in browser on GitHub
 gh-b() {
   local file=${1:-""}
   local git_branch=${2:-$(git symbolic-ref --quiet --short HEAD)}
@@ -30,16 +36,17 @@ gh-b() {
   ${open_cmd} "${git_project_root}/tree/${git_branch}/${git_directory}${file}"
 }
 
-# Open Github compare page between current branch and default branch in browser
+# Open GitHub compare page between current branch and default branch in browser
 gh-c() {
   local git_branch=${2:-$(git symbolic-ref --quiet --short HEAD)}
   local git_project_root=$(git config remote.origin.url | sed "s~git@\(.*\):\(.*\)~https://\1/\2~" | sed "s~\(.*\).git\$~\1~")
-  ${open_cmd} "${git_project_root}/compare/${git_branch}?expand=1"
+  local default_branch=$(get_default_branch)
+  ${open_cmd} "${git_project_root}/compare/${default_branch}...${git_branch}?expand=1"
 }
 
 # Change file extensions recursively in current directory
 #
-#   change-extension erb haml
+# Usage: change-extension erb haml
 function change-extension() {
   for f in **/*.$1; do
     mv "$f" "${f%.$1}.$2"
@@ -54,6 +61,7 @@ function envup() {
         export "$line"
       fi
     done < <(sed '/^ *#/d' .env)
+    echo "Loaded environment variables from .env"
   else
     echo 'No .env file found' >&2
     return 1
@@ -83,4 +91,44 @@ up() {
     path+="../"
   done
   cd "$path" || return 1 # Navigate up, or return if the path is invalid
+}
+
+commit_dot_files() {
+  # Ensure DOTFILES is set
+  if [ -z "$DOTFILES" ]; then
+    echo "Error: DOTFILES environment variable is not set." >&2
+    return 1
+  fi
+
+  # Define the commit message
+  local commit_message="Automated commit: updates to dotfiles."
+
+  # Determine the default branch dynamically
+  local default_branch
+  default_branch=$(git -C "$DOTFILES" symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@') || default_branch="master"
+
+  # Change to DOTFILES directory
+  pushd "$DOTFILES" >/dev/null || {
+    echo "Error: Could not access DOTFILES directory."
+    return 1
+  }
+
+  # Commit changes in the 'personal' subdirectory
+  if [ -d "personal" ]; then
+    pushd personal >/dev/null
+    git add .
+    git commit -m "$commit_message" || echo "No changes to commit in 'personal'."
+    git push origin "$default_branch"
+    popd >/dev/null
+  else
+    echo "Warning: 'personal' subdirectory not found in $DOTFILES."
+  fi
+
+  # Commit changes in the main DOTFILES directory
+  git add .
+  git commit -m "$commit_message" || echo "No changes to commit in the main dotfiles directory."
+  git push origin "$default_branch"
+
+  # Return to the original directory
+  popd >/dev/null
 }
