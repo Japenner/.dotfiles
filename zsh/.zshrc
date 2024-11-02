@@ -1,4 +1,6 @@
 # Enable Powerlevel10k instant prompt. This should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
 cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}"
 prompt_file="$cache_dir/p10k-instant-prompt-${USER}.zsh"
 if [[ -r "$prompt_file" ]]; then
