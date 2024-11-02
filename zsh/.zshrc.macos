@@ -17,18 +17,30 @@ done
 # ======= Paths and Environment-Specific Configurations ======= #
 
 # Custom PATH additions and environment variables
-export PATH="$HOME/bin:/usr/local/opt/openssl@1.1/bin:/usr/local/opt/openssl/lib:$HOME/.local/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$GOPATH/bin:$PATH"
-export LIBRARY_PATH="$LIBRARY_PATH:/usr/local/opt/openssl/lib" # OpenSSL paths
-export GOPATH="$HOME/go"                                       # Set GOPATH for Go
+# Detect Homebrew location for Apple Silicon vs. Intel macOS systems
+if [[ -d /opt/homebrew ]]; then
+  export PATH="/opt/homebrew/bin:/opt/homebrew/opt/openssl@1.1/bin:$PATH"
+  export LIBRARY_PATH="$LIBRARY_PATH:/opt/homebrew/opt/openssl/lib"
+else
+  export PATH="/usr/local/bin:/usr/local/opt/openssl@1.1/bin:$PATH"
+  export LIBRARY_PATH="$LIBRARY_PATH:/usr/local/opt/openssl/lib"
+fi
 
-# Load asdf if available
-[ -f /usr/local/opt/asdf/asdf.sh ] && source /usr/local/opt/asdf/asdf.sh
+# Load asdf if available (Homebrew-installed path)
+[ -f /opt/homebrew/opt/asdf/libexec/asdf.sh ] && source /opt/homebrew/opt/asdf/libexec/asdf.sh
+
+export GOPATH="$HOME/go"   # Set GOPATH for Go
+export PATH="$HOME/bin:$HOME/.local/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$GOPATH/bin:$PATH"
+
+# Set default editor to VS Code (ensure `code` command is in PATH)
+export EDITOR="code"
+export BUNDLER_EDITOR="code"
 
 # =================== Oh My Zsh ===================== #
 
-export ZSH="$HOME/.oh-my-zsh"           # Path to Oh My Zsh installation
-ZSH_THEME="powerlevel10k/powerlevel10k" # Set theme to Powerlevel10k
-ZSH_TMUX_AUTOSTART="true"               # Auto-start tmux with Zsh
+export ZSH="$HOME/.oh-my-zsh"            # Path to Oh My Zsh installation
+ZSH_THEME="powerlevel10k/powerlevel10k"  # Set theme to Powerlevel10k
+ZSH_TMUX_AUTOSTART="true"                # Auto-start tmux with Zsh
 
 # Plugins for Oh My Zsh
 plugins=(
@@ -40,7 +52,7 @@ plugins=(
   docker
   zsh-autosuggestions
   zsh-completions
-  zsh-syntax-highlighting
+  zsh-syntax-highlighting  # Load this last to avoid conflicts
   history
   fzf
   z
@@ -64,4 +76,10 @@ done
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-. "$HOME/.asdf/asdf.sh"
+
+# ================ Coreutils and Additional Configs ================ #
+
+# Ensure GNU Coreutils are available (if installed via Homebrew)
+if [[ -d /usr/local/opt/coreutils ]]; then
+  export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+fi
