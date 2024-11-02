@@ -1,0 +1,195 @@
+# Taps
+tap "heroku/brew"
+tap "homebrew/bundle"
+tap "homebrew/services"
+tap "oven-sh/bun"
+tap "thoughtbot/formulae"
+
+# Core Libraries
+brew "libyaml"
+brew "libtiff"
+brew "little-cms2"
+brew "jpeg-xl"
+brew "aom"
+brew "gmp"
+brew "coreutils"
+brew "openssl@1.1" # Only include if still necessary
+
+# Development Tools
+brew "ansible"
+brew "asdf" # for managing multiple language versions (Python, Node, etc.)
+brew "autossh"
+brew "awscli"
+brew "aws-vault"
+brew "awsume"
+brew "chamber"
+brew "curl"
+brew "docker", link: false # CLI only, pair with cask "docker"
+brew "docker-compose", link: false
+brew "git"
+brew "gh"   # GitHub CLI
+brew "gron" # JSON processor
+brew "jq"   # JSON query tool
+brew "fzf"  # Fuzzy finder
+brew "stow" # Dotfiles manager
+brew "tmux" # Terminal multiplexer
+brew "wget"
+
+# Python Versions (consider managing with asdf instead)
+brew "python@3.12" # Remove older versions if not strictly needed
+brew "python@3.10"
+brew "python@3.9"
+
+# Java and JVM Tools
+brew "openjdk"
+brew "openjdk@11"
+
+# Database and CLI Tools
+brew "libpq", link: true # PostgreSQL libraries
+brew "pgcli" # CLI for PostgreSQL
+brew "redis", restart_service: true # In-memory data structure store
+
+# Monitoring and Utilities
+brew "htop" # Process viewer
+brew "neofetch" # System info tool
+brew "lazydocker" # Docker management UI
+brew "osx-cpu-temp" # CPU temperature
+brew "ripgrep" # Fast file search
+brew "lazygit" # Interactive Git tool
+brew "tree" # Directory listing
+
+# Miscellaneous Utilities
+brew "tldr" # Simplified man pages
+brew "starship" # Prompt customization
+brew "rcm" # Dotfiles manager
+brew "unbound" # DNS resolver
+brew "gnupg", link: false # GPG tool
+brew "oath-toolkit" # OATH one-time passwords
+brew "vpn-slice" # VPN management
+
+# Text Processing Tools
+brew "docutils" # Python documentation tools
+brew "jsonpp" # JSON pretty printer
+brew "python-tabulate" # Pretty print tables in Python
+brew "poppler" # PDF tools
+brew "imagemagick" # Image processing
+
+# Machine Learning and Scientific Libraries
+brew "openblas" # Linear algebra library
+brew "numpy" # Numerical Python library
+brew "tesseract" # OCR engine
+
+# Applications (cask)
+cask "alfred" # Productivity app
+cask "amethyst" # Window manager
+cask "barrier" # Mouse/keyboard sharing
+cask "docker" # Docker Desktop (pair with CLI tools)
+cask "firefox" # Web browser
+cask "git-credential-manager" # Git credential management
+cask "gpg-suite" # GPG tools for macOS
+cask "postgres-unofficial" # PostgreSQL app
+cask "postman" # API client
+cask "slack" # Communication tool
+cask "the-unarchiver" # Archive tool
+cask "zoom" # Video conferencing
+
+# Fonts and Appearance
+brew "neovim" # Vim-compatible editor
+brew "starship" # Command-line prompt
+cask "talon" # Accessibility tool
+
+# VS Code Extensions
+vscode "akamud.vscode-theme-onedark"
+vscode "alexcvzz.vscode-sqlite"
+vscode "aliariff.vscode-erb-beautify"
+vscode "bajdzis.vscode-database"
+vscode "bung87.vscode-gemfile"
+vscode "castwide.solargraph"
+vscode "christian-kohler.npm-intellisense"
+vscode "cssho.vscode-svgviewer"
+vscode "davidanson.vscode-markdownlint"
+vscode "davidbabel.vscode-simpler-icons"
+vscode "dawhite.mustache"
+vscode "dbaeumer.vscode-eslint"
+vscode "dcortes92.freemarker"
+vscode "dotiful.dotfiles-syntax-highlighting"
+vscode "dsznajder.es7-react-js-snippets"
+vscode "eamodio.gitlens"
+vscode "esbenp.prettier-vscode"
+vscode "figma.figma-vscode-extension"
+vscode "file-icons.file-icons"
+vscode "firsttris.vscode-jest-runner"
+vscode "formulahendry.auto-close-tag"
+vscode "formulahendry.auto-complete-tag"
+vscode "formulahendry.auto-rename-tag"
+vscode "github.vscode-github-actions"
+vscode "github.vscode-pull-request-github"
+vscode "golang.go"
+vscode "grapecity.gc-excelviewer"
+vscode "groksrc.ruby"
+vscode "hashicorp.terraform"
+vscode "hridoy.rails-snippets"
+vscode "kaiwood.endwise"
+vscode "koichisasada.vscode-rdbg"
+vscode "laurenttreguier.rpm-spec"
+vscode "mathiasfrohlich.kotlin"
+vscode "mechatroner.rainbow-csv"
+vscode "mgmcdermott.vscode-language-babel"
+vscode "mikestead.dotenv"
+vscode "misogi.ruby-rubocop"
+vscode "mohd-akram.vscode-html-format"
+vscode "mrmlnc.vscode-scss"
+vscode "ms-azuretools.vscode-docker"
+vscode "ms-mssql.data-workspace-vscode"
+vscode "ms-mssql.mssql"
+vscode "ms-mssql.sql-bindings-vscode"
+vscode "ms-mssql.sql-database-projects-vscode"
+vscode "ms-ossdata.vscode-postgresql"
+vscode "ms-python.debugpy"
+vscode "ms-python.isort"
+vscode "ms-python.python"
+vscode "ms-python.vscode-pylance"
+vscode "ms-vscode-remote.remote-containers"
+vscode "ms-vscode-remote.remote-ssh"
+vscode "ms-vscode-remote.remote-ssh-edit"
+vscode "ms-vscode-remote.remote-wsl"
+vscode "ms-vscode-remote.vscode-remote-extensionpack"
+vscode "ms-vscode.makefile-tools"
+vscode "ms-vscode.remote-explorer"
+vscode "ms-vscode.remote-server"
+vscode "ms-vsliveshare.vsliveshare"
+vscode "mtxr.sqltools"
+vscode "nrwl.angular-console"
+vscode "otovo-oss.htmx-tags"
+vscode "pascalreitermann93.vscode-yaml-sort"
+vscode "pkief.material-icon-theme"
+vscode "redhat.java"
+vscode "redhat.vscode-yaml"
+vscode "robbowen.synthwave-vscode"
+vscode "rvest.vs-code-prettier-eslint"
+vscode "shanehofstetter.rails-i18n"
+vscode "shd101wyy.markdown-preview-enhanced"
+vscode "shopify.ruby-lsp"
+vscode "sianglim.slim"
+vscode "sissel.shopify-liquid"
+vscode "soutaro.rbs-syntax"
+vscode "stylelint.vscode-stylelint"
+vscode "tomoki1207.pdf"
+vscode "usernamehw.errorlens"
+vscode "vangware.dark-plus-material"
+vscode "visualstudioexptteam.intellicode-api-usage-examples"
+vscode "visualstudioexptteam.vscodeintellicode"
+vscode "vortizhe.simple-ruby-erb"
+vscode "vscjava.vscode-gradle"
+vscode "vscjava.vscode-java-debug"
+vscode "vscjava.vscode-java-dependency"
+vscode "vscjava.vscode-java-pack"
+vscode "vscjava.vscode-java-test"
+vscode "vscjava.vscode-maven"
+vscode "vscode-icons-team.vscode-icons"
+vscode "vscodevim.vim"
+vscode "wesbos.theme-cobalt2"
+vscode "wingrunr21.vscode-ruby"
+vscode "xadillax.viml"
+vscode "yzhang.markdown-all-in-one"
+vscode "zhuangtongfa.material-theme"
