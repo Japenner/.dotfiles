@@ -1,0 +1,56 @@
+##################### Navigation #####################
+
+alias learning="cd ~/repos/learning"
+alias practice="cd ~/repos/practice"
+alias repos="cd ~/repos"
+
+# Ad Hoc
+
+ad_hoc_dir="~/Repos/ad_hoc"
+
+alias ah="cd ${ad_hoc_dir}"
+alias dt="cd ~/Desktop"
+
+## Tools
+
+alias tools="cd ${ad_hoc_dir}/tools"
+alias tools:ec2ssh="cd ${ad_hoc_dir}/tools/ec2ssh"
+alias tools:ssm="cd ${ad_hoc_dir}/tools/ssm"
+
+## CMS
+
+cms_dir="${ad_hoc_dir}/cms"
+
+alias cms="cd ${cms_dir}"
+alias cms:ds="cd ${cms_dir}/design-system"
+alias cms:hcds="cd ${cms_dir}/hcgov-design-system"
+
+### WDS
+
+wds_dir="${cms_dir}/wds"
+
+alias wds="cd ${wds_dir}"
+alias wds:api="cd ${wds_dir}/marketplace-api"
+alias wds:app="cd ${wds_dir}/application"
+alias wds:badffm="cd ${wds_dir}/badffm"
+alias wds:cp="cd ${wds_dir}/companyprofiles"
+alias wds:enroll="cd ${wds_dir}/enroll"
+alias wds:enroll:ws="cd ${wds_dir}/enroll/apps/windowshop"
+alias wds:enroll:pc2="cd ${wds_dir}/enroll/apps/plancompare"
+alias wds:finder="cd ${wds_dir}/finder"
+alias wds:mapi="cd ${wds_dir}/marketplace-api"
+alias wds:mapic="cd ${wds_dir}/marketplace-api-client"
+alias wds:ops="cd ${wds_dir}/ops"
+alias wds:pc2="cd ${wds_dir}/plancompare"
+alias wds:rr="cd ${wds_dir}/ratereview"
+alias wds:shared="cd ${wds_dir}/pet-shared-components"
+alias wds:tt="cd ${wds_dir}/taxtools"
+alias wds:ws="cd ${wds_dir}/windowshop"
+
+### VA
+
+va_dir="${ad_hoc_dir}/va"
+
+alias va="cd ${va_dir}"
+alias va:api="cd ${va_dir}/vets-api"
+alias va:web="cd ${va_dir}/vets-website"

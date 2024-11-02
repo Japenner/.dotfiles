@@ -1,24 +1,29 @@
 ################# Config Files #######################
 
-alias als="code ~/dotfiles-local/aliases.local" # Open aliases config in editor
-alias ohmyzsh="code ~/.oh-my-zsh"               # Edit Oh My Zsh config
-alias zshconfig="code ~/.zshrc"                 # Edit .zshrc file
+alias als="code ~/.dotfiles/zsh/.aliases" # Open aliases config in editor
+alias ohmyzsh="code ~/.oh-my-zsh"         # Edit Oh My Zsh config
+alias zshconfig="code ~/.zshrc"           # Edit .zshrc file
+
+#################### Docker ##########################
+
+alias d-clean='docker stop $(docker ps -a -q); docker rm $(docker ps -a -q); docker rmi $(docker images -q); docker volume rm $(docker volume ls -qf dangling=true)' # Stop and remove all Docker containers, images, and dangling volumes
+alias d-restart="osascript -e 'quit app \"Docker\"' && open -a Docker"                                                                                               # Restart Docker Desktop on macOS
+alias d-wipe="docker stop $(docker ps -a -q); docker rm $(docker ps -a -q); docker rmi $(docker images -q); docker volume rm $(docker volume ls -qf dangling=true)"  # Stop and remove all Docker containers, images, and dangling volumes (same as d-clean)
+alias lzd="lazydocker"                                                                                                                                               # Open Lazydocker for managing Docker containers
 
 ##################### Git ############################
 
-alias gl="git log --oneline --graph --decorate"                      # Compact, decorated git log
-alias gp="git push"                                                  # Git push
-alias gs="git status"                                                # Git status
-alias pub="git add . && git commit -m 'update' && git push && gh-c"  # Publish changes and open compare page
-alias rebase:develop="git fetch origin && git rebase origin/develop" # Rebase with develop
-alias rebase="git fetch origin && git rebase origin/master"          # Rebase with master
-alias reset:develop="git reset origin/develop"                       # Reset to origin/develop
-alias reset="git reset origin/master"                                # Reset to origin/master
-alias update:develop="rebase:develop && git push -f"                 # Rebase and force push
-alias update="rebase && git push -f"                                 # Rebase and force push
-alias updateall="bash ~/Repos/ramsey/misc/update_git_repos.sh"       # Update all repos
-alias wip="ga . && gc --no-verify -m 'WIP'"                          # Push up all changes under a WIP
-alias yolo="git push origin master --force --no-verify"              # Update master branch with changes
+alias g-default-branch="git remote show origin | sed -n '/HEAD branch/s/.*: //p'"                 # Get the default branch of the remote repository
+alias g-prr="~/.dotfiles/zsh/scripts/review_pr.sh"                                                # Run script to review pull requests
+alias g-pub="ga .; gc -m 'updates'; git push; gh-c"                                               # Add and commit all changes, push to repo, and open GitHub compare page
+alias g-rb="git stash -u; git fetch origin; git rebase origin/$(g-default-branch); git stash pop" # Stash changes, rebase with default branch, and reapply stash
+alias g-rr="~/.dotfiles/zsh/scripts/open_pr_review_requests.sh"                                   # Open pull requests where a review is requested
+alias g-rs="git reset origin/$(g-default-branch)"                                                 # Reset to the state of the remote default branch
+alias g-unwip="git reset --soft HEAD~1"                                                           # Undo the last commit, keeping changes in the working directory
+alias g-update-all="~/.dotfiles/zsh/scripts/update_git_repos.sh"                                  # Run script to update all git repositories
+alias g-update="g-rb; git push -f"                                                                # Rebase with default branch and force push
+alias g-wip="ga .; gc --no-verify -m 'WIP'"                                                       # Commit all changes under a 'WIP' message without verification
+alias g-yolo="git push origin master --force --no-verify"                                         # Force push changes to master without verification
 
 ####################### JavaScript ####################
 
@@ -26,10 +31,11 @@ alias yarn:clean="rm -rf node_modules && yarn cache clean && yarn install" # Cle
 
 ###################### Productivity ###################
 
-alias c="clear"                           # Clear terminal screen
-alias repos="cd ~/repos"                  # Shortcut to repos directory
-alias serve="python3 -m http.server 8000" # Start Python HTTP server
-alias todo="$EDITOR ~/.todo"              # Open todo file in editor
+alias branch='~/.dotfiles/zsh/scripts/branch.sh' # Create a new branch and update GH ticket
+alias c="clear"                                  # Clear terminal screen
+alias repos="cd ~/repos"                         # Shortcut to repos directory
+alias serve="python3 -m http.server 8000"        # Start Python HTTP server
+alias todo="$EDITOR ~/.todo"                     # Open todo file in editor
 
 ###################### Rails ##########################
 
@@ -51,10 +57,14 @@ alias t="bb && bundle exec rails test"                                          
 
 ###################### Utility ########################
 
-alias a-desktop='~/repos/personal/ansible/run desktop'
-alias chrome="open -a 'Google Chrome'"   # Open Google Chrome
-alias cpwd="pwd | pbcopy"                # Copy current directory to clipboard
-alias path='echo $PATH | tr -s ":" "\n"' # Display PATH directories, each on a new line
+alias awsume=". awsume"                                                                                                                                                                                                                                               # Source awsume to assume AWS roles easily
+alias chrome="open -a 'Google Chrome'"                                                                                                                                                                                                                                # Open Google Chrome
+alias cht="sh ~/dotfiles/bin/.local/scripts/tmux-cht.sh"                                                                                                                                                                                                              # Run tmux cheat sheet script
+alias cmsvpn="sudo openconnect --protocol=anyconnect --user=PDEG cloudvpn.cms.gov"                                                                                                                                                                                    # Connect to CMS VPN using openconnect with AnyConnect protocol
+alias cpwd="pwd | pbcopy"                                                                                                                                                                                                                                             # Copy current working directory to clipboard
+alias nato="echo 'A Alpha\nB Bravo\nC Charlie\nD Delta\nE Echo\nF Foxtrot\nG Golf\nH Hotel\nI India\nJ Juliet\nK Kilo\nL Lima\nM Mike\nN November\nO Oscar\nP Papa\nQ Quebec\nR Romeo\nS Sierra\nT Tango\nU Uniform\nV Victor\nW Whiskey\nX X-ray\nY Yankee\nZ Zulu'" # Display NATO phonetic alphabet
+alias path='echo $PATH | tr -s ":" "\n"'                                                                                                                                                                                                                              # Display PATH directories, each on a new line
+alias pp="python -m json.tool"                                                                                                                                                                                                                                        # Pretty-print JSON using Python’s JSON tool
 
 ######################## JAVA #########################
 
