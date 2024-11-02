@@ -51,6 +51,7 @@ alias t="bb && bundle exec rails test"                                          
 
 ###################### Utility ########################
 
+alias a-desktop='~/repos/personal/ansible/run desktop'
 alias chrome="open -a 'Google Chrome'"   # Open Google Chrome
 alias cpwd="pwd | pbcopy"                # Copy current directory to clipboard
 alias path='echo $PATH | tr -s ":" "\n"' # Display PATH directories, each on a new line
@@ -61,13 +62,16 @@ alias js="docker container prune && docker image prune && mvn clean package -Dsk
 
 ###################### Unix ###########################
 
-alias ..="up .."       # Go up one directory
-alias ...="up ..."     # Go up two directories
-alias ....="up ...."   # Go up three directories
-alias ~="cd ~"         # Go to home directory
-alias e="$EDITOR"      # Open editor
-alias la="ls -lha"     # List all files in detailed format
-alias ll="ls -al"      # List files in detail
-alias ln="ln -v"       # Verbose link creation
-alias mkdir="mkdir -p" # Create directories, including parents
-alias v="$VISUAL"      # Open visual editor
+alias ....="up ...."      # Go up three directories
+alias ...="up ..."        # Go up two directories
+alias ..="up .."          # Go up one directory
+alias ~="cd ~"            # Go to home directory
+alias code="code"         # Open VS Code with the code command
+alias e="$EDITOR"         # Open editor
+alias edit="$CODE_EDITOR" # Use edit command to open files in VS Code
+alias la="ls -lha"        # List all files in detailed format
+alias ll="ls -al"         # List files in detail
+alias ln="ln -v"          # Verbose link creation
+alias mkdir="mkdir -p"    # Create directories, including parents
+alias v="$VISUAL"         # Open visual editor
+alias vim="nvim"          # Use vim command to open Neovim
