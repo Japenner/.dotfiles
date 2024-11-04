@@ -61,7 +61,11 @@ done
 # Load other configuration files if available
 [ -f ~/.zsh_profile ] && source ~/.zsh_profile
 [ -f ~/.aliases ] && source ~/.aliases
-[ -f ~/.aliases.local ] && source ~/.aliases.local
+
+# Load all local machine specific .zsh configuration files
+for local_config_file in ~/zsh/local/*(.N); do
+  source "$local_config_file"
+done
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
