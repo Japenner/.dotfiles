@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
     source ~/.dotfiles/zsh/.zshrc.macos
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then

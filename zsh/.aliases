@@ -1,10 +1,12 @@
-################# Config Files #######################
+#!/usr/bin/env zsh
+
+# ======================= Config Files ======================== #
 
 alias als="code ~/.dotfiles/zsh/.aliases" # Open aliases config in editor
 alias ohmyzsh="code ~/.oh-my-zsh"         # Edit Oh My Zsh config
 alias zshconfig="code ~/.zshrc"           # Edit .zshrc file
 
-#################### Docker ##########################
+# ========================== Docker =========================== #
 
 alias d-restart="osascript -e 'quit app \"Docker\"' && open -a Docker" # Restart Docker Desktop on macOS
 alias d-wipe="docker stop $(docker ps -a -q) && \
@@ -13,7 +15,7 @@ alias d-wipe="docker stop $(docker ps -a -q) && \
   docker volume rm $(docker volume ls -qf dangling=true)"              # Stop and remove all Docker containers, images, and dangling volumes
 alias lzd="lazydocker"                                                 # Open Lazydocker for managing Docker containers
 
-##################### Git ############################
+# ============================ Git ============================ #
 
 alias g-auth-refresh="eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_personal"
 alias g-auth-refresh-team="eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_adhocteam_us"
@@ -29,11 +31,11 @@ alias g-update="g-rb && git push -f"                                            
 alias g-wip="ga . && gc --no-verify -m 'WIP'"                                                    # Commit all changes under a 'WIP' message without verification
 alias g-yolo="git push origin master --force --no-verify"                                        # Force push changes to master without verification
 
-####################### JavaScript ####################
+# ========================= JavaScript ======================== #
 
 alias yarn:clean="rm -rf node_modules && yarn cache clean && yarn install" # Clean and reinstall Yarn packages
 
-###################### Productivity ###################
+# ======================== Productivity ======================= #
 
 alias branch='~/.dotfiles/zsh/scripts/branch.sh' # Create a new branch and update GH ticket
 alias c="clear"                                  # Clear terminal screen
@@ -41,7 +43,7 @@ alias repos="cd ~/repos"                         # Shortcut to repos directory
 alias serve="python3 -m http.server 8000"        # Start Python HTTP server
 alias todo="$EDITOR ~/.todo"                     # Open todo file in editor
 
-###################### Rails ##########################
+# =========================== Rails =========================== #
 
 alias b="bundle"                                                                               # Bundle command shortcut
 alias bb="b && yarn install"                                                                   # Bundle and Yarn install
@@ -59,7 +61,12 @@ alias sqa="bb && RAILS_ENV=qa bin/rails s"                                      
 alias st="bb && RAILS_ENV=test_one bin/rails s"                                                # Start Rails server in test_one environment
 alias t="bb && bundle exec rails test"                                                         # Run Rails tests
 
-###################### Utility ########################
+# =========================== Slack =========================== #
+
+alias slack-away="bash ~/.dotfiles/zsh/scripts/set_slack_status.sh set"
+alias slack-back="bash ~/.dotfiles/zsh/scripts/set_slack_status.sh clear"
+
+# ========================== Utility ========================== #
 
 alias awsume=". awsume"                                                             # Source awsume to assume AWS roles easily
 alias chrome="open -a 'Google Chrome'"                                              # Open Google Chrome
@@ -73,14 +80,14 @@ alias nato="echo 'A Alpha\nB Bravo\nC Charlie\nD Delta\nE Echo\nF Foxtrot\n \
 alias path='echo $PATH | tr -s ":" "\n"'                                            # Display PATH directories, each on a new line
 alias pp="python -m json.tool"                                                      # Pretty-print JSON using Python’s JSON tool
 
-######################## JAVA #########################
+# ============================ JAVA =========================== #
 
 alias java-s="docker container prune && \
   docker image prune && \
   mvn clean package -DskipTests && \
   docker-compose up --build service"  # Clean Docker, build, and start service
 
-###################### Unix ###########################
+# ============================ Unix =========================== #
 
 alias ....="up ...."      # Go up three directories
 alias ...="up ..."        # Go up two directories

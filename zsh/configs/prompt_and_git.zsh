@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # Function to display the current Git branch in the prompt if applicable
 git_prompt_info() {
   local current_branch

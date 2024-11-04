@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # History settings
 HISTFILE=~/.zsh_history # Path to store command history
 HISTSIZE=10000          # Maximum commands to keep in session history

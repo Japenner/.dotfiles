@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # Enable Vi-mode navigation in the command line
 bindkey -v               # Set Vi mode
 bindkey "^F" vi-cmd-mode # Use Ctrl+F to switch to command mode in Vi

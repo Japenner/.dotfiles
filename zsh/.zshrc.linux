@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # Enable Powerlevel10k instant prompt. This should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -7,7 +9,7 @@ if [[ -r "$prompt_file" ]]; then
   source "$prompt_file"
 fi
 
-# ================== Initial Setup ================== #
+# ======================= Initial Setup ======================= #
 
 # Load custom functions if any exist
 for file in ~/zsh/functions/*(.N); do
@@ -24,7 +26,7 @@ export GOPATH="$HOME/go"                                       # Set GOPATH for 
 # Load asdf if available
 [ -f /usr/local/opt/asdf/asdf.sh ] && source /usr/local/opt/asdf/asdf.sh
 
-# =================== Oh My Zsh ===================== #
+# ========================= Oh My Zsh ========================= #
 
 export ZSH="$HOME/.oh-my-zsh"           # Path to Oh My Zsh installation
 ZSH_THEME="powerlevel10k/powerlevel10k" # Set theme to Powerlevel10k
@@ -49,14 +51,14 @@ plugins=(
 # Load Oh My Zsh
 source "$ZSH/oh-my-zsh.sh"
 
-# ================ Zsh Configuration ================ #
+# ===================== Zsh Configuration ===================== #
 
 # Load all .zsh configuration files from the configs directory
 for config_file in ~/zsh/configs/*(.N); do
   source "$config_file"
 done
 
-# ================ Load Additional Configs ================ #
+# ================== Load Additional Configs ================== #
 
 # Load other configuration files if available
 [ -f ~/.zsh_profile ] && source ~/.zsh_profile
