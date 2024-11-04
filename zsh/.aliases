@@ -102,3 +102,7 @@ alias ln="ln -v"          # Verbose link creation
 alias mkdir="mkdir -p"    # Create directories, including parents
 alias v="$VISUAL"         # Open visual editor
 alias vim="nvim"          # Use vim command to open Neovim
+
+# ============================ MacOS ========================== #
+
+alias brewfile="brew bundle dump --file=~/.dotfiles/Brewfile --force"
