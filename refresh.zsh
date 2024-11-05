@@ -1,8 +1,8 @@
 #!/usr/bin/env zsh
 
 # Default values for DOTFILES and STOW_FOLDERS if not provided
-: "${DOTFILES:=$HOME/.dotfiles}"
-: "${STOW_FOLDERS:=bin,tmux,zsh}"
+: "${DOTFILES:=$HOME/.config}"
+: "${STOW_FOLDERS:=bin,nvim,tmux,zsh}"
 
 # Check if GNU Stow is installed
 if ! command -v stow &>/dev/null; then
@@ -22,7 +22,7 @@ IFS=',' read -A stow_folders_array <<<"$STOW_FOLDERS"
 # Loop over each folder in the array
 for folder in "${stow_folders_array[@]}"; do
     echo "Restowing $folder"
-    if stow -R "$folder"; then
+    if stow -R "$folder" -t "$HOME"; then
         echo "Successfully restowed $folder"
     else
         echo "Failed to restow $folder." >&2

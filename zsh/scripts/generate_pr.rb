@@ -1,13 +1,26 @@
 require 'json'
-require 'openai'
 require 'open3'
+require 'logger'
 require 'tempfile'
+require 'optparse'
+require_relative 'open_ai_client'
 
-# Set your OpenAI API key
-OpenAI.api_key = ENV['OPENAI_API_KEY']
+# Parse command-line options
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: download_gists.rb [options]"
+
+  opts.on("-u", "--username USERNAME", "GitHub username") do |u|
+    options[:username] = u
+  end
+
+  opts.on("-d", "--directory DIRECTORY", "Directory to save gists") do |d|
+    options[:directory] = d
+  end
+end.parse!
 
 # Read the PR template from an external file
-def read_pr_template(file_path)
+def read_template(file_path)
   File.read(file_path)
 end
 
