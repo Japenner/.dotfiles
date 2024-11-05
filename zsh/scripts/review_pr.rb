@@ -5,7 +5,7 @@ require 'logger'
 require_relative 'open_ai_client'
 
 class ReviewPR
-  PROMPT_TEMPLATE_PATH = File.expand_path('~/dotfiles/zsh/prompts/review_pr.md')
+  PROMPT_TEMPLATE_PATH = File.expand_path('~/.dotfiles/zsh/prompts/review_pr.md')
   GITHUB_REPO = "department-of-veterans-affairs/vets-api"
 
   def initialize(pull_request_id, api_key = nil, logger = Logger.new(STDOUT))

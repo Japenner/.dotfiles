@@ -1,0 +1,239 @@
+# Taps
+tap "heroku/brew"
+tap "homebrew/bundle"
+tap "homebrew/services"
+tap "oven-sh/bun"
+tap "phrase/brewed"
+tap "thoughtbot/formulae"
+
+# Core Libraries
+brew "aom"
+brew "coreutils"
+brew "gmp"
+brew "jpeg-xl"
+brew "libtiff"
+brew "libyaml"
+brew "little-cms2"
+brew "openssl@1.1"
+
+# Development Tools
+brew "ansible"
+brew "asdf"
+brew "autossh"
+brew "awscli"
+brew "docker", link: false
+brew "docker-compose", link: false
+brew "fzf"
+brew "git"
+brew "go"
+brew "jq"
+brew "node", link: false
+brew "stow"
+brew "tmux"
+
+# Python Versions
+brew "python@3.9"
+brew "python@3.10"
+brew "python@3.12"
+
+# Database and CLI Tools
+brew "libpq", link: true
+brew "pgcli"
+brew "redis", restart_service: true
+
+# System Monitoring and Utilities
+brew "htop"
+brew "lazydocker"
+brew "neofetch"
+brew "osx-cpu-temp"
+brew "ripgrep"
+
+# Fonts and Appearance
+brew "starship"
+
+# Applications
+cask "alfred"
+cask "amethyst"
+cask "barrier"
+cask "docker"
+cask "firefox"
+cask "git-credential-manager"
+cask "gpg-suite"
+cask "postgres-unofficial"
+cask "postman"
+cask "slack"
+cask "talon"
+cask "the-unarchiver"
+cask "zoom"
+
+# Data Processing and Geospatial Tools
+brew "apache-arrow" # In-memory columnar data format
+brew "gdal" # Geospatial Data Abstraction Library for reading and writing geospatial data
+brew "numpy" # Numerical computing library for Python
+brew "openblas" # Optimized linear algebra library used in scientific computing
+brew "poppler" # PDF rendering library, commonly used for data extraction
+brew "python-tabulate" # Pretty print tables for tabular data in Python
+
+# AWS and Cloud Tools
+brew "aws-vault" # Tool for securely managing AWS credentials
+brew "awsume" # Tool to quickly assume AWS roles using stored credentials
+brew "chamber" # Manage secrets with AWS SSM Parameter Store and Secrets Manager
+brew "heroku/brew/heroku" # Heroku CLI for deploying and managing Heroku apps
+brew "terraform" # Infrastructure as code tool for cloud provisioning
+
+# Networking and Security
+brew "curl" # Command-line tool for transferring data with URLs, used in network requests
+brew "gnupg", link: false # GNU Privacy Guard for encryption and signing, unlinked to avoid conflicts
+brew "gnutls" # GNU TLS library for secure communications
+brew "gpgme" # GPG Made Easy library for accessing GPG functions programmatically
+brew "libksba" # X.509 and CMS (PKCS#7) support library for cryptographic purposes
+brew "libxmlsec1" # XML security library for signing and encryption
+brew "mitmproxy" # Interactive HTTPS proxy for debugging, inspecting, and modifying traffic
+brew "oath-toolkit" # Tool for generating one-time passwords (OTP) for secure authentication
+brew "openconnect" # Open source VPN client
+brew "unbound" # DNS resolver and caching server
+brew "vpn-slice" # VPN route management tool
+
+# Development Tools and Utilities
+brew "docutils"          # Python documentation utilities, especially for reStructuredText
+brew "entr"              # Utility for running commands when files change, useful in development workflows
+brew "foreman"           # Manage Procfile-based applications, commonly used in development
+brew "gh"                # GitHub CLI for interacting with GitHub from the command line
+brew "grunt-cli"         # Command-line interface for the JavaScript task runner, Grunt
+brew "guile"             # GNU Ubiquitous Intelligent Language for Extensions, used in Scheme programming
+brew "imagemagick"       # Image processing tool for creating, editing, and converting images
+brew "jmeter"            # Performance and load testing tool for analyzing web applications
+brew "neovim"            # Modernized version of Vim text editor
+brew "pex"               # Python package manager that creates self-contained executable .pex files
+brew "phrase-cli"        # CLI tool for Phrase, a translation management tool for developers
+brew "rcm"               # Tool for managing dotfiles
+brew "stow"              # Symlink manager, commonly used for managing dotfiles
+brew "wget"              # Utility for downloading files from the web
+brew "xpdf", link: false # PDF viewer, unlinked to avoid conflicts with other PDF tools
+brew "yarn"              # JavaScript package manager, commonly used with Node.js
+brew "zsh"               # Z shell, a powerful shell with scripting and customization capabilities
+
+# Command-Line Tools and Utilities
+brew "gron"             # Converts JSON into a format that's more easily grep-able
+brew "jd"               # JSON diff utility to view changes between JSON files
+brew "jsonpp"           # JSON pretty printer for formatting JSON output
+brew "shared-mime-info" # MIME type
+
+# Graphics and Image Processing
+brew "cairo"     # 2D graphics library for vector graphics and GUIs
+brew "harfbuzz"  # Text shaping engine for rendering complex scripts
+brew "libheif"   # Library for HEIF and AVIF image formats
+brew "tesseract" # OCR engine for converting images of text into editable text
+
+# Networking and Communication
+brew "grpc"    # High-performance RPC framework for distributed applications
+brew "nghttp2" # HTTP/2 protocol implementation for modern web standards
+
+# Java and JVM Tools
+brew "openjdk"    # Latest version of OpenJDK for Java development
+brew "openjdk@11" # OpenJDK version 11 for compatibility with older applications
+
+# JavaScript and Development Runtimes
+brew "oven-sh/bun/bun" # JavaScript runtime, bundler, and package manager
+
+# PDF and Document Utilities
+brew "pdftk-java" # Java-based PDF toolkit for merging, splitting, and modifying PDFs
+
+# Package Management and System Tools
+brew "rpm"  # RPM package manager, useful for handling .rpm files on macOS
+brew "tldr" # Simplified, community-driven man pages for common commands
+
+vscode "akamud.vscode-theme-onedark"
+vscode "alexcvzz.vscode-sqlite"
+vscode "aliariff.vscode-erb-beautify"
+vscode "bajdzis.vscode-database"
+vscode "bung87.vscode-gemfile"
+vscode "castwide.solargraph"
+vscode "christian-kohler.npm-intellisense"
+vscode "cssho.vscode-svgviewer"
+vscode "davidanson.vscode-markdownlint"
+vscode "davidbabel.vscode-simpler-icons"
+vscode "dawhite.mustache"
+vscode "dbaeumer.vscode-eslint"
+vscode "dcortes92.freemarker"
+vscode "dotiful.dotfiles-syntax-highlighting"
+vscode "dsznajder.es7-react-js-snippets"
+vscode "eamodio.gitlens"
+vscode "esbenp.prettier-vscode"
+vscode "figma.figma-vscode-extension"
+vscode "file-icons.file-icons"
+vscode "firsttris.vscode-jest-runner"
+vscode "formulahendry.auto-close-tag"
+vscode "formulahendry.auto-complete-tag"
+vscode "formulahendry.auto-rename-tag"
+vscode "github.vscode-github-actions"
+vscode "github.vscode-pull-request-github"
+vscode "golang.go"
+vscode "grapecity.gc-excelviewer"
+vscode "groksrc.ruby"
+vscode "hashicorp.terraform"
+vscode "hridoy.rails-snippets"
+vscode "kaiwood.endwise"
+vscode "koichisasada.vscode-rdbg"
+vscode "laurenttreguier.rpm-spec"
+vscode "mathiasfrohlich.kotlin"
+vscode "mechatroner.rainbow-csv"
+vscode "mgmcdermott.vscode-language-babel"
+vscode "mikestead.dotenv"
+vscode "misogi.ruby-rubocop"
+vscode "mohd-akram.vscode-html-format"
+vscode "mrmlnc.vscode-scss"
+vscode "ms-azuretools.vscode-docker"
+vscode "ms-mssql.data-workspace-vscode"
+vscode "ms-mssql.mssql"
+vscode "ms-mssql.sql-bindings-vscode"
+vscode "ms-mssql.sql-database-projects-vscode"
+vscode "ms-ossdata.vscode-postgresql"
+vscode "ms-python.debugpy"
+vscode "ms-python.isort"
+vscode "ms-python.python"
+vscode "ms-python.vscode-pylance"
+vscode "ms-vscode-remote.remote-containers"
+vscode "ms-vscode-remote.remote-ssh"
+vscode "ms-vscode-remote.remote-ssh-edit"
+vscode "ms-vscode-remote.remote-wsl"
+vscode "ms-vscode-remote.vscode-remote-extensionpack"
+vscode "ms-vscode.makefile-tools"
+vscode "ms-vscode.remote-explorer"
+vscode "ms-vscode.remote-server"
+vscode "ms-vsliveshare.vsliveshare"
+vscode "mtxr.sqltools"
+vscode "nrwl.angular-console"
+vscode "otovo-oss.htmx-tags"
+vscode "pascalreitermann93.vscode-yaml-sort"
+vscode "pkief.material-icon-theme"
+vscode "redhat.java"
+vscode "redhat.vscode-yaml"
+vscode "robbowen.synthwave-vscode"
+vscode "rvest.vs-code-prettier-eslint"
+vscode "shanehofstetter.rails-i18n"
+vscode "shd101wyy.markdown-preview-enhanced"
+vscode "shopify.ruby-lsp"
+vscode "sianglim.slim"
+vscode "sissel.shopify-liquid"
+vscode "soutaro.rbs-syntax"
+vscode "stylelint.vscode-stylelint"
+vscode "tomoki1207.pdf"
+vscode "usernamehw.errorlens"
+vscode "vangware.dark-plus-material"
+vscode "visualstudioexptteam.intellicode-api-usage-examples"
+vscode "visualstudioexptteam.vscodeintellicode"
+vscode "vortizhe.simple-ruby-erb"
+vscode "vscjava.vscode-gradle"
+vscode "vscjava.vscode-java-debug"
+vscode "vscjava.vscode-java-dependency"
+vscode "vscjava.vscode-java-pack"
+vscode "vscjava.vscode-java-test"
+vscode "vscjava.vscode-maven"
+vscode "vscode-icons-team.vscode-icons"
+vscode "vscodevim.vim"
+vscode "wesbos.theme-cobalt2"
+vscode "wingrunr21.vscode-ruby"
+vscode "xadillax.viml"
+vscode "yzhang.markdown-all-in-one"
+vscode "zhuangtongfa.material-theme"

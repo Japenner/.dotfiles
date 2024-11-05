@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # Directory navigation settings
 setopt autocd      # Change to directory by name without `cd`
 setopt autopushd   # Automatically add directories to the directory stack

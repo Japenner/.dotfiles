@@ -1,3 +1,5 @@
+#!/usr/bin/env zsh
+
 # Enable extended globbing for advanced pattern matching
 setopt extendedglob
 

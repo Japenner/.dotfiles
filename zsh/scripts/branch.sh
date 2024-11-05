@@ -134,3 +134,5 @@ update_project_card_points
 update_project_card_status
 
 echo "Updated issue #$ISSUE_NUMBER with $POINTS points and set status to 'In Progress' in the associated GitHub project."
+
+open -na "Google Chrome" --args "https://github.com/$REPOSITORY/issues/$ISSUE_NUMBER"
