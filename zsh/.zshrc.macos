@@ -12,7 +12,7 @@ fi
 # ======================= Initial Setup ======================= #
 
 # Load custom functions if any exist
-for file in ~/zsh/functions/*(.N); do
+for file in ~/.dotfiles/zsh/functions/*(.N); do
   source "$file"
 done
 
@@ -34,6 +34,7 @@ export PATH="$HOME/bin:\
   $HOME/.config/yarn/global/node_modules/.bin:\
   $GOPATH/bin:\
   /Applications/Postgres.app/Contents/Versions/latest/bin:\
+  /usr/local/sbin:\
   $PATH"
 export GOPATH="$HOME/go"
 
@@ -73,7 +74,7 @@ source "$ZSH/oh-my-zsh.sh"
 # ===================== Zsh Configuration ===================== #
 
 # Load all .zsh configuration files from the configs directory
-for config_file in ~/zsh/configs/*(.N); do
+for config_file in ~/.dotfiles/zsh/configs/*(.N); do
   source "$config_file"
 done
 
@@ -87,7 +88,7 @@ done
 [ -f ~/.aliases ] && source ~/.aliases
 
 # Load all local machine specific .zsh configuration files
-for local_config_file in ~/zsh/local/*(.N); do
+for local_config_file in ~/.dotfiles/zsh/local/*(.N); do
   source "$local_config_file"
 done
 
