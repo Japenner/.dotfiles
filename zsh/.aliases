@@ -77,7 +77,7 @@ alias cpwd="pwd | pbcopy"                                                       
 alias nato="echo 'A Alpha\nB Bravo\nC Charlie\nD Delta\nE Echo\nF Foxtrot\
   \nG Golf\nH Hotel\nI India\nJ Juliet\nK Kilo\nL Lima\nM Mike\nN November\
   \nO Oscar\nP Papa\nQ Quebec\nR Romeo\nS Sierra\nT Tango\nU Uniform\
-  \nV Victor\nW Whiskey\nX X-ray\nY Yankee\nZ Zulu'"                                  # Display NATO phonetic alphabet
+  \nV Victor\nW Whiskey\nX X-ray\nY Yankee\nZ Zulu'"                                # Display NATO phonetic alphabet
 alias path='echo $PATH | tr -s ":" "\n"'                                            # Display PATH directories, each on a new line
 alias pp="python -m json.tool"                                                      # Pretty-print JSON using Python’s JSON tool
 

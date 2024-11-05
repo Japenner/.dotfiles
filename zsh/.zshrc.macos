@@ -28,15 +28,17 @@ else
   export LIBRARY_PATH="$LIBRARY_PATH:/usr/local/opt/openssl/lib"
 fi
 
-export PATH="$HOME/bin:\
-  $HOME/.local/bin:\
-  $HOME/.yarn/bin:\
-  $HOME/.config/yarn/global/node_modules/.bin:\
-  $GOPATH/bin:\
-  /Applications/Postgres.app/Contents/Versions/latest/bin:\
-  /usr/local/sbin:\
-  $PATH"
 export GOPATH="$HOME/go"
+export PATH="$HOME/bin:\
+             $HOME/.local/bin:\
+             $HOME/.yarn/bin:\
+             $HOME/.config/yarn/global/node_modules/.bin:\
+             $GOPATH/bin:\
+             /Applications/Postgres.app/Contents/Versions/latest/bin:\
+             /usr/local/sbin:\
+             $PATH"
+# Clean up $PATH redundancies
+export PATH=$(echo "$PATH" | awk -v RS=: '{if (!($0 in a)) {a[$0]; printf "%s%s", sep, $0; sep=":"}}')
 
 # Load asdf if available
 [ -f /opt/homebrew/opt/asdf/libexec/asdf.sh ] && source /opt/homebrew/opt/asdf/libexec/asdf.sh
