@@ -20,10 +20,10 @@ class GeneratePR
     pr_template = File.read(PROMPT_TEMPLATE_PATH)
 
     # Step 2: Fetch ticket title and description
-    ticket_details = get_ticket_details
+    ticket_details = fetch_ticket_details
 
     # Step 3: Fetch commit messages
-    commit_messages = get_commit_messages
+    commit_messages = fetch_unmerged_commit_messages
 
     # Step 4: Generate PR description
     pr_description = generate_pr_description(pr_template, ticket_details, commit_messages)
@@ -57,8 +57,8 @@ class GeneratePR
     File.read(file_path)
   end
 
-  def get_ticket_details
-    # Assuming branch name includes the ticket ID (e.g., `feature/1234-add-feature`)
+  def fetch_ticket_details
+    # Assuming branch name includes the ticket ID (e.g., `jap/simple-forms/1234-add-feature`)
     branch_name = `git branch --show-current`.strip
     branch = branch_name.split('/').last
     ticket_id = branch.split('-').first
@@ -71,9 +71,12 @@ class GeneratePR
     { title: issue['title'], description: issue['body'] }
   end
 
-  def get_commit_messages
-    # Fetch commit messages not yet pushed to the main branch
-    stdout, stderr, status = Open3.capture3("git log --oneline origin/main..HEAD")
+  def fetch_unmerged_commit_messages
+    stdout, stderr, status = Open3.capture3("git remote show origin | sed -n '/HEAD branch/s/.*: //p'")
+    raise "Failed to detect primary branch: #{stderr}" unless status.success?
+
+    primary_branch = stdout.strip
+    stdout, stderr, status = Open3.capture3("git log --oneline origin/#{primary_branch}..HEAD")
     raise "Failed to fetch commit messages: #{stderr}" unless status.success?
 
     stdout.strip
@@ -119,7 +122,7 @@ class GeneratePR
       file.flush
 
       # Open the file in the default editor (or specify one)
-      editor = ENV['CODE_EDITOR'] || 'nvim'
+      editor = ENV['EDITOR'] || 'nvim'
       system("#{editor} #{file.path}")
 
       # Read the potentially edited content back from the file
