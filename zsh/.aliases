@@ -18,22 +18,18 @@ alias lzd="lazydocker"                                                 # Open La
 
 # ============================ Git ============================ #
 
-alias g:auth='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_personal'
-alias g:auth-team='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_adhocteam_us'
-alias g:commit:dotfiles='cd "$(echo $DOTFILES)" && ga . && gc -m "[AUTOMATED] feat: misc changes to dotfiles" && g:yolo && cd -'
-alias g:default="git remote show origin | sed -n '/HEAD branch/s/.*: //p'"                         # Get the default branch of the remote repository
-alias g:pr="ruby ~/.dotfiles/zsh/scripts/generate_pr.rb"                                           # Run script to create a new pull request based on work
-alias g:pr-review="ruby ~/.dotfiles/zsh/scripts/review_pr.rb"                                      # Run script to review pull requests
-alias g:pub="ga . && gc -m 'updates' && git push && gh-c"                                          # Add and commit all changes, push to repo, and open GitHub compare page
-alias g:rb='git stash -u && git fetch origin && git rebase origin/"$(g-default)" && git stash pop' # Stash changes, rebase with default branch, and reapply stash
+alias g:auth='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_personal'          # Authenticate with the personal SSH key
+alias g:auth-team='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_adhocteam_us' # Authenticate with the team SSH key
+alias g:base='gco "$(g:default)" && git pull'
+alias g:default="git remote show origin | sed -n '/HEAD branch/s/.*: //p'"  # Get the default branch of the remote repository
+alias g:pub="ga . && gc -m 'updates' && git push && gh-c"                            # Add and commit all changes, push to repo, and open GitHub compare page
+alias g:rb='git fetch origin && git rebase origin/"$(g:default)"'                    # Stash changes, rebase with default branch, and reapply stash
 alias g:repo="git remote get-url origin | sed -E 's|.*[:/]([^/]+/[^/]+)\.git$|\1|; s|.*[:/]([^/]+/[^/]+)$|\1|'" # Get the user/repo of the remote repository
-alias g:rr="~/.dotfiles/zsh/scripts/open_pr_review_requests.sh"                                    # Open pull requests where a review is requested
-alias g:rs='git reset origin/"$(g-default)"'                                                       # Reset to the state of the remote default branch
-alias g:unwip="git reset --soft HEAD~1"                                                            # Undo the last commit, keeping changes in the working directory
-alias g:update-all="~/.dotfiles/zsh/scripts/update_git_repos.sh"                                   # Run script to update all git repositories
-alias g:update="g-rb && git push -f"                                                               # Rebase with default branch and force push
-alias g:wip="ga . && gc --no-verify -m 'WIP'"                                                      # Commit all changes under a 'WIP' message without verification
-alias g:yolo="git push origin master --force --no-verify"                                          # Force push changes to master without verification
+alias g:rs='git reset origin/"$(g:default)"'                                         # Reset to the state of the remote default branch
+alias g:unwip="git reset --soft HEAD~1"                                              # Undo the last commit, keeping changes in the working directory
+alias g:update="g-rb && git push -f"                                                 # Rebase with default branch and force push
+alias g:wip="ga . && gc --no-verify -m 'WIP'"                                        # Commit all changes under a 'WIP' message without verification
+alias g:yolo="git push origin master --force --no-verify"                            # Force push changes to master without verification
 
 # ========================= JavaScript ======================== #
 
@@ -41,7 +37,6 @@ alias yarn:clean="rm -rf node_modules && yarn cache clean && yarn install" # Cle
 
 # ======================== Productivity ======================= #
 
-alias branch='~/.dotfiles/zsh/scripts/branch.sh' # Create a new branch and update GH ticket
 alias c="clear"                                  # Clear terminal screen
 alias repos="cd ~/repos"                         # Shortcut to repos directory
 alias serve="python3 -m http.server 8000"        # Start Python HTTP server
@@ -65,10 +60,17 @@ alias r:sqa="bb && RAILS_ENV=qa bin/rails s"                                    
 alias r:st="bb && RAILS_ENV=test_one bin/rails s"                                                # Start Rails server in test_one environment
 alias r:t="bb && bundle exec rails test"                                                         # Run Rails tests
 
-# =========================== Slack =========================== #
+# ========================== Scripts ========================== #
 
-alias slack:away="bash ~/.dotfiles/zsh/scripts/set_slack_status.sh set"
-alias slack:back="bash ~/.dotfiles/zsh/scripts/set_slack_status.sh clear"
+scripts_path="${DOTFILES}/bin/.local/scripts"
+
+alias branch="${scripts_path}/branch.sh"                      # Create a new branch and update GH ticket
+alias g:pr-review="ruby ${scripts_path}/review_pr.rb"         # Run script to review pull requests
+alias g:pr="ruby ${scripts_path}/generate_pr.rb"              # Run script to create a new pull request based on work
+alias g:rr="${scripts_path}/open_pr_review_requests.sh"       # Open pull requests where a review is requested
+alias g:update-all="${scripts_path}/update_git_repos.sh"      # Run script to update all git repositories
+alias slack:away="${scripts_path}/set_slack_status.sh set"
+alias slack:back="${scripts_path}/set_slack_status.sh clear"
 
 # ========================== Utility ========================== #
 
@@ -77,6 +79,7 @@ alias chrome="open -a 'Google Chrome'"                                          
 alias cht="sh ~/.dotfiles/bin/.local/scripts/tmux-cht.sh"                           # Run tmux cheat sheet script
 alias cmsvpn="sudo openconnect --protocol=anyconnect --user=PDEG cloudvpn.cms.gov"  # Connect to CMS VPN using openconnect with AnyConnect protocol
 alias cpwd="pwd | pbcopy"                                                           # Copy current working directory to clipboard
+alias dotfiles:commit='commit_dot_files'                                            # Automatically commit .dotfiles to master
 alias nato="echo 'A Alpha\nB Bravo\nC Charlie\nD Delta\nE Echo\nF Foxtrot\
   \nG Golf\nH Hotel\nI India\nJ Juliet\nK Kilo\nL Lima\nM Mike\nN November\
   \nO Oscar\nP Papa\nQ Quebec\nR Romeo\nS Sierra\nT Tango\nU Uniform\
@@ -84,7 +87,7 @@ alias nato="echo 'A Alpha\nB Bravo\nC Charlie\nD Delta\nE Echo\nF Foxtrot\
 alias path='echo $PATH | tr -s ":" "\n"'                                            # Display PATH directories, each on a new line
 alias pp="python -m json.tool"                                                      # Pretty-print JSON using Python’s JSON tool
 
-# ============================ JAVA =========================== #
+# ============================ Java =========================== #
 
 alias java-s="docker container prune &&\
   docker image prune &&\

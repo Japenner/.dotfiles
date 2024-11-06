@@ -36,7 +36,9 @@ export PATH="$HOME/bin:\
              $GOPATH/bin:\
              /Applications/Postgres.app/Contents/Versions/latest/bin:\
              /usr/local/sbin:\
+             $HOME/.dotfiles/bin/.local/scripts:\
              $PATH"
+
 # Clean up $PATH redundancies
 export PATH=$(echo "$PATH" | awk -v RS=: '{if (!($0 in a)) {a[$0]; printf "%s%s", sep, $0; sep=":"}}')
 
