@@ -6,7 +6,9 @@ commit_dot_files() {
   fi
 
   # Define the commit message
-  local commit_message="[AUTOMATED] feat: misc changes to dotfiles"
+  local timestamp
+  timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+  local commit_message="[AUTOMATED] feat: misc changes to dotfiles - $timestamp"
 
   # Determine the default branch dynamically
   local default_branch
@@ -24,7 +26,7 @@ commit_dot_files() {
 
   # Push changes using 'g:yolo' alias if it exists, otherwise use 'git push'
   if command -v g:yolo &> /dev/null; then
-    g:yolo "$default_branch"
+    g:yolo
   else
     git push origin "$default_branch"
   fi
