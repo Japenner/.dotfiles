@@ -119,7 +119,7 @@ class GeneratePR
       file.flush
 
       # Open the file in the default editor (or specify one)
-      editor = ENV['EDITOR'] || 'nvim'
+      editor = ENV['CODE_EDITOR'] || 'nvim'
       system("#{editor} #{file.path}")
 
       # Read the potentially edited content back from the file
