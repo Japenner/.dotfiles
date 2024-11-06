@@ -12,16 +12,23 @@ fi
 # ======================= Initial Setup ======================= #
 
 # Load custom functions if any exist
-for file in ~/zsh/functions/*(.N); do
+for file in ~/.dotfiles/zsh/functions/*(.N); do
   source "$file"
 done
 
 # ======= Paths and Environment-Specific Configurations ======= #
 
 # Custom PATH additions and environment variables
-export PATH="$HOME/bin:/usr/local/opt/openssl@1.1/bin:/usr/local/opt/openssl/lib:$HOME/.local/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$GOPATH/bin:$PATH"
-export LIBRARY_PATH="$LIBRARY_PATH:/usr/local/opt/openssl/lib" # OpenSSL paths
 export GOPATH="$HOME/go"                                       # Set GOPATH for Go
+export PATH="$HOME/bin:\
+             /usr/local/opt/openssl@1.1/bin:\
+             /usr/local/opt/openssl/lib:\
+             $HOME/.local/bin:\
+             $HOME/.yarn/bin:\
+             $HOME/.config/yarn/global/node_modules/.bin:\
+             $GOPATH/bin:\
+             $PATH"
+export LIBRARY_PATH="$LIBRARY_PATH:/usr/local/opt/openssl/lib" # OpenSSL paths
 
 # Load asdf if available
 [ -f /usr/local/opt/asdf/asdf.sh ] && source /usr/local/opt/asdf/asdf.sh
@@ -54,7 +61,7 @@ source "$ZSH/oh-my-zsh.sh"
 # ===================== Zsh Configuration ===================== #
 
 # Load all .zsh configuration files from the configs directory
-for config_file in ~/zsh/configs/*(.N); do
+for config_file in ~/.dotfiles/zsh/configs/*(.N); do
   source "$config_file"
 done
 
@@ -65,7 +72,7 @@ done
 [ -f ~/.aliases ] && source ~/.aliases
 
 # Load all local machine specific .zsh configuration files
-for local_config_file in ~/zsh/local/*(.N); do
+for local_config_file in ~/.dotfiles/zsh/local/*(.N); do
   source "$local_config_file"
 done
 

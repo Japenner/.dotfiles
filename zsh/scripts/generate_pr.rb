@@ -5,94 +5,19 @@ require 'tempfile'
 require 'optparse'
 require_relative 'open_ai_client'
 
-# Parse command-line options
-options = {}
-OptionParser.new do |opts|
-  opts.banner = "Usage: download_gists.rb [options]"
+class GeneratePR
+  PROMPT_TEMPLATE_PATH = File.expand_path("~/.dotfiles/zsh/templates/va-gov-pr-template.md")
+  TEAM_REPOSITORY='department-of-veterans-affairs/VA.gov-team-forms'
 
-  opts.on("-u", "--username USERNAME", "GitHub username") do |u|
-    options[:username] = u
+  def initialize(api_key = nil, logger = Logger.new(STDOUT))
+    @api_key = api_key
+    @openai_client = OpenAIClient.new(api_key: @api_key)
+    @logger = logger
   end
 
-  opts.on("-d", "--directory DIRECTORY", "Directory to save gists") do |d|
-    options[:directory] = d
-  end
-end.parse!
-
-# Read the PR template from an external file
-def read_template(file_path)
-  File.read(file_path)
-end
-
-def get_ticket_details
-  # Assuming branch name includes the ticket ID (e.g., `feature/1234-add-feature`)
-  branch_name = `git branch --show-current`.strip
-  ticket_id = branch_name.split('-').first
-
-  # Use `gh` to fetch the issue details (title and body)
-  stdout, stderr, status = Open3.capture3("gh issue view #{ticket_id} --json title,body")
-  raise "Failed to fetch ticket details: #{stderr}" unless status.success?
-
-  issue = JSON.parse(stdout)
-  { title: issue['title'], description: issue['body'] }
-end
-
-def get_commit_messages
-  # Fetch commit messages not yet pushed to the main branch
-  stdout, stderr, status = Open3.capture3("git log --oneline origin/main..HEAD")
-  raise "Failed to fetch commit messages: #{stderr}" unless status.success?
-
-  stdout.strip
-end
-
-def generate_pr_description(pr_template, ticket_details, commit_messages)
-  client = OpenAI::Client.new
-  prompt = <<~PROMPT
-    Generate a GitHub PR description using the following template. Incorporate relevant details from the ticket title, description, and commit messages:
-
-    #{pr_template}
-
-    Ticket Title:
-    #{ticket_details[:title]}
-
-    Ticket Description:
-    #{ticket_details[:description]}
-
-    Commit Messages:
-    #{commit_messages}
-  PROMPT
-
-  response = client.chat(
-    parameters: {
-      model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 500
-    }
-  )
-
-  response['choices'].first['message']['content'].strip
-end
-
-def edit_pr_description(pr_description)
-  # Create a temporary file with the PR description
-  Tempfile.create('pr_description') do |file|
-    file.write(pr_description)
-    file.flush
-
-    # Open the file in the default editor (or specify one)
-    editor = ENV['EDITOR'] || 'vim'
-    system("#{editor} #{file.path}")
-
-    # Read the potentially edited content back from the file
-    file.rewind
-    file.read.strip
-  end
-end
-
-def main
-  begin
+  def run
     # Step 1: Read PR template from an external file
-    pr_template = read_pr_template("pr_template.txt")
+    pr_template = File.read(PROMPT_TEMPLATE_PATH)
 
     # Step 2: Fetch ticket title and description
     ticket_details = get_ticket_details
@@ -107,8 +32,8 @@ def main
     final_description = edit_pr_description(pr_description)
 
     # Step 6: Output the final PR description and confirm
-    puts "Final PR Description:\n\n"
-    puts final_description
+    @logger.info("Final PR Description:")
+    @logger.info(final_description)
 
     # Confirm if user wants to proceed with creating the PR
     print "Do you want to create the PR with this description? (y/n): "
@@ -118,12 +43,105 @@ def main
       # Use the GitHub CLI to create the PR with the final description
       system("gh pr create --body '#{final_description}'")
     else
-      puts "PR creation canceled."
+      @logger.info("PR creation canceled.")
     end
 
   rescue => e
-    puts "Error: #{e.message}"
+    @logger.info("Error: #{e.message}")
+  end
+
+  private
+
+  # Read the PR template from an external file
+  def read_template(file_path)
+    File.read(file_path)
+  end
+
+  def get_ticket_details
+    # Assuming branch name includes the ticket ID (e.g., `feature/1234-add-feature`)
+    branch_name = `git branch --show-current`.strip
+    branch = branch_name.split('/').last
+    ticket_id = branch.split('-').first
+
+    # Use `gh` to fetch the issue details (title and body)
+    stdout, stderr, status = Open3.capture3("gh issue view #{ticket_id} --repo #{TEAM_REPOSITORY} --json title,body")
+    raise "Failed to fetch ticket details: #{stderr}" unless status.success?
+
+    issue = JSON.parse(stdout)
+    { title: issue['title'], description: issue['body'] }
+  end
+
+  def get_commit_messages
+    # Fetch commit messages not yet pushed to the main branch
+    stdout, stderr, status = Open3.capture3("git log --oneline origin/main..HEAD")
+    raise "Failed to fetch commit messages: #{stderr}" unless status.success?
+
+    stdout.strip
+  end
+
+  def generate_pr_description(pr_template, ticket_details, commit_messages)
+    client = OpenAIClient.new
+    prompt = <<~PROMPT
+      Generate a GitHub PR description using the following template. Incorporate relevant details from the ticket title, description, and commit messages:
+
+      #{pr_template}
+
+      Ticket Title:
+      #{ticket_details[:title]}
+
+      Ticket Description:
+      #{ticket_details[:description]}
+
+      Commit Messages:
+      #{commit_messages}
+    PROMPT
+
+    fetch_feedback(prompt)
+  end
+
+  def fetch_feedback(prompt)
+    @logger.info("Sending prompt to OpenAI for feedback...")
+    feedback = @openai_client.send_prompt(prompt)
+
+    if feedback && !feedback.empty?
+      @logger.debug("Feedback successfully retrieved from OpenAI.")
+      feedback
+    else
+      @logger.error("No feedback received from OpenAI.")
+      nil
+    end
+  end
+
+  def edit_pr_description(pr_description)
+    # Create a temporary file with the PR description
+    Tempfile.create('pr_description') do |file|
+      file.write(pr_description)
+      file.flush
+
+      # Open the file in the default editor (or specify one)
+      editor = ENV['CODE_EDITOR'] || 'nvim'
+      system("#{editor} #{file.path}")
+
+      # Read the potentially edited content back from the file
+      file.rewind
+      file.read.strip
+    end
   end
 end
 
-main if __FILE__ == $0
+
+# if ARGV.length < 1
+#   puts "Usage: ruby generate_pr.rb <PULL_REQUEST_ID>"
+#   exit 1
+# end
+
+api_key = ARGV[0]
+logger = Logger.new(STDOUT).tap do |log|
+  log.level = Logger::INFO
+  log.formatter = proc do |severity, datetime, progname, msg|
+    "[#{datetime}] #{severity}: #{msg}\n"
+  end
+end
+
+generate_pr = GeneratePR.new(api_key, logger)
+generate_pr.run
