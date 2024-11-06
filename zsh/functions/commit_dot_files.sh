@@ -20,12 +20,12 @@ commit_dot_files() {
     return 1
   }
 
-  # Ensure branch is up-to-date with remote
-  git pull origin "$default_branch" --rebase
-
   # Add and commit changes
   git add .
   git commit -m "$commit_message" || echo "No changes to commit in dotfiles."
+
+  # Ensure branch is up-to-date with remote
+  git pull origin "$default_branch" --rebase
 
   # Force push changes
   git push origin "$default_branch" --force --no-verify
