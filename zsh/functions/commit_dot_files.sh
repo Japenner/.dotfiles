@@ -5,7 +5,7 @@ commit_dot_files() {
     return 1
   fi
 
-  # Define the commit message
+  # Add a timestamp to the commit message
   local timestamp
   timestamp=$(date +"%Y-%m-%d %H:%M:%S")
   local commit_message="[AUTOMATED] feat: misc changes to dotfiles - $timestamp"
@@ -19,6 +19,9 @@ commit_dot_files() {
     echo "Error: Could not access DOTFILES directory."
     return 1
   }
+
+  # Ensure branch is up-to-date with remote
+  git pull origin "$default_branch" --rebase
 
   # Add and commit changes
   git add .
