@@ -22,6 +22,7 @@ alias g-auth='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_personal'
 alias g-auth-team='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_adhocteam_us'
 alias g-default="git remote show origin | sed -n '/HEAD branch/s/.*: //p'"                         # Get the default branch of the remote repository
 alias g-repo="git remote get-url origin | sed -E 's|.*[:/]([^/]+/[^/]+)\.git$|\1|; s|.*[:/]([^/]+/[^/]+)$|\1|'" # Get the user/repo of the remote repository
+alias g-pr="ruby ~/.dotfiles/zsh/scripts/generate_pr.rb"                                           # Run script to create a new pull request based on work
 alias g-pr-review="ruby ~/.dotfiles/zsh/scripts/review_pr.rb"                                      # Run script to review pull requests
 alias g-pub="ga . && gc -m 'updates' && git push && gh-c"                                          # Add and commit all changes, push to repo, and open GitHub compare page
 alias g-rb='git stash -u && git fetch origin && git rebase origin/"$(g-default)" && git stash pop' # Stash changes, rebase with default branch, and reapply stash
