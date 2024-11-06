@@ -27,12 +27,8 @@ commit_dot_files() {
   git add .
   git commit -m "$commit_message" || echo "No changes to commit in dotfiles."
 
-  # Push changes using 'g:yolo' alias if it exists, otherwise use 'git push'
-  if command -v g:yolo &> /dev/null; then
-    g:yolo
-  else
-    git push origin "$default_branch"
-  fi
+  # Force push changes
+  git push origin "$default_branch" --force --no-verify
 
   # Return to the original directory
   popd >/dev/null
