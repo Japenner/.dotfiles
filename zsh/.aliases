@@ -9,30 +9,31 @@ alias zshconfig="code ~/.zshrc"                          # Edit .zshrc file
 
 # ========================== Docker =========================== #
 
-alias d-restart="osascript -e 'quit app \"Docker\"' && open -a Docker" # Restart Docker Desktop on macOS
-alias d-wipe='docker stop "$(docker ps -a -q)" &&\
+alias d:restart="osascript -e 'quit app \"Docker\"' && open -a Docker" # Restart Docker Desktop on macOS
+alias d:wipe='docker stop "$(docker ps -a -q)" &&\
   docker rm "$(docker ps -a -q)" &&\
   docker rmi "$(docker images -q)" &&\
-  docker volume rm "$(docker volume ls -qf dangling=true)"'              # Stop and remove all Docker containers, images, and dangling volumes
+  docker volume rm "$(docker volume ls -qf dangling=true)"'            # Stop and remove all Docker containers, images, and dangling volumes
 alias lzd="lazydocker"                                                 # Open Lazydocker for managing Docker containers
 
 # ============================ Git ============================ #
 
-alias g-auth='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_personal'
-alias g-auth-team='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_adhocteam_us'
-alias g-default="git remote show origin | sed -n '/HEAD branch/s/.*: //p'"                         # Get the default branch of the remote repository
-alias g-repo="git remote get-url origin | sed -E 's|.*[:/]([^/]+/[^/]+)\.git$|\1|; s|.*[:/]([^/]+/[^/]+)$|\1|'" # Get the user/repo of the remote repository
-alias g-pr="ruby ~/.dotfiles/zsh/scripts/generate_pr.rb"                                           # Run script to create a new pull request based on work
-alias g-pr-review="ruby ~/.dotfiles/zsh/scripts/review_pr.rb"                                      # Run script to review pull requests
-alias g-pub="ga . && gc -m 'updates' && git push && gh-c"                                          # Add and commit all changes, push to repo, and open GitHub compare page
-alias g-rb='git stash -u && git fetch origin && git rebase origin/"$(g-default)" && git stash pop' # Stash changes, rebase with default branch, and reapply stash
-alias g-rr="~/.dotfiles/zsh/scripts/open_pr_review_requests.sh"                                    # Open pull requests where a review is requested
-alias g-rs='git reset origin/"$(g-default)"'                                                       # Reset to the state of the remote default branch
-alias g-unwip="git reset --soft HEAD~1"                                                            # Undo the last commit, keeping changes in the working directory
-alias g-update-all="~/.dotfiles/zsh/scripts/update_git_repos.sh"                                   # Run script to update all git repositories
-alias g-update="g-rb && git push -f"                                                               # Rebase with default branch and force push
-alias g-wip="ga . && gc --no-verify -m 'WIP'"                                                      # Commit all changes under a 'WIP' message without verification
-alias g-yolo="git push origin master --force --no-verify"                                          # Force push changes to master without verification
+alias g:auth='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_personal'
+alias g:auth-team='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_adhocteam_us'
+alias g:commit:dotfiles='cd "$(echo $DOTFILES)" && ga . && gc -m "[AUTOMATED] feat: misc changes to dotfiles" && g:yolo && cd -'
+alias g:default="git remote show origin | sed -n '/HEAD branch/s/.*: //p'"                         # Get the default branch of the remote repository
+alias g:pr="ruby ~/.dotfiles/zsh/scripts/generate_pr.rb"                                           # Run script to create a new pull request based on work
+alias g:pr-review="ruby ~/.dotfiles/zsh/scripts/review_pr.rb"                                      # Run script to review pull requests
+alias g:pub="ga . && gc -m 'updates' && git push && gh-c"                                          # Add and commit all changes, push to repo, and open GitHub compare page
+alias g:rb='git stash -u && git fetch origin && git rebase origin/"$(g-default)" && git stash pop' # Stash changes, rebase with default branch, and reapply stash
+alias g:repo="git remote get-url origin | sed -E 's|.*[:/]([^/]+/[^/]+)\.git$|\1|; s|.*[:/]([^/]+/[^/]+)$|\1|'" # Get the user/repo of the remote repository
+alias g:rr="~/.dotfiles/zsh/scripts/open_pr_review_requests.sh"                                    # Open pull requests where a review is requested
+alias g:rs='git reset origin/"$(g-default)"'                                                       # Reset to the state of the remote default branch
+alias g:unwip="git reset --soft HEAD~1"                                                            # Undo the last commit, keeping changes in the working directory
+alias g:update-all="~/.dotfiles/zsh/scripts/update_git_repos.sh"                                   # Run script to update all git repositories
+alias g:update="g-rb && git push -f"                                                               # Rebase with default branch and force push
+alias g:wip="ga . && gc --no-verify -m 'WIP'"                                                      # Commit all changes under a 'WIP' message without verification
+alias g:yolo="git push origin master --force --no-verify"                                          # Force push changes to master without verification
 
 # ========================= JavaScript ======================== #
 
@@ -48,32 +49,32 @@ alias todo="$EDITOR ~/.todo"                     # Open todo file in editor
 
 # =========================== Rails =========================== #
 
-alias b="bundle"                                                                               # Bundle command shortcut
-alias bb="b && yarn install"                                                                   # Bundle and Yarn install
-alias bc="bundle exec rubocop"                                                                 # Run Rubocop with bundle
-alias bs="bb && bc && bundle exec rspec"                                                       # Install, check, and test
-alias cqa="RAILS_ENV=qa bin/rails c"                                                           # Rails console for QA environment
-alias ct="RAILS_ENV=test bin/rails c"                                                          # Rails console for test environment
-alias db:reset:dev="RAILS_ENV=development bin/rails db:reset"                                  # Reset dev database
-alias db:reset:test="RAILS_ENV=test bin/rails db:reset"                                        # Reset test database
-alias fs="bb && bin/foreman start"                                                             # Install and start Foreman
-alias migrate="rake db:migrate && rake db:rollback && rake db:migrate && rake db:test:prepare" # Migrate, rollback, and prepare test db
-alias s="bb && bin/rails s"                                                                    # Install and start Rails server
-alias servers="lsof -wni tcp:3000"                                                             # List services on port 3000
-alias sqa="bb && RAILS_ENV=qa bin/rails s"                                                     # Start Rails server in QA environment
-alias st="bb && RAILS_ENV=test_one bin/rails s"                                                # Start Rails server in test_one environment
-alias t="bb && bundle exec rails test"                                                         # Run Rails tests
+alias r:b="bundle"                                                                               # Bundle command shortcut
+alias r:bb="b && yarn install"                                                                   # Bundle and Yarn install
+alias r:bc="bundle exec rubocop"                                                                 # Run Rubocop with bundle
+alias r:bs="bb && bc && bundle exec rspec"                                                       # Install, check, and test
+alias r:cqa="RAILS_ENV=qa bin/rails c"                                                           # Rails console for QA environment
+alias r:ct="RAILS_ENV=test bin/rails c"                                                          # Rails console for test environment
+alias r:db:reset:dev="RAILS_ENV=development bin/rails db:reset"                                  # Reset dev database
+alias r:db:reset:test="RAILS_ENV=test bin/rails db:reset"                                        # Reset test database
+alias r:fs="bb && bin/foreman start"                                                             # Install and start Foreman
+alias r:migrate="rake db:migrate && rake db:rollback && rake db:migrate && rake db:test:prepare" # Migrate, rollback, and prepare test db
+alias r:s="bb && bin/rails s"                                                                    # Install and start Rails server
+alias r:servers="lsof -wni tcp:3000"                                                             # List services on port 3000
+alias r:sqa="bb && RAILS_ENV=qa bin/rails s"                                                     # Start Rails server in QA environment
+alias r:st="bb && RAILS_ENV=test_one bin/rails s"                                                # Start Rails server in test_one environment
+alias r:t="bb && bundle exec rails test"                                                         # Run Rails tests
 
 # =========================== Slack =========================== #
 
-alias slack-away="bash ~/.dotfiles/zsh/scripts/set_slack_status.sh set"
-alias slack-back="bash ~/.dotfiles/zsh/scripts/set_slack_status.sh clear"
+alias slack:away="bash ~/.dotfiles/zsh/scripts/set_slack_status.sh set"
+alias slack:back="bash ~/.dotfiles/zsh/scripts/set_slack_status.sh clear"
 
 # ========================== Utility ========================== #
 
 alias awsume=". awsume"                                                             # Source awsume to assume AWS roles easily
 alias chrome="open -a 'Google Chrome'"                                              # Open Google Chrome
-alias cht="sh ~/dotfiles/bin/.local/scripts/tmux-cht.sh"                            # Run tmux cheat sheet script
+alias cht="sh ~/.dotfiles/bin/.local/scripts/tmux-cht.sh"                           # Run tmux cheat sheet script
 alias cmsvpn="sudo openconnect --protocol=anyconnect --user=PDEG cloudvpn.cms.gov"  # Connect to CMS VPN using openconnect with AnyConnect protocol
 alias cpwd="pwd | pbcopy"                                                           # Copy current working directory to clipboard
 alias nato="echo 'A Alpha\nB Bravo\nC Charlie\nD Delta\nE Echo\nF Foxtrot\
@@ -108,4 +109,4 @@ alias vim="nvim"          # Use vim command to open Neovim
 
 # ============================ MacOS ========================== #
 
-alias brewfile="brew bundle dump --file=~/.dotfiles/brew/Brewfile --force"
+alias brewfile="brew bundle dump --file=~/.dotfiles/brew/Brewfile --force" # Generate a new Brewfile backup
