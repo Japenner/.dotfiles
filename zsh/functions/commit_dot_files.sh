@@ -6,7 +6,7 @@ commit_dot_files() {
   fi
 
   # Define the commit message
-  local commit_message="Automated commit: updates to dotfiles."
+  local commit_message="[AUTOMATED] feat: misc changes to dotfiles"
 
   # Determine the default branch dynamically
   local default_branch
@@ -18,21 +18,16 @@ commit_dot_files() {
     return 1
   }
 
-  # Commit changes in the 'personal' subdirectory
-  if [ -d "personal" ]; then
-    pushd personal >/dev/null
-    git add .
-    git commit -m "$commit_message" || echo "No changes to commit in 'personal'."
-    git push origin "$default_branch"
-    popd >/dev/null
-  else
-    echo "Warning: 'personal' subdirectory not found in $DOTFILES."
-  fi
-
-  # Commit changes in the main DOTFILES directory
+  # Add and commit changes
   git add .
-  git commit -m "$commit_message" || echo "No changes to commit in the main dotfiles directory."
-  git push origin "$default_branch"
+  git commit -m "$commit_message" || echo "No changes to commit in dotfiles."
+
+  # Push changes using 'g:yolo' alias if it exists, otherwise use 'git push'
+  if command -v g:yolo &> /dev/null; then
+    g:yolo "$default_branch"
+  else
+    git push origin "$default_branch"
+  fi
 
   # Return to the original directory
   popd >/dev/null
