@@ -10,7 +10,7 @@ class TimeTracker
   LOGGER = Logger.new(STDOUT)
 
   def initialize
-    @log_path = File.expand_path("~/#{LOG_FILE}") # Ensures proper expansion to ~/.dotfiles/time_log.json
+    @log_path = File.expand_path("~/#{LOG_FILE}")
     initialize_log_file
     load_log
     @slack_status = SlackStatus.new
@@ -43,6 +43,12 @@ class TimeTracker
 
   def break
     update_slack_status_for_break
+    if @log[today] && @log[today][:break] && @log[today][:break].last && @log[today][:break].last[:break_end].nil?
+      log_break_end_time
+      LOGGER.info("Break ended at #{Time.now.iso8601}. Slack status set to 'Working'.")
+    else
+      log_break_start_time
+    end
     LOGGER.info("Break started at #{Time.now.iso8601}. Slack status set to 'On Break'.")
   rescue StandardError => e
     LOGGER.error("Failed to set break status: #{e.message}")
@@ -66,12 +72,28 @@ class TimeTracker
   end
 
   def log_clock_in_time
-    @log[:clock_in] = current_time
+    @log[today] = {}
+    @log[today][:clock_in] = current_time
+    save_log
+  end
+
+  def log_break_start_time
+    @log[today] = {} unless @log[today]
+    @log[today][:break] = [] unless @log[today][:break]
+    @log[today][:break] << { break_start: current_time }
+    save_log
+  end
+
+  def log_break_end_time
+    @log[today] = {} unless @log[today]
+    @log[today][:break] = [] unless @log[today][:break]
+    @log[today][:break].last[:break_end] = current_time
     save_log
   end
 
   def log_clock_out_time
-    @log[:clock_out] = current_time
+    @log[today] = {} unless @log[today]
+    @log[today][:clock_out] = current_time
     calculate_hours_worked
     save_log
   end
@@ -79,6 +101,10 @@ class TimeTracker
   def update_slack_status_for_break
     @slack_status.status_text = "On Break"
     @slack_status.set_status
+  end
+
+  def today
+    current_time.split('T').first
   end
 
   def current_time
@@ -99,12 +125,6 @@ class TimeTracker
     LOGGER.error("Failed to save log: #{e.message}")
   end
 
-  def calculate_hours_worked
-    start_time = parse_time(@log[:clock_in])
-    end_time = parse_time(@log[:clock_out])
-    @log[:hours_worked] = hours_difference(start_time, end_time)
-  end
-
   def parse_time(time_str)
     Time.parse(time_str)
   rescue ArgumentError => e
@@ -114,6 +134,26 @@ class TimeTracker
 
   def hours_difference(start_time, end_time)
     ((end_time - start_time) / 3600).round(2)
+  end
+
+  def calculate_hours_worked
+    start_time = parse_time(@log[:clock_in])
+    end_time = parse_time(@log[:clock_out])
+    @log[:hours_worked] = hours_difference(start_time, end_time)
+  end
+
+  def calculate_break_duration
+    break_start = parse_time(@log[today][:break].last[:break_start])
+    break_end = parse_time(@log[today][:break].last[:break_end])
+    hours_difference(break_start, break_end)
+  end
+
+  def calculate_all_breaks_duration
+    @log[today][:break].map do |break_log|
+      break_start = parse_time(break_log[:break_start])
+      break_end = parse_time(break_log[:break_end])
+      hours_difference(break_start, break_end)
+    end.sum
   end
 
   # Command-line interface method
