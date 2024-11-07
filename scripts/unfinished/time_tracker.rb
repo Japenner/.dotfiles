@@ -18,10 +18,10 @@ class TimeTracker
 
   def clock_in
     if clocked_in?
-      LOGGER.info("Already clocked in at #{@log[:clock_in]}.")
+      LOGGER.info("Already clocked in at #{@log.dig(today, :clock_in)}.")
     else
       log_clock_in_time
-      LOGGER.info("Clocked in at #{@log[:clock_in]}.")
+      LOGGER.info("Clocked in at #{@log.dig(today, :clock_in)}.")
       @slack_status.set_status("Working", ":computer:")
     end
   rescue StandardError => e
@@ -31,7 +31,7 @@ class TimeTracker
   def clock_out
     if clocked_in?
       log_clock_out_time
-      LOGGER.info("Clocked out at #{@log[:clock_out]}. Total hours worked: #{@log[:hours_worked]}.")
+      LOGGER.info("Clocked out at #{@log.dig(today, :clock_out)}. Total hours worked: #{@log.dig(today, :hours_worked)}.")
       @slack_status.clear_status
     else
       LOGGER.warn("Clock out attempt without clocking in.")
@@ -42,65 +42,72 @@ class TimeTracker
   end
 
   def break
-    update_slack_status_for_break
-    if @log[today] && @log[today][:break] && @log[today][:break].last && @log[today][:break].last[:break_end].nil?
+    # update_slack_status_for_break
+    puts on_break?
+    if on_break?
       log_break_end_time
       LOGGER.info("Break ended at #{Time.now.iso8601}. Slack status set to 'Working'.")
     else
       log_break_start_time
+      LOGGER.info("Break started at #{Time.now.iso8601}. Slack status set to 'On Break'.")
+      @slack_status.set_status("On Break", ":coffee:")
     end
-    LOGGER.info("Break started at #{Time.now.iso8601}. Slack status set to 'On Break'.")
   rescue StandardError => e
+    puts e.backtrace
     LOGGER.error("Failed to set break status: #{e.message}")
   end
 
   private
 
   def initialize_log_file
-    # Create the directory if it doesn’t exist
     FileUtils.mkdir_p(File.dirname(@log_path))
-
-    # Create and initialize the log file if it doesn’t exist
     unless File.exist?(@log_path)
-      File.write(@log_path, JSON.pretty_generate({})) # Initializes with an empty JSON object
+      File.write(@log_path, JSON.pretty_generate({}))
       LOGGER.info("Log file created at #{@log_path}")
     end
   end
 
   def clocked_in?
-    !!@log[:clock_in]
+    @log.dig(today, :clock_in) && @log.dig(today, :clock_out).nil?
+  end
+
+  def on_break?
+    started_break? && @log.dig(today, :breaks)&.last&.fetch(:break_end, nil).nil?
   end
 
   def log_clock_in_time
-    @log[today] = {}
-    @log[today][:clock_in] = current_time
+    @log.dig(today)[:clock_in] = current_time
     save_log
   end
 
   def log_break_start_time
-    @log[today] = {} unless @log[today]
-    @log[today][:break] = [] unless @log[today][:break]
-    @log[today][:break] << { break_start: current_time }
+    if started_break?
+      todays_breaks.last[:break_start] = current_time
+    else
+      todays_breaks << { break_start: current_time, break_end: nil }
+    end
     save_log
   end
 
   def log_break_end_time
-    @log[today] = {} unless @log[today]
-    @log[today][:break] = [] unless @log[today][:break]
-    @log[today][:break].last[:break_end] = current_time
+    todays_breaks.last[:break_end] = current_time if @log.dig(today, :breaks)
     save_log
   end
 
   def log_clock_out_time
-    @log[today] = {} unless @log[today]
-    @log[today][:clock_out] = current_time
-    calculate_hours_worked
+    @log.dig(today)[:clock_out] = current_time
+    @log.dig(today)[:hours_worked] = calculate_hours_worked
     save_log
+    print_end_of_day_summary
   end
 
   def update_slack_status_for_break
     @slack_status.status_text = "On Break"
     @slack_status.set_status
+  end
+
+  def started_break?
+    @log.dig(today, :breaks)&.last&.fetch(:break_start, nil)
   end
 
   def today
@@ -114,6 +121,7 @@ class TimeTracker
   def load_log
     file_content = File.read(@log_path)
     @log = file_content.empty? ? {} : JSON.parse(file_content, symbolize_names: true)
+    @log[today] ||= { clock_in: nil, clock_out: nil, breaks: [{ break_start: nil, break_end: nil }], hours_worked: 0 }
   rescue JSON::ParserError => e
     LOGGER.error("Failed to load log: #{e.message}")
     @log = {}
@@ -137,23 +145,37 @@ class TimeTracker
   end
 
   def calculate_hours_worked
-    start_time = parse_time(@log[:clock_in])
-    end_time = parse_time(@log[:clock_out])
-    @log[:hours_worked] = hours_difference(start_time, end_time)
+    start_time = parse_time(@log.dig(today, :clock_in))
+    end_time = parse_time(@log.dig(today, :clock_out))
+    day_length = hours_difference(start_time, end_time)
+    breaks_duration = calculate_all_breaks_duration
+    @log.dig(today)[:hours_worked] = day_length - breaks_duration
   end
 
   def calculate_break_duration
-    break_start = parse_time(@log[today][:break].last[:break_start])
-    break_end = parse_time(@log[today][:break].last[:break_end])
+    break_start = parse_time(todays_breaks.last[:break_start])
+    break_end = parse_time(todays_breaks.last[:break_end])
     hours_difference(break_start, break_end)
   end
 
   def calculate_all_breaks_duration
-    @log[today][:break].map do |break_log|
+    todays_breaks.map do |break_log|
       break_start = parse_time(break_log[:break_start])
       break_end = parse_time(break_log[:break_end])
       hours_difference(break_start, break_end)
     end.sum
+  end
+
+  def todays_breaks
+    @log.dig(today, :breaks)
+  end
+
+  def print_end_of_day_summary
+    LOGGER.info("End of day summary:")
+    LOGGER.info("Clocked in at: #{@log.dig(today, :clock_in)}")
+    LOGGER.info("Clocked out at: #{@log.dig(today, :clock_out)}")
+    LOGGER.info("Breaks taken: #{todays_breaks.size}: #{calculate_all_breaks_duration} hours")
+    LOGGER.info("Total hours worked: #{@log.dig(today, :hours_worked)}")
   end
 
   # Command-line interface method
