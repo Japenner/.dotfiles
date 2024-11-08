@@ -6,4 +6,4 @@ if ! gem list -i bundler &>/dev/null; then
     gem install bundler
 fi
 
-BUNDLE_GEMFILE=~/Gemfile.global bundle install --path ~/.gem
+BUNDLE_GEMFILE=~/Gemfile.global bundle install

@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# This script is designed to manage tmux windows based on branch names.
+# It creates a new tmux window if one for the specified branch name doesn’t
+# already exist, then sends a command (the remaining arguments) to that window.
+# It’s useful for automating tasks associated with different branches, like
+# running tests or starting services.
+
+# Extract the base name of the first argument passed to the script.
+# This is typically the name of a branch (e.g., "feature-branch").
+branch_name=$(basename $1)
+
+# Get the name of the current tmux session and store it in `session_name`.
+session_name=$(tmux display-message -p "#S")
+
+# Sanitize the branch name by replacing any periods (.) or slashes (/) with underscores (_)
+# to create a "clean" name that can safely be used as part of a tmux target.
+clean_name=$(echo $branch_name | tr "./" "__")
+
+# Combine the tmux session name and the cleaned branch name to create a unique tmux target.
+target="$session_name:$clean_name"
+
+# Check if a tmux window with this target already exists.
+# If it doesn’t, create a new detached tmux window with the name `$clean_name` in the current session.
+if ! tmux has-session -t $target 2> /dev/null; then
+    tmux neww -dn $clean_name
+fi
+
+# Shift the positional arguments to skip the first argument (branch name).
+# This makes `$*` contain all arguments except the first, allowing commands to be passed.
+shift
+
+# Send the remaining arguments as a command to the target tmux window.
+tmux send-keys -t $target "$*
+"

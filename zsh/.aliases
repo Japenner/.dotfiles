@@ -102,7 +102,6 @@ alias ....="up ...."      # Go up three directories
 alias ...="up ..."        # Go up two directories
 alias ..="up .."          # Go up one directory
 alias ~="cd ~"            # Go to home directory
-alias code="code"         # Open VS Code with the code command
 alias e="$EDITOR"         # Open editor
 alias edit="$CODE_EDITOR" # Use edit command to open files in VS Code
 alias la="ls -lha"        # List all files in detailed format

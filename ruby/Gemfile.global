@@ -1,13 +1,33 @@
+#!/usr/bin/env ruby
+
 source 'https://rubygems.org'
 
-gem 'solargraph'
+# Debugging and Console Tools
 gem 'pry'
-gem 'rubocop'
+gem 'pry-byebug'
+gem 'awesome_print'
+
+# System and Utility Gems
 gem 'faraday'
-gem 'dotenv'
-# gem 'httparty'
+gem 'colorize'
+gem 'solargraph'
 # gem 'json'
 # gem 'logger'
 # gem 'time'
 # gem 'fileutils'
+
+# Performance Monitoring and Testing
+gem 'rubocop'
+# gem 'benchmark-ips'
+# gem 'rspec'
+
+# File and Data Management
+gem 'nokogiri'
+gem 'dotenv'
+
+# Command Line Utilities
+gem 'thor'
+
+# Clients
 # gem 'slack-ruby-client'
+# gem 'openai'
