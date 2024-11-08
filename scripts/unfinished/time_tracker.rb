@@ -159,15 +159,22 @@ class TimeTracker
   end
 
   def calculate_all_breaks_duration
-    todays_breaks.map do |break_log|
+    @log[today][:breaks].map do |break_log|
       break_start = parse_time(break_log[:break_start])
       break_end = parse_time(break_log[:break_end])
       hours_difference(break_start, break_end)
     end.sum
   end
 
-  def todays_breaks
-    @log.dig(today, :breaks)
+  def hours_difference(start_time, end_time)
+    ((end_time - start_time) / 3600).round(2)
+  end
+
+  def parse_time(time_str)
+    Time.parse(time_str)
+  rescue ArgumentError => e
+    LOGGER.error("Failed to parse time '#{time_str}': #{e.message}")
+    Time.now
   end
 
   def print_end_of_day_summary
