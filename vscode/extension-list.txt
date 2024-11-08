@@ -66,6 +66,7 @@ redhat.vscode-yaml
 robbowen.synthwave-vscode
 shanehofstetter.rails-i18n
 shd101wyy.markdown-preview-enhanced
+shopify.ruby-lsp
 sianglim.slim
 sissel.shopify-liquid
 soutaro.rbs-syntax

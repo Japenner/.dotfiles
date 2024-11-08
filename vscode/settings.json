@@ -113,6 +113,7 @@
   "editor.codeLensFontFamily": "FiraCode",
   "workbench.colorTheme": "Cobalt2",
   "[ruby]": {
-    "editor.defaultFormatter": "castwide.solargraph"
-  }
+    "editor.defaultFormatter": "LoranKloeze.ruby-rubocop-revived"
+  },
+  "git.openRepositoryInParentFolders": "never"
 }

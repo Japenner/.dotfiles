@@ -20,12 +20,13 @@ alias lzd="lazydocker"                                                 # Open La
 
 alias g:auth='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_personal'          # Authenticate with the personal SSH key
 alias g:auth-team='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_adhocteam_us' # Authenticate with the team SSH key
-alias g:base='gco "$(g:default)" && git pull'
-alias g:find-branch='gb -a | grep -i'                                                # Find a branch by name
+alias g:base='gco "$(g:default)" && git pull'                                        # Checkout the default branch and pull changes
 alias g:default="git remote show origin | sed -n '/HEAD branch/s/.*: //p'"           # Get the default branch of the remote repository
-alias g:pub="ga . && gc -m 'updates' && git push && gh-c"                            # Add and commit all changes, push to repo, and open GitHub compare page
+alias g:find-branch='gb -a | grep -i'                                                # Find a branch by name
+alias g:pub="ga . && gc -m 'updates' && git push && compare_current_github_branch"   # Add and commit all changes, push to repo, and open GitHub compare page
 alias g:rb='git fetch origin && git rebase origin/"$(g:default)"'                    # Stash changes, rebase with default branch, and reapply stash
 alias g:repo="git remote get-url origin | sed -E 's|.*[:/]([^/]+/[^/]+)\.git$|\1|; s|.*[:/]([^/]+/[^/]+)$|\1|'" # Get the user/repo of the remote repository
+alias g:reset-file='gco "$(g:default)" --'                                           # Revert a file to the state of the default branch
 alias g:rs='git reset origin/"$(g:default)"'                                         # Reset to the state of the remote default branch
 alias g:unwip="git reset --soft HEAD~1"                                              # Undo the last commit, keeping changes in the working directory
 alias g:update="g:rb && git push -f"                                                 # Rebase with default branch and force push
@@ -114,3 +115,9 @@ alias vim="nvim"          # Use vim command to open Neovim
 # ============================ MacOS ========================== #
 
 alias brewfile="brew bundle dump --file=~/.dotfiles/brew/Brewfile --force" # Generate a new Brewfile backup
+
+# =========================== VS Code ========================= #
+
+alias code:backup="code:backup:extensions && code:backup:settings"                            # Backup VS Code extensions and settings
+alias code:backup:extensions="code --list-extensions > ~/.dotfiles/vscode/extension-list.txt" # Backup VS Code extensions
+alias code:backup:settings='cat "$(find_vscode_settings)" > ~/.dotfiles/vscode/settings.json' # Backup VS Code settings

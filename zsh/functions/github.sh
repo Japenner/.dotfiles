@@ -1,11 +1,11 @@
 # Dynamically set the default branch based on the remote's HEAD
-get_default_branch() {
+get_github_default_branch() {
   git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
 }
 
 fix_issues() {
   git stash
-  default_branch=$(get_default_branch)
+  default_branch=$(get_github_default_branch)
   git checkout "$default_branch"
   git pull
   git checkout -b jap/rubocop-fixes
@@ -15,7 +15,7 @@ fix_issues() {
   git add .
   git commit -m "fix: Changes to clean up Rubocop issues found"
   git push
-  gh-c
+  compare_current_github_branch
 }
 
 # Use `xdg-open` if `open` command is not available
@@ -23,7 +23,7 @@ open_cmd="open"
 command -v open >/dev/null 2>&1 || open_cmd="xdg-open"
 
 # Open current branch in browser on GitHub
-gh-b() {
+open_current_github_branch() {
   local file=${1:-""}
   local git_branch=${2:-$(git symbolic-ref --quiet --short HEAD)}
   local git_project_root=$(git config remote.origin.url | sed "s~git@\(.*\):\(.*\)~https://\1/\2~" | sed "s~\(.*\).git\$~\1~")
@@ -32,9 +32,9 @@ gh-b() {
 }
 
 # Open GitHub compare page between current branch and default branch in browser
-gh-c() {
+compare_current_github_branch() {
   local git_branch=${2:-$(git symbolic-ref --quiet --short HEAD)}
   local git_project_root=$(git config remote.origin.url | sed "s~git@\(.*\):\(.*\)~https://\1/\2~" | sed "s~\(.*\).git\$~\1~")
-  local default_branch=$(get_default_branch)
+  local default_branch=$(get_github_default_branch)
   ${open_cmd} "${git_project_root}/compare/${default_branch}...${git_branch}?expand=1"
 }
