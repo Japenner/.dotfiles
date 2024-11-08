@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Unalias g if it exists
 unalias g 2>/dev/null
 

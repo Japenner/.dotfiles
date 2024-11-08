@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Load .env file into shell session for environment variables
 function envup() {
   if [ -f .env ]; then

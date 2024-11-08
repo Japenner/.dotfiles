@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Change file extensions recursively in current directory
 #
 # Usage: change-extension erb haml

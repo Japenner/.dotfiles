@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 commit_dot_files() {
   # Ensure DOTFILES is set
   if [ -z "$DOTFILES" ]; then
@@ -31,5 +33,5 @@ commit_dot_files() {
   git push origin "$default_branch" --force --no-verify
 
   # Return to the original directory
-  popd >/dev/null
+  popd >/dev/null || exit
 }

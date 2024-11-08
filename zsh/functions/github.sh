@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 # Dynamically set the default branch based on the remote's HEAD
 get_github_default_branch() {
   git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
