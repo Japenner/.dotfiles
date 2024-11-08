@@ -1,0 +1,13 @@
+source 'https://rubygems.org'
+
+gem 'solargraph'
+gem 'pry'
+gem 'rubocop'
+gem 'faraday'
+gem 'dotenv'
+# gem 'httparty'
+# gem 'json'
+# gem 'logger'
+# gem 'time'
+# gem 'fileutils'
+# gem 'slack-ruby-client'

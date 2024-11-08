@@ -6,7 +6,7 @@ class OpenAIClient
   attr_accessor :model, :api_key, :temperature, :max_tokens, :logger
 
   # Initialize with essential parameters
-  def initialize(api_key: nil, model: 'gpt-4o-mini', temperature: 0.2, max_tokens: 800, logger: Logger.new(STDOUT))
+  def initialize(api_key: nil, model: 'gpt-4o-mini', temperature: 0.2, max_tokens: 1600, logger: Logger.new(STDOUT))
     @api_key = api_key || ENV['OPENAI_API_KEY']
     @model = model
     @temperature = temperature

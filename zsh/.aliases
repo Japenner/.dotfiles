@@ -21,13 +21,14 @@ alias lzd="lazydocker"                                                 # Open La
 alias g:auth='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_personal'          # Authenticate with the personal SSH key
 alias g:auth-team='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_adhocteam_us' # Authenticate with the team SSH key
 alias g:base='gco "$(g:default)" && git pull'
-alias g:default="git remote show origin | sed -n '/HEAD branch/s/.*: //p'"  # Get the default branch of the remote repository
+alias g:find-branch='gb -a | grep -i'                                                # Find a branch by name
+alias g:default="git remote show origin | sed -n '/HEAD branch/s/.*: //p'"           # Get the default branch of the remote repository
 alias g:pub="ga . && gc -m 'updates' && git push && gh-c"                            # Add and commit all changes, push to repo, and open GitHub compare page
 alias g:rb='git fetch origin && git rebase origin/"$(g:default)"'                    # Stash changes, rebase with default branch, and reapply stash
 alias g:repo="git remote get-url origin | sed -E 's|.*[:/]([^/]+/[^/]+)\.git$|\1|; s|.*[:/]([^/]+/[^/]+)$|\1|'" # Get the user/repo of the remote repository
 alias g:rs='git reset origin/"$(g:default)"'                                         # Reset to the state of the remote default branch
 alias g:unwip="git reset --soft HEAD~1"                                              # Undo the last commit, keeping changes in the working directory
-alias g:update="g-rb && git push -f"                                                 # Rebase with default branch and force push
+alias g:update="g:rb && git push -f"                                                 # Rebase with default branch and force push
 alias g:wip="ga . && gc --no-verify -m 'WIP'"                                        # Commit all changes under a 'WIP' message without verification
 alias g:yolo="git push origin master --force --no-verify"                            # Force push changes to master without verification
 
@@ -60,7 +61,7 @@ alias r:sqa="bb && RAILS_ENV=qa bin/rails s"                                    
 alias r:st="bb && RAILS_ENV=test_one bin/rails s"                                                # Start Rails server in test_one environment
 alias r:t="bb && bundle exec rails test"                                                         # Run Rails tests
 
-# ========================== Scripts ========================== #
+# ======================== Automation ======================== #
 
 scripts_path="${DOTFILES}/bin/.local/scripts"
 
@@ -80,6 +81,7 @@ alias cht="sh ~/.dotfiles/bin/.local/scripts/tmux-cht.sh"                       
 alias cmsvpn="sudo openconnect --protocol=anyconnect --user=PDEG cloudvpn.cms.gov"  # Connect to CMS VPN using openconnect with AnyConnect protocol
 alias cpwd="pwd | pbcopy"                                                           # Copy current working directory to clipboard
 alias dotfiles:commit='commit_dot_files'                                            # Automatically commit .dotfiles to master
+alias gem:edit="edit_gem"                                                           # Open a gem in the editor
 alias nato="echo 'A Alpha\nB Bravo\nC Charlie\nD Delta\nE Echo\nF Foxtrot\
   \nG Golf\nH Hotel\nI India\nJ Juliet\nK Kilo\nL Lima\nM Mike\nN November\
   \nO Oscar\nP Papa\nQ Quebec\nR Romeo\nS Sierra\nT Tango\nU Uniform\

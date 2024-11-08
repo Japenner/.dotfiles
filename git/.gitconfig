@@ -1,0 +1,20 @@
+# This is Git's per-user configuration file.
+
+[user]
+	name = Jacob Penner
+	email = japenner@gmail.com
+
+[push]
+	autoSetupRemote = true
+	default = simple
+
+[pull]
+	rebase = true
+
+# Specify the global .gitignore file
+[core]
+	excludesfile = ~/.gitignore_global
+
+# Add conditional configurations for multiple accounts
+[includeIf "gitdir:~/projects/ad_hoc/"]
+    path = ~/.gitconfig-work

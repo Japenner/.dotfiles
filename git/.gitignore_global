@@ -1,0 +1,8 @@
+# ================= Ruby ================= #
+
+# Ignore Solargraph configuration files
+.solargraph.yml
+
+# Ignore other gem-specific config files
+.rubocop.yml
+.pryrc
