@@ -2,7 +2,7 @@
 
 # Set default STOW_FOLDERS if not provided
 if [[ -z $STOW_FOLDERS ]]; then
-    STOW_FOLDERS="bin,tmux,zsh"
+    STOW_FOLDERS="bin,git,nvim,ruby,tmux,zsh"
 fi
 
 # Set default DOTFILES directory if not provided
