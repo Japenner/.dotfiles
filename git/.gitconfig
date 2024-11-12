@@ -1,9 +1,5 @@
 # This is Git's per-user configuration file.
 
-[user]
-	name = Jacob Penner
-	email = japenner@gmail.com
-
 [push]
 	autoSetupRemote = true
 	default = simple
@@ -16,5 +12,11 @@
 	excludesfile = ~/.gitignore_global
 
 # Add conditional configurations for multiple accounts
-[includeIf "gitdir:~/projects/ad_hoc/"]
+[includeIf "gitdir:~/Repos/ad_hoc/va/"]
     path = ~/.gitconfig-work
+
+[includeIf "gitdir:~/Repos/personal/"]
+    path = ~/.gitconfig-personal
+
+[credential]
+    helper = "!~/.dotfiles/git/.git-credentials-helper.sh"
