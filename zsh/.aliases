@@ -89,6 +89,7 @@ alias nato="echo 'A Alpha\nB Bravo\nC Charlie\nD Delta\nE Echo\nF Foxtrot\
   \nV Victor\nW Whiskey\nX X-ray\nY Yankee\nZ Zulu'"                                # Display NATO phonetic alphabet
 alias path='echo $PATH | tr -s ":" "\n"'                                            # Display PATH directories, each on a new line
 alias pp="python -m json.tool"                                                      # Pretty-print JSON using Python’s JSON tool
+alias toolbox="BUNDLE_GEMFILE=~/Gemfile.global bundle exec toolbox"
 
 # ============================ Java =========================== #
 

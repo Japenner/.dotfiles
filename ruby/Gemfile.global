@@ -10,7 +10,7 @@ gem 'awesome_print'
 # System and Utility Gems
 gem 'faraday'
 gem 'colorize'
-gem 'solargraph'
+# gem 'solargraph'
 # gem 'json'
 # gem 'logger'
 # gem 'time'
@@ -31,3 +31,6 @@ gem 'thor'
 # Clients
 # gem 'slack-ruby-client'
 # gem 'openai'
+
+# My Gems
+gem 'jacobs_toolbox', path: File.expand_path('~/Repos/personal/jacobs_toolbox')
