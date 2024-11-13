@@ -13,10 +13,10 @@
 
 # Add conditional configurations for multiple accounts
 [includeIf "gitdir:~/Repos/ad_hoc/va/"]
-    path = ~/.gitconfig-work
+    path = ~/.dotfiles/git/.gitconfig-work
 
 [includeIf "gitdir:~/Repos/personal/"]
-    path = ~/.gitconfig-personal
+    path = ~/.dotfiles/git/.gitconfig-personal
 
 [credential]
     helper = "!~/.dotfiles/git/.git-credentials-helper.sh"
