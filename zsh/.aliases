@@ -2,10 +2,10 @@
 
 # ======================= Config Files ======================== #
 
-alias als="code ~/.dotfiles/zsh/.aliases"                # Open aliases config in editor
-alias als-local="code ~/.dotfiles/zsh/local/aliases.zsh" # Open local aliases config in editor
-alias ohmyzsh="code ~/.oh-my-zsh"                        # Edit Oh My Zsh config
-alias zshconfig="code ~/.zshrc"                          # Edit .zshrc file
+alias als="$CODE_EDITOR ~/.dotfiles/zsh/.aliases"                # Open aliases config in editor
+alias als-local="$CODE_EDITOR ~/.dotfiles/zsh/local/aliases.zsh" # Open local aliases config in editor
+alias ohmyzsh="$CODE_EDITOR ~/.oh-my-zsh"                        # Edit Oh My Zsh config
+alias zshconfig="$CODE_EDITOR ~/.zshrc"                          # Edit .zshrc file
 
 # ========================== Docker =========================== #
 
@@ -16,63 +16,75 @@ alias d:wipe='docker stop "$(docker ps -a -q)" &&\
   docker volume rm "$(docker volume ls -qf dangling=true)"'            # Stop and remove all Docker containers, images, and dangling volumes
 alias lzd="lazydocker"                                                 # Open Lazydocker for managing Docker containers
 
+# ========================== Dotfiles ========================= #
+
+alias dotfiles:cleanup="$DOTFILES/bin/cleanup.zsh"                 # Clean up dotfiles
+alias dotfiles:commit="commit_dot_files"                           # Commit and push changes in dotfiles
+alias dotfiles:dir="cd \"$DOTFILES\""                              # Navigate to dotfiles directory
+alias dotfiles:edit="$CODE_EDITOR \"$DOTFILES\""                   # Open dotfiles in the code editor
+alias dotfiles:pull="git -C \"$DOTFILES\" pull"                    # Pull latest changes in dotfiles
+alias dotfiles:refresh="$DOTFILES/bin/refresh.zsh"                 # Refresh dotfiles
+alias dotfiles:reload="source ~/.zshrc"                            # Reload .zshrc configuration
+alias dotfiles:setup="$DOTFILES/bin/setup.zsh"                     # Set up dotfiles environment
+alias dotfiles:update="github_update_current_branch \"$DOTFILES\"" # Update dotfiles current branch
+
 # ============================ Git ============================ #
 
 alias g:auth='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_personal'          # Authenticate with the personal SSH key
 alias g:auth-team='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_adhocteam_us' # Authenticate with the team SSH key
 alias g:base='gco "$(g:default)" && git pull'                                        # Checkout the default branch and pull changes
-alias g:default="git remote show origin | sed -n '/HEAD branch/s/.*: //p'"           # Get the default branch of the remote repository
+alias g:default="github_default_branch"                                              # Get the default branch of the remote repository
 alias g:find-branch='gb -a | grep -i'                                                # Find a branch by name
-alias g:pub="ga . && gc -m 'updates' && git push && compare_current_github_branch"   # Add and commit all changes, push to repo, and open GitHub compare page
 alias g:rb='git fetch origin && git rebase origin/"$(g:default)"'                    # Stash changes, rebase with default branch, and reapply stash
-alias g:repo="git remote get-url origin | sed -E 's|.*[:/]([^/]+/[^/]+)\.git$|\1|; s|.*[:/]([^/]+/[^/]+)$|\1|'" # Get the user/repo of the remote repository
-alias g:reset-file='gco "$(g:default)" --'                                           # Revert a file to the state of the default branch
+alias g:repo="github_user_repo"                                                      # Get the user/repo of the remote repository
+alias g:rs:file='gco "$(g:default)" --'                                              # Revert a file to the state of the default branch
 alias g:rs='git reset origin/"$(g:default)"'                                         # Reset to the state of the remote default branch
-alias g:unwip="git reset --soft HEAD~1"                                              # Undo the last commit, keeping changes in the working directory
+alias g:undo="git reset --soft HEAD~1"                                               # Undo the last commit, keeping changes in the working directory
 alias g:update="g:rb && git push -f"                                                 # Rebase with default branch and force push
 alias g:wip="ga . && gc --no-verify -m 'WIP'"                                        # Commit all changes under a 'WIP' message without verification
 alias g:yolo="git push origin master --force --no-verify"                            # Force push changes to master without verification
 
+# =========================== GitHub ========================== #
+
+alias gh:compare="github_compare_current_branch"                                # Open GitHub compare page for the current branch
+alias gh:publish='ga . && gc -m "misc updates" && git push && "$(gh:compare)"'  # Add and commit all changes, push to repo, and open GitHub compare page
+alias gh:open="open_github_repo"                                                # Open GitHub repository in browser
+
 # ========================= JavaScript ======================== #
 
-alias yarn:clean="rm -rf node_modules && yarn cache clean && yarn install" # Clean and reinstall Yarn packages
+alias yarn:clean="rm -rf node_modules && yarn cache clean && yarn install"  # Clean and reinstall Yarn packages
 
 # ======================== Productivity ======================= #
 
-alias c="clear"                                  # Clear terminal screen
-alias repos="cd ~/repos"                         # Shortcut to repos directory
-alias serve="python3 -m http.server 8000"        # Start Python HTTP server
-alias todo="$EDITOR ~/.todo"                     # Open todo file in editor
+alias c="clear"                            # Clear terminal screen
+alias repos="cd ~/repos"                   # Shortcut to repos directory
+alias serve="python3 -m http.server 8000"  # Start Python HTTP server
+alias todo="$EDITOR ~/.todo"               # Open todo file in editor
 
 # =========================== Rails =========================== #
 
-alias r:b="bundle"                                                                               # Bundle command shortcut
-alias r:bb="b && yarn install"                                                                   # Bundle and Yarn install
-alias r:bc="bundle exec rubocop"                                                                 # Run Rubocop with bundle
-alias r:bs="bb && bc && bundle exec rspec"                                                       # Install, check, and test
-alias r:cqa="RAILS_ENV=qa bin/rails c"                                                           # Rails console for QA environment
-alias r:ct="RAILS_ENV=test bin/rails c"                                                          # Rails console for test environment
-alias r:db:reset:dev="RAILS_ENV=development bin/rails db:reset"                                  # Reset dev database
-alias r:db:reset:test="RAILS_ENV=test bin/rails db:reset"                                        # Reset test database
-alias r:fs="bb && bin/foreman start"                                                             # Install and start Foreman
-alias r:migrate="rake db:migrate && rake db:rollback && rake db:migrate && rake db:test:prepare" # Migrate, rollback, and prepare test db
-alias r:s="bb && bin/rails s"                                                                    # Install and start Rails server
-alias r:servers="lsof -wni tcp:3000"                                                             # List services on port 3000
-alias r:sqa="bb && RAILS_ENV=qa bin/rails s"                                                     # Start Rails server in QA environment
-alias r:st="bb && RAILS_ENV=test_one bin/rails s"                                                # Start Rails server in test_one environment
-alias r:t="bb && bundle exec rails test"                                                         # Run Rails tests
+alias r:bundle="ruby_install_dependencies"             # Install dependencies
+alias r:check="ruby_run_code_quality_checks"           # Install dependencies, run rubocop, and run rspec
+alias r:console="rails_start_console"                  # Rails console for given environment
+alias r:db:reset="rails_reset_database"                # Reset database, load schema, and seed data for given environment
+alias r:fix:cops="with_stash ruby_fix_rubocop_issues"  # Fix Rubocop issues by stashing changes, fixing issues, and restoring the stash
+alias r:foreman="ruby_start_foreman"                   # Start Foreman with bin/foreman
+alias r:migrate="rails_run_migrations"                 # Run pending migrations
+alias r:server="start_rails_server"                    # Start Rails server
+alias r:servers="lsof -wni tcp:3000"                   # List services on port 3000
+alias r:tests="rails_run_tests"                        # Run RSpec tests
 
 # ======================== Automation ======================== #
 
 scripts_path="${DOTFILES}/bin/.local/scripts"
 
 alias branch="${scripts_path}/branch.sh"                      # Create a new branch and update GH ticket
-alias g:pr-review="ruby ${scripts_path}/review_pr.rb"         # Run script to review pull requests
-alias g:pr="ruby ${scripts_path}/generate_pr.rb"              # Run script to create a new pull request based on work
-alias g:rr="${scripts_path}/open_pr_review_requests.sh"       # Open pull requests where a review is requested
-alias g:update-all="${scripts_path}/update_git_repos.sh"      # Run script to update all git repositories
-alias slack:away="${scripts_path}/set_slack_status.sh set"
-alias slack:back="${scripts_path}/set_slack_status.sh clear"
+alias gh:pr-review="ruby ${scripts_path}/review_pr.rb"        # Run script to review pull requests
+alias gh:pr="ruby ${scripts_path}/generate_pr.rb"             # Run script to create a new pull request based on work
+alias gh:rr="${scripts_path}/open_pr_review_requests.sh"      # Open pull requests where a review is requested
+alias gh:update-all="${scripts_path}/update_git_repos.sh"     # Run script to update all git repositories
+alias slack:away="${scripts_path}/set_slack_status.sh set"    # Set Slack status to away
+alias slack:back="${scripts_path}/set_slack_status.sh clear"  # Set Slack status to back
 
 # ========================== Utility ========================== #
 
@@ -81,8 +93,7 @@ alias chrome="open -a 'Google Chrome'"                                          
 alias cht="sh ~/.dotfiles/bin/.local/scripts/tmux-cht.sh"                           # Run tmux cheat sheet script
 alias cmsvpn="sudo openconnect --protocol=anyconnect --user=PDEG cloudvpn.cms.gov"  # Connect to CMS VPN using openconnect with AnyConnect protocol
 alias cpwd="pwd | pbcopy"                                                           # Copy current working directory to clipboard
-alias dotfiles:commit='commit_dot_files'                                            # Automatically commit .dotfiles to master
-alias gem:edit="edit_gem"                                                           # Open a gem in the editor
+alias gem:edit="ruby_edit_gem"                                                      # Open a gem in the editor
 alias nato="echo 'A Alpha\nB Bravo\nC Charlie\nD Delta\nE Echo\nF Foxtrot\
   \nG Golf\nH Hotel\nI India\nJ Juliet\nK Kilo\nL Lima\nM Mike\nN November\
   \nO Oscar\nP Papa\nQ Quebec\nR Romeo\nS Sierra\nT Tango\nU Uniform\

@@ -14,7 +14,7 @@ commit_dot_files() {
 
   # Determine the default branch dynamically
   local default_branch
-  default_branch=$(git -C "$DOTFILES" symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@') || default_branch="master"
+  default_branch=$(github_default_branch "$DOTFILES") || default_branch="master"
 
   # Change to DOTFILES directory
   pushd "$DOTFILES" >/dev/null || {
@@ -26,11 +26,8 @@ commit_dot_files() {
   git add .
   git commit -m "$commit_message" || echo "No changes to commit in dotfiles."
 
-  # Ensure branch is up-to-date with remote
-  git pull origin "$default_branch" --rebase
-
-  # Force push changes
-  git push origin "$default_branch" --force --no-verify
+  # Ensure branch is up-to-date with remote & force push changes
+  github_update_current_branch "$DOTFILES"
 
   # Return to the original directory
   popd >/dev/null || exit
