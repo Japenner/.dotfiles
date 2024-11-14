@@ -34,7 +34,6 @@ alias lzd="lazydocker"                                                 # Open La
 
 alias df:cleanup="$DOTFILES/bin/cleanup.zsh"                 # Clean up dotfiles
 alias df:commit="commit_dot_files"                           # Commit and push changes in dotfiles
-alias df:dir="cd \"$DOTFILES\""                              # Navigate to dotfiles directory
 alias df:pull="git -C \"$DOTFILES\" pull"                    # Pull latest changes in dotfiles
 alias df:refresh="$DOTFILES/bin/refresh.zsh"                 # Refresh dotfiles
 alias df:reload="source ~/.zshrc"                            # Reload .zshrc configuration
@@ -78,10 +77,17 @@ alias yarn:clean="rm -rf node_modules && yarn cache clean && yarn install"  # Cl
 
 alias brewfile="brew bundle dump --file=~/.dotfiles/brew/Brewfile --force" # Generate a new Brewfile backup
 
+# ========================= Navigation ======================== #
+
+alias nav:df="cd \"$DOTFILES\""               # Navigate to dotfiles directory
+alias nav:repos="cd $HOME/repos"              # Navigate to repos directory
+alias nav:personal="cd $HOME/repos/personal"  # Navigate to personal directory
+alias nav:work="cd $HOME/repos/ad_hoc"        # Navigate to work directory
+alias nav:tb="cd \"$TOOLBOX\""                # Navigate to toolbox directory
+
 # ======================== Productivity ======================= #
 
 alias c="clear"                            # Clear terminal screen
-alias repos="cd ~/repos"                   # Shortcut to repos directory
 alias serve="python3 -m http.server 8000"  # Start Python HTTP server
 alias todo="$EDITOR ~/.todo"               # Open todo file in editor
 
