@@ -1,11 +1,25 @@
 #!/usr/bin/env zsh
 
-# ======================= Config Files ======================== #
+# ======================== Automation ======================== #
 
-alias als="$CODE_EDITOR ~/.dotfiles/zsh/.aliases"                # Open aliases config in editor
-alias als-local="$CODE_EDITOR ~/.dotfiles/zsh/local/aliases.zsh" # Open local aliases config in editor
-alias ohmyzsh="$CODE_EDITOR ~/.oh-my-zsh"                        # Edit Oh My Zsh config
-alias zshconfig="$CODE_EDITOR ~/.zshrc"                          # Edit .zshrc file
+scripts_path="${DOTFILES}/bin/.local/scripts"
+
+alias branch="${scripts_path}/branch.sh"                      # Create a new branch and update GH ticket
+alias gh:pr-review="ruby ${scripts_path}/review_pr.rb"        # Run script to review pull requests
+alias gh:pr="ruby ${scripts_path}/generate_pr.rb"             # Run script to create a new pull request based on work
+alias gh:rr="${scripts_path}/open_pr_review_requests.sh"      # Open pull requests where a review is requested
+alias gh:update-all="${scripts_path}/update_git_repos.sh"     # Run script to update all git repositories
+alias slack:away="${scripts_path}/set_slack_status.sh set"    # Set Slack status to away
+alias slack:back="${scripts_path}/set_slack_status.sh clear"  # Set Slack status to back
+
+# ======================= Config Editing ====================== #
+
+alias e:aliases="$CODE_EDITOR \"$DOTFILES/zsh/.aliases\""                 # Open aliases config in editor
+alias e:aliases:local="$CODE_EDITOR \"$DOTFILES/zsh/local/aliases.zsh\""  # Open local aliases config in editor
+alias e:dotfiles="$CODE_EDITOR \"$DOTFILES\""                             # Open dotfiles in the code editor
+alias e:ohmyzsh="$CODE_EDITOR \"$HOME/.oh-my-zsh\""                       # Edit Oh My Zsh config
+alias e:toolbox="$CODE_EDITOR \"$TOOLBOX\""                               # Open toolbox in the code editor
+alias e:zshrc="$CODE_EDITOR \"$HOME/.zshrc\""                             # Edit .zshrc file
 
 # ========================== Docker =========================== #
 
@@ -18,15 +32,14 @@ alias lzd="lazydocker"                                                 # Open La
 
 # ========================== Dotfiles ========================= #
 
-alias dotfiles:cleanup="$DOTFILES/bin/cleanup.zsh"                 # Clean up dotfiles
-alias dotfiles:commit="commit_dot_files"                           # Commit and push changes in dotfiles
-alias dotfiles:dir="cd \"$DOTFILES\""                              # Navigate to dotfiles directory
-alias dotfiles:edit="$CODE_EDITOR \"$DOTFILES\""                   # Open dotfiles in the code editor
-alias dotfiles:pull="git -C \"$DOTFILES\" pull"                    # Pull latest changes in dotfiles
-alias dotfiles:refresh="$DOTFILES/bin/refresh.zsh"                 # Refresh dotfiles
-alias dotfiles:reload="source ~/.zshrc"                            # Reload .zshrc configuration
-alias dotfiles:setup="$DOTFILES/bin/setup.zsh"                     # Set up dotfiles environment
-alias dotfiles:update="github_update_current_branch \"$DOTFILES\"" # Update dotfiles current branch
+alias df:cleanup="$DOTFILES/bin/cleanup.zsh"                 # Clean up dotfiles
+alias df:commit="commit_dot_files"                           # Commit and push changes in dotfiles
+alias df:dir="cd \"$DOTFILES\""                              # Navigate to dotfiles directory
+alias df:pull="git -C \"$DOTFILES\" pull"                    # Pull latest changes in dotfiles
+alias df:refresh="$DOTFILES/bin/refresh.zsh"                 # Refresh dotfiles
+alias df:reload="source ~/.zshrc"                            # Reload .zshrc configuration
+alias df:setup="$DOTFILES/bin/setup.zsh"                     # Set up dotfiles environment
+alias df:update="github_update_current_branch \"$DOTFILES\"" # Update dotfiles current branch
 
 # ============================ Git ============================ #
 
@@ -50,9 +63,20 @@ alias gh:compare="github_compare_current_branch"                                
 alias gh:publish='ga . && gc -m "misc updates" && git push && "$(gh:compare)"'  # Add and commit all changes, push to repo, and open GitHub compare page
 alias gh:open="open_github_repo"                                                # Open GitHub repository in browser
 
+# ============================ Java =========================== #
+
+alias java-s="docker container prune &&\
+  docker image prune &&\
+  mvn clean package -DskipTests &&\
+  docker-compose up --build service"  # Clean Docker, build, and start service
+
 # ========================= JavaScript ======================== #
 
 alias yarn:clean="rm -rf node_modules && yarn cache clean && yarn install"  # Clean and reinstall Yarn packages
+
+# ============================ MacOS ========================== #
+
+alias brewfile="brew bundle dump --file=~/.dotfiles/brew/Brewfile --force" # Generate a new Brewfile backup
 
 # ======================== Productivity ======================= #
 
@@ -74,18 +98,6 @@ alias r:server="start_rails_server"                    # Start Rails server
 alias r:servers="lsof -wni tcp:3000"                   # List services on port 3000
 alias r:tests="rails_run_tests"                        # Run RSpec tests
 
-# ======================== Automation ======================== #
-
-scripts_path="${DOTFILES}/bin/.local/scripts"
-
-alias branch="${scripts_path}/branch.sh"                      # Create a new branch and update GH ticket
-alias gh:pr-review="ruby ${scripts_path}/review_pr.rb"        # Run script to review pull requests
-alias gh:pr="ruby ${scripts_path}/generate_pr.rb"             # Run script to create a new pull request based on work
-alias gh:rr="${scripts_path}/open_pr_review_requests.sh"      # Open pull requests where a review is requested
-alias gh:update-all="${scripts_path}/update_git_repos.sh"     # Run script to update all git repositories
-alias slack:away="${scripts_path}/set_slack_status.sh set"    # Set Slack status to away
-alias slack:back="${scripts_path}/set_slack_status.sh clear"  # Set Slack status to back
-
 # ========================== Utility ========================== #
 
 alias awsume=". awsume"                                                             # Source awsume to assume AWS roles easily
@@ -102,13 +114,6 @@ alias path='echo $PATH | tr -s ":" "\n"'                                        
 alias pp="python -m json.tool"                                                      # Pretty-print JSON using Python’s JSON tool
 alias toolbox="BUNDLE_GEMFILE=~/Gemfile.global bundle exec toolbox"
 
-# ============================ Java =========================== #
-
-alias java-s="docker container prune &&\
-  docker image prune &&\
-  mvn clean package -DskipTests &&\
-  docker-compose up --build service"  # Clean Docker, build, and start service
-
 # ============================ Unix =========================== #
 
 alias ....="up ...."      # Go up three directories
@@ -123,10 +128,6 @@ alias ln="ln -v"          # Verbose link creation
 alias mkdir="mkdir -p"    # Create directories, including parents
 alias v="$VISUAL"         # Open visual editor
 alias vim="nvim"          # Use vim command to open Neovim
-
-# ============================ MacOS ========================== #
-
-alias brewfile="brew bundle dump --file=~/.dotfiles/brew/Brewfile --force" # Generate a new Brewfile backup
 
 # =========================== VS Code ========================= #
 

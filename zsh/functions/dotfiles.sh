@@ -12,10 +12,6 @@ commit_dot_files() {
   timestamp=$(date +"%Y-%m-%d %H:%M:%S")
   local commit_message="[AUTOMATED] feat: misc changes to dotfiles - $timestamp"
 
-  # Determine the default branch dynamically
-  local default_branch
-  default_branch=$(github_default_branch "$DOTFILES") || default_branch="master"
-
   # Change to DOTFILES directory
   pushd "$DOTFILES" >/dev/null || {
     echo "Error: Could not access DOTFILES directory."
