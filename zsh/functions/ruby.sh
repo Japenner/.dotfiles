@@ -88,10 +88,8 @@ rails_reset_database() {
   RAILS_ENV="$env" bundle exec rails db:reset
 }
 
-# Run Rails migrations, rollback, and prepare test database
+# Run Rails migrations and prepare test database
 rails_run_migrations() {
-  bundle exec rails db:migrate
-  bundle exec rails db:rollback
   bundle exec rails db:migrate
   bundle exec rails db:test:prepare
 }
