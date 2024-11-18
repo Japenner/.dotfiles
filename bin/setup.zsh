@@ -15,10 +15,10 @@ export STOW_FOLDERS
 export DOTFILES
 
 # Check if the refresh.zsh script exists
-if [[ -f "$DOTFILES/bin/.local/refresh.zsh" ]]; then
+if [[ -f "$DOTFILES/bin/refresh.zsh" ]]; then
     # Source the script
-    source "$DOTFILES/bin/.local/refresh.zsh"
+    source "$DOTFILES/bin/refresh.zsh"
 else
-    echo "Error: refresh.zsh script not found at $DOTFILES/bin/.local/refresh.zsh" >&2
+    echo "Error: refresh.zsh script not found at $DOTFILES/bin/refresh.zsh" >&2
     exit 1
 fi
