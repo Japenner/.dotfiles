@@ -12,11 +12,14 @@
 	excludesfile = ~/.gitignore_global
 
 # Add conditional configurations for multiple accounts
-[includeIf "gitdir:~/Repos/ad_hoc/va/"]
+[includeIf "gitdir:~/repos/ad_hoc/va/"]
     path = ~/.dotfiles/git/.gitconfig-work
 
-[includeIf "gitdir:~/Repos/personal/"]
+[includeIf "gitdir:~/repos/personal/"]
     path = ~/.dotfiles/git/.gitconfig-personal
 
 [credential]
     helper = "!~/.dotfiles/git/.git-credentials-helper.sh"
+[user]
+	email = japenner@gmail.com
+	name = Jacob Penner

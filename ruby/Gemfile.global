@@ -33,4 +33,4 @@ gem 'thor'
 # gem 'openai'
 
 # My Gems
-gem 'jacobs_toolbox', path: File.expand_path('~/Repos/personal/jacobs_toolbox')
+gem 'jacobs_toolbox', path: File.expand_path('~/repos/personal/jacobs_toolbox')
