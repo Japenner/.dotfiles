@@ -14,47 +14,48 @@ alias slack:back="${scripts_path}/set_slack_status.sh clear"  # Set Slack status
 
 # ======================= Config Editing ====================== #
 
-alias e:aliases="$CODE_EDITOR \"$DOTFILES/zsh/.aliases\""                 # Open aliases config in editor
-alias e:aliases:local="$CODE_EDITOR \"$DOTFILES/zsh/local/aliases.zsh\""  # Open local aliases config in editor
-alias e:dotfiles="$CODE_EDITOR \"$DOTFILES\""                             # Open dotfiles in the code editor
-alias e:ohmyzsh="$CODE_EDITOR \"$HOME/.oh-my-zsh\""                       # Edit Oh My Zsh config
-alias e:toolbox="$CODE_EDITOR \"$TOOLBOX\""                               # Open toolbox in the code editor
-alias e:zshrc="$CODE_EDITOR \"$HOME/.zshrc\""                             # Edit .zshrc file
+alias e:aliases='$CODE_EDITOR "$DOTFILES/zsh/.aliases"'                 # Open aliases config in editor
+alias e:aliases:local='$CODE_EDITOR "$DOTFILES/zsh/local/aliases.zsh"'  # Open local aliases config in editor
+alias e:dotfiles='$CODE_EDITOR "$DOTFILES"'                             # Open dotfiles in the code editor
+alias e:env:local='$CODE_EDITOR "$DOTFILES/zsh/local/env.zsh"'          # Open local environment variables in editor
+alias e:ohmyzsh='$CODE_EDITOR "$HOME/.oh-my-zsh"'                       # Edit Oh My Zsh config
+alias e:toolbox='$CODE_EDITOR "$TOOLBOX"'                               # Open toolbox in the code editor
+alias e:zshrc='$CODE_EDITOR "$HOME/.zshrc"'                             # Edit .zshrc file
 
 # ========================== Docker =========================== #
 
-alias d:restart="osascript -e 'quit app \"Docker\"' && open -a Docker" # Restart Docker Desktop on macOS
+alias d:restart="osascript -e 'quit app \"Docker\"' && open -a Docker"  # Restart Docker Desktop on macOS
 alias d:wipe='docker stop "$(docker ps -a -q)" &&\
   docker rm "$(docker ps -a -q)" &&\
   docker rmi "$(docker images -q)" &&\
-  docker volume rm "$(docker volume ls -qf dangling=true)"'            # Stop and remove all Docker containers, images, and dangling volumes
-alias lzd="lazydocker"                                                 # Open Lazydocker for managing Docker containers
+  docker volume rm "$(docker volume ls -qf dangling=true)"'             # Stop and remove all Docker containers, images, and dangling volumes
+alias lzd="lazydocker"                                                  # Open Lazydocker for managing Docker containers
 
 # ========================== Dotfiles ========================= #
 
-alias df:cleanup="$DOTFILES/bin/cleanup.zsh"                 # Clean up dotfiles
-alias df:commit="commit_dot_files"                           # Commit and push changes in dotfiles
-alias df:pull="git -C \"$DOTFILES\" pull"                    # Pull latest changes in dotfiles
-alias df:refresh="$DOTFILES/bin/refresh.zsh"                 # Refresh dotfiles
-alias df:reload="source ~/.zshrc"                            # Reload .zshrc configuration
-alias df:setup="$DOTFILES/bin/setup.zsh"                     # Set up dotfiles environment
-alias df:update="github_update_current_branch \"$DOTFILES\"" # Update dotfiles current branch
+alias df:cleanup="$DOTFILES/bin/cleanup.zsh"                # Clean up dotfiles
+alias df:commit="commit_dot_files"                          # Commit and push changes in dotfiles
+alias df:pull='git -C "$DOTFILES" pull'                     # Pull latest changes in dotfiles
+alias df:refresh="$DOTFILES/bin/refresh.zsh"                # Refresh dotfiles
+alias df:reload="source ~/.zshrc"                           # Reload .zshrc configuration
+alias df:setup="$DOTFILES/bin/setup.zsh"                    # Set up dotfiles environment
+alias df:update='github_update_current_branch "$DOTFILES"'  # Update dotfiles current branch
 
 # ============================ Git ============================ #
 
-alias g:auth='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_personal'          # Authenticate with the personal SSH key
-alias g:auth-team='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_adhocteam_us' # Authenticate with the team SSH key
-alias g:base='gco "$(g:default)" && git pull'                                        # Checkout the default branch and pull changes
-alias g:default="github_default_branch"                                              # Get the default branch of the remote repository
-alias g:find-branch='gb -a | grep -i'                                                # Find a branch by name
-alias g:rb='git fetch origin && git rebase origin/"$(g:default)"'                    # Stash changes, rebase with default branch, and reapply stash
-alias g:repo="github_user_repo"                                                      # Get the user/repo of the remote repository
-alias g:rs:file='gco "$(g:default)" --'                                              # Revert a file to the state of the default branch
-alias g:rs='git reset origin/"$(g:default)"'                                         # Reset to the state of the remote default branch
-alias g:undo="git reset --soft HEAD~1"                                               # Undo the last commit, keeping changes in the working directory
-alias g:update="git stash -u && g:rb && git push -f"                                 # Rebase with default branch and force push
-alias g:wip="ga . && gc --no-verify -m 'WIP'"                                        # Commit all changes under a 'WIP' message without verification
-alias g:yolo="git push origin master --force --no-verify"                            # Force push changes to master without verification
+alias g:auth='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_personal'           # Authenticate with the personal SSH key
+alias g:auth:team='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_adhocteam_us'  # Authenticate with the team SSH key
+alias g:base='gco "$(g:default)" && git pull'                                         # Checkout the default branch and pull changes
+alias g:default="github_default_branch"                                               # Get the default branch of the remote repository
+alias g:find:branch='gb -a | grep -i'                                                 # Find a branch by name
+alias g:rb='git fetch origin && git rebase origin/"$(g:default)"'                     # Stash changes, rebase with default branch, and reapply stash
+alias g:repo="github_user_repo"                                                       # Get the user/repo of the remote repository
+alias g:rs:file='gco "$(g:default)" --'                                               # Revert a file to the state of the default branch
+alias g:rs='git reset origin/"$(g:default)"'                                          # Reset to the state of the remote default branch
+alias g:undo="git reset --soft HEAD~1"                                                # Undo the last commit, keeping changes in the working directory
+alias g:update="git stash -u && g:rb && git push -f"                                  # Rebase with default branch and force push
+alias g:wip="ga . && gc --no-verify -m 'WIP'"                                         # Commit all changes under a 'WIP' message without verification
+alias g:yolo="git push origin master --force --no-verify"                             # Force push changes to master without verification
 
 # =========================== GitHub ========================== #
 
@@ -64,7 +65,7 @@ alias gh:open="open_github_repo"                                                
 
 # ============================ Java =========================== #
 
-alias java-s="docker container prune &&\
+alias java:rs="docker container prune &&\
   docker image prune &&\
   mvn clean package -DskipTests &&\
   docker-compose up --build service"  # Clean Docker, build, and start service
@@ -75,15 +76,15 @@ alias yarn:clean="rm -rf node_modules && yarn cache clean && yarn install"  # Cl
 
 # ============================ MacOS ========================== #
 
-alias brewfile="brew bundle dump --file=~/.dotfiles/brew/Brewfile --force" # Generate a new Brewfile backup
+alias brewfile="brew bundle dump --file=$DOTFILES/brew/Brewfile --force"  # Generate a new Brewfile backup
 
 # ========================= Navigation ======================== #
 
-alias nav:df="cd \"$DOTFILES\""               # Navigate to dotfiles directory
+alias nav:df='cd "$DOTFILES"'                 # Navigate to dotfiles directory
 alias nav:repos="cd $HOME/repos"              # Navigate to repos directory
 alias nav:personal="cd $HOME/repos/personal"  # Navigate to personal directory
 alias nav:work="cd $HOME/repos/ad_hoc"        # Navigate to work directory
-alias nav:tb="cd \"$TOOLBOX\""                # Navigate to toolbox directory
+alias nav:tb='cd "$TOOLBOX"'                  # Navigate to toolbox directory
 
 # ======================== Productivity ======================= #
 
@@ -106,37 +107,36 @@ alias r:tests="rails_run_tests"                        # Run RSpec tests
 
 # ========================== Utility ========================== #
 
-alias awsume=". awsume"                                                             # Source awsume to assume AWS roles easily
-alias chrome="open -a 'Google Chrome'"                                              # Open Google Chrome
-alias cht="sh ~/.dotfiles/bin/.local/scripts/tmux-cht.sh"                           # Run tmux cheat sheet script
-alias cmsvpn="sudo openconnect --protocol=anyconnect --user=PDEG cloudvpn.cms.gov"  # Connect to CMS VPN using openconnect with AnyConnect protocol
-alias cpwd="pwd | pbcopy"                                                           # Copy current working directory to clipboard
-alias gem:edit="ruby_edit_gem"                                                      # Open a gem in the editor
+alias awsume=". awsume"                                                      # Source awsume to assume AWS roles easily
+alias chrome="open -a 'Google Chrome'"                                       # Open Google Chrome
+alias cht="sh $DOTFILES/bin/.local/scripts/tmux-cht.sh"                      # Run tmux cheat sheet script
+alias cpwd="pwd | pbcopy"                                                    # Copy current working directory to clipboard
+alias gem:edit="ruby_edit_gem"                                               # Open a gem in the editor
 alias nato="echo 'A Alpha\nB Bravo\nC Charlie\nD Delta\nE Echo\nF Foxtrot\
   \nG Golf\nH Hotel\nI India\nJ Juliet\nK Kilo\nL Lima\nM Mike\nN November\
   \nO Oscar\nP Papa\nQ Quebec\nR Romeo\nS Sierra\nT Tango\nU Uniform\
-  \nV Victor\nW Whiskey\nX X-ray\nY Yankee\nZ Zulu'"                                # Display NATO phonetic alphabet
-alias path='echo $PATH | tr -s ":" "\n"'                                            # Display PATH directories, each on a new line
-alias pp="python -m json.tool"                                                      # Pretty-print JSON using Python’s JSON tool
+  \nV Victor\nW Whiskey\nX X-ray\nY Yankee\nZ Zulu'"                         # Display NATO phonetic alphabet
+alias path='echo $PATH | tr -s ":" "\n"'                                     # Display PATH directories, each on a new line
+alias pp="python -m json.tool"                                               # Pretty-print JSON using Python’s JSON tool
 alias toolbox="BUNDLE_GEMFILE=~/Gemfile.global bundle exec toolbox"
 
 # ============================ Unix =========================== #
 
-alias ....="up ...."      # Go up three directories
-alias ...="up ..."        # Go up two directories
-alias ..="up .."          # Go up one directory
-alias ~="cd ~"            # Go to home directory
-alias e="$EDITOR"         # Open editor
-alias edit="$CODE_EDITOR" # Use edit command to open files in VS Code
-alias la="ls -lha"        # List all files in detailed format
-alias ll="ls -al"         # List files in detail
-alias ln="ln -v"          # Verbose link creation
-alias mkdir="mkdir -p"    # Create directories, including parents
-alias v="$VISUAL"         # Open visual editor
-alias vim="nvim"          # Use vim command to open Neovim
+alias ....="up ...."       # Go up three directories
+alias ...="up ..."         # Go up two directories
+alias ..="up .."           # Go up one directory
+alias ~="cd ~"             # Go to home directory
+alias e="$EDITOR"          # Open editor
+alias edit="$CODE_EDITOR"  # Use edit command to open files in VS Code
+alias la="ls -lha"         # List all files in detailed format
+alias ll="ls -al"          # List files in detail
+alias ln="ln -v"           # Verbose link creation
+alias mkdir="mkdir -p"     # Create directories, including parents
+alias v="$VISUAL"          # Open visual editor
+alias vim="nvim"           # Use vim command to open Neovim
 
 # =========================== VS Code ========================= #
 
-alias code:backup="code:backup:extensions && code:backup:settings"                            # Backup VS Code extensions and settings
-alias code:backup:extensions="code --list-extensions > ~/.dotfiles/vscode/extension-list.txt" # Backup VS Code extensions
-alias code:backup:settings='cat "$(find_vscode_settings)" > ~/.dotfiles/vscode/settings.json' # Backup VS Code settings
+alias code:backup="code:backup:extensions && code:backup:settings"                                   # Backup VS Code extensions and settings
+alias code:backup:extensions="$CODE_EDITOR --list-extensions > $DOTFILES/vscode/extension-list.txt"  # Backup VS Code extensions
+alias code:backup:settings='cat "$(find_vscode_settings)" > "$DOTFILES"/vscode/settings.json'        # Backup VS Code settings
