@@ -113,3 +113,9 @@ rails_run_tests() {
   ruby_install_dependencies
   bundle exec rails test
 }
+
+# Run Rails tests after installing dependencies
+rails_run_rspec_tests() {
+  ruby_install_dependencies
+  bundle exec rails rspec
+}

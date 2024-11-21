@@ -103,7 +103,8 @@ alias r:foreman="ruby_start_foreman"                   # Start Foreman with bin/
 alias r:migrate="rails_run_migrations"                 # Run pending migrations
 alias r:server="start_rails_server"                    # Start Rails server
 alias r:servers="lsof -wni tcp:3000"                   # List services on port 3000
-alias r:tests="rails_run_tests"                        # Run RSpec tests
+alias r:spec="rails_run_rspec_tests"                   # Run RSpec tests
+alias r:tests="rails_run_tests"                        # Run Minitest tests
 
 # ========================== Utility ========================== #
 
