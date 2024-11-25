@@ -15,13 +15,13 @@ alias slack:back="${scripts_path}/set_slack_status.sh clear"  # Set Slack status
 
 # ======================= Config Editing ====================== #
 
-alias e:aliases='$CODE_EDITOR "$DOTFILES/zsh/.aliases"'                 # Open aliases config in editor
-alias e:aliases:local='$CODE_EDITOR "$DOTFILES/zsh/local/aliases.zsh"'  # Open local aliases config in editor
-alias e:dotfiles='$CODE_EDITOR "$DOTFILES"'                             # Open dotfiles in the code editor
-alias e:env:local='$CODE_EDITOR "$DOTFILES/zsh/local/env.zsh"'          # Open local environment variables in editor
-alias e:ohmyzsh='$CODE_EDITOR "$HOME/.oh-my-zsh"'                       # Edit Oh My Zsh config
-alias e:toolbox='$CODE_EDITOR "$TOOLBOX"'                               # Open toolbox in the code editor
-alias e:zshrc='$CODE_EDITOR "$HOME/.zshrc"'                             # Edit .zshrc file
+alias e:als='$CODE_EDITOR "$DOTFILES/zsh/.aliases"'                 # Open aliases config in editor
+alias e:als:local='$CODE_EDITOR "$DOTFILES/zsh/local/aliases.zsh"'  # Open local aliases config in editor
+alias e:df='$CODE_EDITOR "$DOTFILES"'                               # Open dotfiles in the code editor
+alias e:env:local='$CODE_EDITOR "$DOTFILES/zsh/local/env.zsh"'      # Open local environment variables in editor
+alias e:ohmyzsh='$CODE_EDITOR "$HOME/.oh-my-zsh"'                   # Edit Oh My Zsh config
+alias e:tb='$CODE_EDITOR "$TOOLBOX"'                                # Open toolbox in the code editor
+alias e:zshrc='$CODE_EDITOR "$HOME/.zshrc"'                         # Edit .zshrc file
 
 # ========================== Docker =========================== #
 
