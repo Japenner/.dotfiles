@@ -70,6 +70,9 @@ for local_config_file in ~/.dotfiles/zsh/local/*(.N); do
   source "$local_config_file"
 done
 
+export PYTHON=$(asdf which python3)
+export RUBY=$(asdf which ruby)
+
 if [[ "$OSTYPE" == "darwin"* ]]; then
   # Docker Desktop
   source "$HOME/.docker/init-zsh.sh" || true

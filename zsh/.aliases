@@ -5,6 +5,7 @@
 scripts_path="${DOTFILES}/bin/.local/scripts"
 
 alias branch="${scripts_path}/branch.sh"                      # Create a new branch and update GH ticket
+alias cht="sh ${scripts_path}/tmux-cht.sh"                    # Run tmux cheat sheet script
 alias gh:pr-review="ruby ${scripts_path}/review_pr.rb"        # Run script to review pull requests
 alias gh:pr="ruby ${scripts_path}/generate_pr.rb"             # Run script to create a new pull request based on work
 alias gh:rr="${scripts_path}/open_pr_review_requests.sh"      # Open pull requests where a review is requested
@@ -24,38 +25,50 @@ alias e:zshrc='$CODE_EDITOR "$HOME/.zshrc"'                             # Edit .
 
 # ========================== Docker =========================== #
 
-alias d:restart="osascript -e 'quit app \"Docker\"' && open -a Docker"  # Restart Docker Desktop on macOS
-alias d:wipe='docker stop "$(docker ps -a -q)" &&\
-  docker rm "$(docker ps -a -q)" &&\
-  docker rmi "$(docker images -q)" &&\
-  docker volume rm "$(docker volume ls -qf dangling=true)"'             # Stop and remove all Docker containers, images, and dangling volumes
-alias lzd="lazydocker"                                                  # Open Lazydocker for managing Docker containers
+alias d:build="docker_build"                          # Build a Docker image from a Dockerfile and tag it with a name
+alias d:clean:images="docker_clean_dangling_images"   # Remove dangling Docker images
+alias d:disk="docker_disk_usage"                      # Display Docker disk usage statistics
+alias d:exec="docker_exec"                            # Run an interactive command inside a Docker container
+alias d:images="docker_images"                        # Show all Docker images in a readable format
+alias d:inspect="docker_inspect"                      # Inspect a Docker container by name or ID
+alias d:kill="docker_kill_all"                        # Kill all running Docker containers
+alias d:load="docker_load"                            # Load a Docker image from a file
+alias d:logs="docker_logs"                            # Stream logs from a Docker container
+alias d:prune="docker_prune_all"                      # Remove all unused containers, networks, images, and volumes
+alias d:pull="docker_pull_latest"                     # Pull the latest version of a Docker image
+alias d:restart="docker_restart"                      # Restart Docker Desktop on macOS
+alias d:restart:container="docker_restart_container"  # Restart a specific Docker container
+alias d:rm:stopped="docker_rm_stopped"                # Remove all stopped Docker containers
+alias d:save="docker_save"                            # Save a Docker image to a file
+alias d:shell="docker_shell"                          # Attach to a running Docker container with a shell
+alias d:wipe="docker_wipe"                            # Stop and remove all Docker containers, images, and dangling volumes.
+alias lzd="lazydocker"                                # Open Lazydocker for managing Docker containers
 
 # ========================== Dotfiles ========================= #
 
-alias df:cleanup="$DOTFILES/bin/cleanup.zsh"                # Clean up dotfiles
-alias df:commit="commit_dot_files"                          # Commit and push changes in dotfiles
-alias df:pull='git -C "$DOTFILES" pull'                     # Pull latest changes in dotfiles
-alias df:refresh="$DOTFILES/bin/refresh.zsh"                # Refresh dotfiles
-alias df:reload="source ~/.zshrc"                           # Reload .zshrc configuration
-alias df:setup="$DOTFILES/bin/setup.zsh"                    # Set up dotfiles environment
-alias df:update='github_update_current_branch "$DOTFILES"'  # Update dotfiles current branch
+alias df:cleanup="$DOTFILES/bin/cleanup.zsh"              # Clean up dotfiles
+alias df:commit="commit_dot_files"                        # Commit and push changes in dotfiles
+alias df:pull="git -C $DOTFILES pull"                     # Pull latest changes in dotfiles
+alias df:refresh="$DOTFILES/bin/refresh.zsh"              # Refresh dotfiles
+alias df:reload="source $HOME/.zshrc"                     # Reload .zshrc configuration
+alias df:setup="$DOTFILES/bin/setup.zsh"                  # Set up dotfiles environment
+alias df:update="github_update_current_branch $DOTFILES"  # Update dotfiles current branch
 
 # ============================ Git ============================ #
 
-alias g:auth='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_personal'           # Authenticate with the personal SSH key
-alias g:auth:team='eval "$(ssh-agent -s)" && ssh-add ~/.ssh/id_ed25519_adhocteam_us'  # Authenticate with the team SSH key
-alias g:base='gco "$(g:default)" && git pull'                                         # Checkout the default branch and pull changes
-alias g:default="github_default_branch"                                               # Get the default branch of the remote repository
-alias g:find:branch='gb -a | grep -i'                                                 # Find a branch by name
-alias g:rb='git fetch origin && git rebase origin/"$(g:default)"'                     # Stash changes, rebase with default branch, and reapply stash
-alias g:repo="github_user_repo"                                                       # Get the user/repo of the remote repository
-alias g:rs:file='gco "$(g:default)" --'                                               # Revert a file to the state of the default branch
-alias g:rs='git reset origin/"$(g:default)"'                                          # Reset to the state of the remote default branch
-alias g:undo="git reset --soft HEAD~1"                                                # Undo the last commit, keeping changes in the working directory
-alias g:update="git stash -u && g:rb && git push -f"                                  # Rebase with default branch and force push
-alias g:wip="ga . && gc --no-verify -m 'WIP'"                                         # Commit all changes under a 'WIP' message without verification
-alias g:yolo="git push origin master --force --no-verify"                             # Force push changes to master without verification
+alias g:auth="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_personal"           # Authenticate with the personal SSH key
+alias g:auth:team="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_adhocteam_us"  # Authenticate with the team SSH key
+alias g:base='gco "$(g:default)" && git pull'                                           # Checkout the default branch and pull changes
+alias g:default="github_default_branch"                                                 # Get the default branch of the remote repository
+alias g:find:branch="gb -a | grep -i"                                                   # Find a branch by name
+alias g:rb='git fetch origin && git rebase origin/"$(g:default)"'                       # Stash changes, rebase with default branch, and reapply stash
+alias g:repo="github_user_repo"                                                         # Get the user/repo of the remote repository
+alias g:rs:file='gco "$(g:default)" --'                                                 # Revert a file to the state of the default branch
+alias g:rs='git reset origin/"$(g:default)"'                                            # Reset to the state of the remote default branch
+alias g:undo="git reset --soft HEAD~1"                                                  # Undo the last commit, keeping changes in the working directory
+alias g:update="git stash -u && g:rb && git push -f"                                    # Rebase with default branch and force push
+alias g:wip="ga . && gc --no-verify -m 'WIP'"                                           # Commit all changes under a 'WIP' message without verification
+alias g:yolo="git push origin master --force --no-verify"                               # Force push changes to master without verification
 
 # =========================== GitHub ========================== #
 
@@ -80,17 +93,17 @@ alias brewfile="brew bundle dump --file=$DOTFILES/brew/Brewfile --force"  # Gene
 
 # ========================= Navigation ======================== #
 
-alias nav:df='cd "$DOTFILES"'                 # Navigate to dotfiles directory
-alias nav:repos="cd $HOME/repos"              # Navigate to repos directory
-alias nav:personal="cd $HOME/repos/personal"  # Navigate to personal directory
-alias nav:work="cd $HOME/repos/ad_hoc"        # Navigate to work directory
-alias nav:tb='cd "$TOOLBOX"'                  # Navigate to toolbox directory
+alias nv:df="cd $DOTFILES"              # Navigate to dotfiles directory
+alias nv:repos="cd $HOME/repos"         # Navigate to repos directory
+alias nv:personal="cd $PERSONAL_REPOS"  # Navigate to personal directory
+alias nv:work="cd $WORK_REPOS"          # Navigate to work directory
+alias nv:tb="cd $TOOLBOX"               # Navigate to toolbox directory
 
 # ======================== Productivity ======================= #
 
 alias c="clear"                            # Clear terminal screen
 alias serve="python3 -m http.server 8000"  # Start Python HTTP server
-alias todo="$EDITOR ~/.todo"               # Open todo file in editor
+alias todo="$EDITOR ${HOME}/.todo"               # Open todo file in editor
 
 # =========================== Rails =========================== #
 
@@ -103,23 +116,20 @@ alias r:foreman="ruby_start_foreman"                   # Start Foreman with bin/
 alias r:migrate="rails_run_migrations"                 # Run pending migrations
 alias r:server="start_rails_server"                    # Start Rails server
 alias r:servers="lsof -wni tcp:3000"                   # List services on port 3000
-alias r:spec="rails_run_rspec_tests"                   # Run RSpec tests
+alias r:spec="run_specs"                               # Run RSpec test for given directory or file
+alias r:specs="rails_run_rspec_tests"                  # Run RSpec tests
 alias r:tests="rails_run_tests"                        # Run Minitest tests
 
 # ========================== Utility ========================== #
 
-alias awsume=". awsume"                                                      # Source awsume to assume AWS roles easily
-alias chrome="open -a 'Google Chrome'"                                       # Open Google Chrome
-alias cht="sh $DOTFILES/bin/.local/scripts/tmux-cht.sh"                      # Run tmux cheat sheet script
-alias cpwd="pwd | pbcopy"                                                    # Copy current working directory to clipboard
-alias gem:edit="ruby_edit_gem"                                               # Open a gem in the editor
-alias nato="echo 'A Alpha\nB Bravo\nC Charlie\nD Delta\nE Echo\nF Foxtrot\
-  \nG Golf\nH Hotel\nI India\nJ Juliet\nK Kilo\nL Lima\nM Mike\nN November\
-  \nO Oscar\nP Papa\nQ Quebec\nR Romeo\nS Sierra\nT Tango\nU Uniform\
-  \nV Victor\nW Whiskey\nX X-ray\nY Yankee\nZ Zulu'"                         # Display NATO phonetic alphabet
-alias path='echo $PATH | tr -s ":" "\n"'                                     # Display PATH directories, each on a new line
-alias pp="python -m json.tool"                                               # Pretty-print JSON using Python’s JSON tool
-alias toolbox="BUNDLE_GEMFILE=~/Gemfile.global bundle exec toolbox"
+alias awsume=". awsume"                                                    # Source awsume to assume AWS roles easily
+alias chrome="open_chrome"                                                 # Open Google Chrome
+alias cpwd="pwd | pbcopy"                                                  # Copy current working directory to clipboard
+alias gem:edit="ruby_edit_gem"                                             # Open a gem in the editor
+alias nato="print_nato_alphabet"                                           # Display NATO phonetic alphabet
+alias path='echo $PATH | tr -s ":" "\n"'                                   # Display PATH directories, each on a new line
+alias pp="python -m json.tool"                                             # Pretty-print JSON using Python’s JSON tool
+alias toolbox="BUNDLE_GEMFILE=${HOME}/Gemfile.global bundle exec toolbox"  # Run Toolbox with global Gemfile
 
 # ============================ Unix =========================== #
 

@@ -2,6 +2,8 @@
 
 source 'https://rubygems.org'
 
+gem 'bundler'
+
 # Debugging and Console Tools
 gem 'pry'
 gem 'pry-byebug'
@@ -17,9 +19,9 @@ gem 'colorize'
 # gem 'fileutils'
 
 # Performance Monitoring and Testing
+gem 'rspec'
 gem 'rubocop'
 # gem 'benchmark-ips'
-# gem 'rspec'
 
 # File and Data Management
 gem 'nokogiri'

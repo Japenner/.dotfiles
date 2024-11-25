@@ -82,6 +82,40 @@ ruby_run_code_quality_checks() {
   bundle exec rspec
 }
 
+# Run RSpec tests after installing dependencies
+ruby_run_rspec_tests() {
+  ruby_install_dependencies
+  bundle exec rspec
+}
+
+ruby_run_specific_specs() {
+  if [ -z "$1" ]; then
+    echo "Usage: run_specs <directory_or_file> [rspec_options]"
+    return 1
+  fi
+
+  search_path=$1
+  shift
+  spec_files=$(find . -type f -path "*/$search_path/*_spec.rb" 2>/dev/null)
+
+  if [ -z "$spec_files" ]; then
+    echo "No spec files found matching the path: $search_path"
+    return 1
+  fi
+
+  echo "Running specs for:"
+  echo "$spec_files"
+
+  ruby_install_dependencies
+  # bundle exec rspec "$(find . -type f -path "*/$search_path/*_spec.rb")" "$@"
+  bundle exec rspec "$spec_files" "$@"
+
+  if [ $? -ne 0 ]; then
+    echo "RSpec encountered an error. Verify the files and configurations."
+    return 1
+  fi
+}
+
 # Reset the database for a given environment (default: development)
 rails_reset_database() {
   local env="${1:-development}"
@@ -112,10 +146,4 @@ rails_start_server() {
 rails_run_tests() {
   ruby_install_dependencies
   bundle exec rails test
-}
-
-# Run Rails tests after installing dependencies
-rails_run_rspec_tests() {
-  ruby_install_dependencies
-  bundle exec rspec
 }
