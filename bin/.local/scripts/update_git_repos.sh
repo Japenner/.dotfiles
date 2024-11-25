@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Base directory where all your Git repositories are located
-BASE_DIR="$HOME/repos"
+BASE_DIR="$REPOS"
 
 # Function to find the primary branch of a git repository
 get_primary_branch() {

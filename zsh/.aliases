@@ -93,17 +93,18 @@ alias brewfile="brew bundle dump --file=$DOTFILES/brew/Brewfile --force"  # Gene
 
 # ========================= Navigation ======================== #
 
-alias nv:df="cd $DOTFILES"              # Navigate to dotfiles directory
-alias nv:repos="cd $HOME/repos"         # Navigate to repos directory
-alias nv:personal="cd $PERSONAL_REPOS"  # Navigate to personal directory
-alias nv:work="cd $WORK_REPOS"          # Navigate to work directory
-alias nv:tb="cd $TOOLBOX"               # Navigate to toolbox directory
+alias nv:ansible="cd $PERSONAL_REPOS/ansible"  # Navigate to ansible directory
+alias nv:df="cd $DOTFILES"                     # Navigate to dotfiles directory
+alias nv:repos="cd $REPOS"                     # Navigate to repos directory
+alias nv:personal="cd $PERSONAL_REPOS"         # Navigate to personal repos directory
+alias nv:work="cd $WORK_REPOS"                 # Navigate to work repos directory
+alias nv:tb="cd $TOOLBOX"                      # Navigate to toolbox directory
 
 # ======================== Productivity ======================= #
 
 alias c="clear"                            # Clear terminal screen
 alias serve="python3 -m http.server 8000"  # Start Python HTTP server
-alias todo="$EDITOR ${HOME}/.todo"               # Open todo file in editor
+alias todo="$EDITOR $HOME/.todo"         # Open todo file in editor
 
 # =========================== Rails =========================== #
 

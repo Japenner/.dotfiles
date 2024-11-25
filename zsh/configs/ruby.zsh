@@ -6,10 +6,10 @@ if ! gem list -i bundler &>/dev/null; then
     gem install bundler
 fi
 
-BUNDLE_GEMFILE=~/Gemfile.global bundle install
+BUNDLE_GEMFILE=$HOME/Gemfile.global bundle install
 
 # Install toolbox dependencies if my toolbox is present
-TOOLBOX=$HOME/repos/personal/jacobs_toolbox
+TOOLBOX=$PERSONAL_REPOS/jacobs_toolbox
 # if [ -d $TOOLBOX ]; then
 #     echo "Installing toolbox dependencies..."
 #     cd $TOOLBOX

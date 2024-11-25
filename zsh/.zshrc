@@ -11,17 +11,23 @@ fi
 
 # ======================= Initial Setup ======================= #
 
+# Set up directory navigation shortcuts
+export DOTFILES="$HOME/.dotfiles"
+export REPOS=$HOME/repos
+export PERSONAL_REPOS=$REPOS/personal
+export WORK_REPOS=$REPOS/ad_hoc
+
 # Load custom functions if any exist
-for file in ~/.dotfiles/zsh/functions/*(.N); do
+for file in $DOTFILES/zsh/functions/*(.N); do
   source "$file"
 done
 
 # ===================== OS Specific Setup ===================== #
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-  source ~/.dotfiles/zsh/.zshrc.macos
+  source $DOTFILES/zsh/.zshrc.macos
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  source ~/.dotfiles/zsh/.zshrc.linux
+  source $DOTFILES/zsh/.zshrc.linux
 fi
 
 # ========================= Oh My Zsh ========================= #
@@ -52,7 +58,7 @@ source "$ZSH/oh-my-zsh.sh"
 # ===================== Zsh Configuration ===================== #
 
 # Load all .zsh configuration files from the configs directory
-for config_file in ~/.dotfiles/zsh/configs/*(.N); do
+for config_file in $DOTFILES/zsh/configs/*(.N); do
   source "$config_file"
 done
 
@@ -66,7 +72,7 @@ done
 [ -f ~/.aliases ] && source ~/.aliases
 
 # Load all local machine specific .zsh configuration files
-for local_config_file in ~/.dotfiles/zsh/local/*(.N); do
+for local_config_file in $DOTFILES/zsh/local/*(.N); do
   source "$local_config_file"
 done
 

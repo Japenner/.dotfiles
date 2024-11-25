@@ -13,8 +13,3 @@ DIRSTACKSIZE=5 # Limit directory stack to 5 entries
 # Make directory stack navigation easier with helpful aliases
 alias d='dirs -v' # Display the directory stack
 alias 1='cd -1'   # Quick access to recent directories
-
-# Set up directory navigation shortcuts
-export REPOS=$HOME/repos
-export PERSONAL_REPOS=$REPOS/personal
-export WORK_REPOS=$REPOS/ad_hoc
