@@ -36,3 +36,4 @@ gem 'thor'
 
 # My Gems
 gem 'jacobs_toolbox', path: File.expand_path("#{ENV['PERSONAL_REPOS']}/jacobs_toolbox")
+gem 'yt_dlp_wrapper', path: File.expand_path("#{ENV['PERSONAL_REPOS']}/yt_dlp_wrapper")
