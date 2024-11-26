@@ -2,7 +2,7 @@
 
 [push]
 	autoSetupRemote = true
-	default = simple
+	default = current
 
 [pull]
 	rebase = true
@@ -10,6 +10,7 @@
 # Specify the global .gitignore file
 [core]
 	excludesfile = ~/.gitignore_global
+	editor = code --wait
 
 # Add conditional configurations for multiple accounts
 [includeIf "gitdir:$WORK_REPOS/va/"]
