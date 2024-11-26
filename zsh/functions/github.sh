@@ -19,9 +19,20 @@ github_default_branch() {
 # Get the GitHub repository URL in HTTPS format, removing any custom SSH host aliases
 github_project_root() {
   local file_path=${1:-$(pwd)}
-  git -C "$file_path" config remote.origin.url | \
-    sed -E 's|git@([^:]+):(.+)|https://\1/\2|; s|\.git$||' | \
-    sed 's|github\.com-(work|personal)|github.com|'
+  local url=$(git -C "$file_path" config remote.origin.url)
+
+  # Ensure the URL is non-empty
+  if [[ -z "$url" ]]; then
+    echo "Error: Unable to determine GitHub project root." >&2
+    return 1
+  fi
+
+  # Escape special characters and transform URL
+  echo "$url" |
+    sed -E 's|git@([^:]+):(.+)|https://\1/\2|' | # Convert SSH to HTTPS
+    sed -E 's|\.git$||' |                        # Remove `.git` suffix
+    sed -E 's|github\.com-work|github.com|' |    # Normalize host alias
+    sed -E 's|github\.com-personal|github.com|'  # Normalize host alias
 }
 
 # Open the GitHub compare page between the current branch and default branch in the browser
@@ -32,6 +43,19 @@ github_compare_current_branch() {
   local default_branch=$(github_default_branch "$file_path")
 
   ${open_cmd} "${project_root}/compare/${default_branch}...${current_branch}?expand=1"
+}
+
+# Open the current GitHub repository in the default browser
+github_open_current_repo() {
+  local file_path=${1:-$(pwd)}
+  local project_root=$(github_project_root "$file_path")
+
+  if [[ -n "$project_root" ]]; then
+    ${open_cmd} "${project_root}"
+  else
+    echo "Error: Unable to open GitHub project root." >&2
+    return 1
+  fi
 }
 
 # Open the current branch's view of a specific file or directory in GitHub
@@ -58,6 +82,32 @@ github_update_current_branch() {
 # Get the GitHub username and repository name in the format "user/repo"
 github_user_repo() {
   local file_path=${1:-$(pwd)}
-  git -C "$file_path" remote get-url origin | \
+  git -C "$file_path" remote get-url origin |
     sed -E 's|.*[:/]([^/]+/[^/]+)\.git$|\1|; s|.*[:/]([^/]+/[^/]+)$|\1|'
+}
+
+# Force commit all changes in the current branch of the given repository
+github_force_commit_changes() {
+  local file_path=${1:-$(pwd)}
+
+  # Add a timestamp to the commit message
+  local timestamp
+  timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+  local commit_message="[AUTOMATED] feat: misc changes - $timestamp"
+
+  # Change to file_path directory
+  pushd "$file_path" >/dev/null || {
+    echo "Error: Could not access directory."
+    return 1
+  }
+
+  # Add and commit changes
+  git add .
+  git commit -m "$commit_message" || echo "No changes to commit in provided path."
+
+  # Ensure branch is up-to-date with remote & force push changes
+  github_update_current_branch "$file_path"
+
+  # Return to the original directory
+  popd >/dev/null || exit
 }
