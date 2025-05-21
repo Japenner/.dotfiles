@@ -15,7 +15,7 @@ fi
 export DOTFILES="$HOME/.dotfiles"
 export REPOS=$HOME/repos
 export PERSONAL_REPOS=$REPOS/personal
-export WORK_REPOS=$REPOS/ad_hoc
+export WORK_REPOS=$REPOS/$WORK_DIR
 
 # Load custom functions if any exist
 for file in $DOTFILES/zsh/functions/*(.N); do
@@ -32,28 +32,10 @@ fi
 
 # ========================= Oh My Zsh ========================= #
 
-export ZSH="$HOME/.oh-my-zsh"           # Path to Oh My Zsh installation
-ZSH_THEME="powerlevel10k/powerlevel10k" # Set theme to Powerlevel10k
-ZSH_TMUX_AUTOSTART="true"               # Auto-start tmux with Zsh
-
-# Plugins for Oh My Zsh
-plugins=(
-  ansible
-  asdf
-  git
-  node
-  ruby
-  docker
-  zsh-autosuggestions
-  zsh-completions
-  zsh-syntax-highlighting
-  history
-  fzf
-  z
-)
-
-# Load Oh My Zsh
-source "$ZSH/oh-my-zsh.sh"
+# Load all Oh My Zsh related files from the oh-my-zsh directory
+for omz_file in $DOTFILES/zsh/oh-my-zsh/*(.N); do
+  source "$omz_file"
+done
 
 # ===================== Zsh Configuration ===================== #
 
@@ -76,17 +58,7 @@ for local_config_file in $DOTFILES/zsh/local/*(.N); do
   source "$local_config_file"
 done
 
-export PYTHON=$(asdf which python3)
-export RUBY=$(asdf which ruby)
-
-if [[ "$OSTYPE" == "darwin"* ]]; then
-  # Docker Desktop
-  source "$HOME/.docker/init-zsh.sh" || true
-fi
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-  . "$HOME/.asdf/asdf.sh"
-fi
+[[ "$OSTYPE" == "linux-gnu"* ]] && . "$HOME/.asdf/asdf.sh"
