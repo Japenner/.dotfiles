@@ -20,7 +20,7 @@ docker_build() {
 
 # Remove dangling images that are not tagged and not associated with any container.
 docker_clean_dangling_images() {
-  docker rmi "$(docker images -q -f dangling=true)"
+  docker rmi $(docker images -q -f dangling=true)
 }
 
 # Display Docker disk usage statistics.
@@ -53,7 +53,7 @@ docker_inspect() {
 
 # Kill all running Docker containers.
 docker_kill_all() {
-  docker kill "$(docker ps -q)"
+  docker kill $(docker ps -q)
 }
 
 # Stream logs from a Docker container by name or ID.
@@ -100,7 +100,7 @@ docker_restart() {
     osascript -e 'quit app "Docker"' && open -a Docker
   elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Linux
-    if command -v systemctl &> /dev/null; then
+    if command -v systemctl &>/dev/null; then
       sudo systemctl restart docker
     else
       echo "Systemd is not available. Please restart the Docker service manually."
@@ -123,7 +123,7 @@ docker_restart_container() {
 
 # Remove all stopped containers.
 docker_rm_stopped() {
-  docker rm "$(docker ps -a -q -f status=exited)"
+  docker rm $(docker ps -a -q -f status=exited)
 }
 
 # Save a Docker image to a file.
@@ -137,8 +137,8 @@ docker_save() {
 
 # Stop and remove all Docker containers, images, and dangling volumes.
 docker_wipe() {
-  docker stop "$(docker ps -a -q)" &&
-  docker rm "$(docker ps -a -q)" &&
-  docker rmi "$(docker images -q)" &&
-  docker volume rm "$(docker volume ls -qf dangling=true)"
+  docker stop $(docker ps -a -q) &&
+    docker rm $(docker ps -a -q) &&
+    docker rmi $(docker images -q) &&
+    docker volume rm $(docker volume ls -qf dangling=true)
 }

@@ -6,12 +6,12 @@
 # Provide credentials based on the repository path
 case "$(pwd)" in
 "$PERSONAL_REPOS"/*)
-    echo "username=japenner"
+    echo "username=$GITHUB_USERNAME_PERSONAL"
     echo "password=$GITHUB_PAT_PERSONAL"
     ;;
 "$WORK_REPOS"/va/*)
-    echo "username=pennja"
-    echo "password=$GITHUB_PAT_AD_HOC"
+    echo "username=$GITHUB_USERNAME_WORK"
+    echo "password=$GITHUB_PAT_WORK"
     ;;
 *)
     echo "No matching credentials"

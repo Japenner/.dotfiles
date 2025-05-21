@@ -15,7 +15,7 @@ fi
 export DOTFILES="$HOME/.dotfiles"
 export REPOS=$HOME/repos
 export PERSONAL_REPOS=$REPOS/personal
-export WORK_REPOS=$REPOS/ad_hoc
+export WORK_REPOS=$REPOS/$WORK_DIR
 
 # Load custom functions if any exist
 for file in $DOTFILES/zsh/functions/*(.N); do
