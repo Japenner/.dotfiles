@@ -14,14 +14,10 @@ A comprehensive setup for managing my development environment across multiple ma
 - **local scripts**:
     - Contains personal utility scripts designed for various automation and productivity tasks. These scripts are directly executable from the terminal and facilitate quick actions without needing to reference complex commands.
 
-### brew
+### homebrew
 
-- **Brewfile**:
-    - The primary file listing all Homebrew packages, casks, and applications to be installed. It ensures all macOS environments have consistent tooling and dependencies.
-- **Brewfile.new**:
-    - A work-in-progress Brewfile for testing or updating Homebrew dependencies without affecting the main Brewfile. Useful for testing new tool versions or setups.
-- **Brewfile.organized**:
-    - A categorized Brewfile that organizes dependencies by type (e.g., development tools, system utilities) to improve readability and maintainability.
+- **Brewfile Backups**:
+    - Periodically backed up Brewfiles, in case I need to revert to a previous setup.
 
 ### git
 

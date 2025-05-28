@@ -1,85 +1,66 @@
-# Taps
 tap "heroku/brew"
 tap "homebrew/bundle"
 tap "homebrew/services"
 tap "oven-sh/bun"
 tap "thoughtbot/formulae"
-
-# Core Libraries
-brew "libyaml"
-brew "libtiff"
-brew "little-cms2"
-brew "jpeg-xl"
-brew "aom"
-brew "gmp"
-brew "coreutils"
-brew "openssl@1.1" # Only include if still necessary
-
-# Development Tools
 brew "ansible"
+brew "aom"
 brew "asdf" # for managing multiple language versions (Python, Node, etc.)
 brew "autossh"
-brew "awscli"
 brew "aws-vault"
+brew "awscli"
 brew "awsume"
 brew "chamber"
+brew "coreutils"
 brew "curl"
-brew "docker", link: false # CLI only, pair with cask "docker"
 brew "docker-compose", link: false
-brew "git"
-brew "gh"   # GitHub CLI
-brew "gron" # JSON processor
-brew "jq"   # JSON query tool
+brew "docker", link: false # CLI only, pair with cask "docker"
+brew "docutils" # Python documentation tools
 brew "fzf"  # Fuzzy finder
-brew "stow" # Dotfiles manager
-brew "tmux" # Terminal multiplexer
-brew "wget"
-
-# Python Versions (consider managing with asdf instead)
-brew "python@3.12" # Remove older versions if not strictly needed
-brew "python@3.10"
-brew "python@3.9"
-
-# Java and JVM Tools
+brew "gh"   # GitHub CLI
+brew "git"
+brew "gmp"
+brew "gnupg", link: false # GPG tool
+brew "gron" # JSON processor
+brew "htop" # Process viewer
+brew "imagemagick" # Image processing
+brew "jpeg-xl"
+brew "jq"   # JSON query tool
+brew "jsonpp" # JSON pretty printer
+brew "lazydocker" # Docker management UI
+brew "lazygit" # Interactive Git tool
+brew "libpq", link: true # PostgreSQL libraries
+brew "libtiff"
+brew "libyaml"
+brew "little-cms2"
+brew "neofetch" # System info tool
+brew "neovim" # Vim-compatible editor
+brew "numpy" # Numerical Python library
+brew "oath-toolkit" # OATH one-time passwords
+brew "openblas" # Linear algebra library
 brew "openjdk"
 brew "openjdk@11"
-
-# Database and CLI Tools
-brew "libpq", link: true # PostgreSQL libraries
-brew "pgcli" # CLI for PostgreSQL
-brew "redis", restart_service: true # In-memory data structure store
-
-# Monitoring and Utilities
-brew "htop" # Process viewer
-brew "neofetch" # System info tool
-brew "lazydocker" # Docker management UI
+brew "openssl@1.1" # Only include if still necessary
 brew "osx-cpu-temp" # CPU temperature
-brew "ripgrep" # Fast file search
-brew "lazygit" # Interactive Git tool
-brew "tree" # Directory listing
-
-# Miscellaneous Utilities
-brew "tldr" # Simplified man pages
-brew "starship" # Prompt customization
-brew "rcm" # Dotfiles manager
-brew "unbound" # DNS resolver
-brew "gnupg", link: false # GPG tool
-brew "oath-toolkit" # OATH one-time passwords
-brew "vpn-slice" # VPN management
-
-# Text Processing Tools
-brew "docutils" # Python documentation tools
-brew "jsonpp" # JSON pretty printer
-brew "python-tabulate" # Pretty print tables in Python
+brew "pgcli" # CLI for PostgreSQL
 brew "poppler" # PDF tools
-brew "imagemagick" # Image processing
-
-# Machine Learning and Scientific Libraries
-brew "openblas" # Linear algebra library
-brew "numpy" # Numerical Python library
+brew "python-tabulate" # Pretty print tables in Python
+brew "python@3.10"
+brew "python@3.12" # Remove older versions if not strictly needed
+brew "python@3.9"
+brew "rcm" # Dotfiles manager
+brew "redis", restart_service: true # In-memory data structure store
+brew "ripgrep" # Fast file search
+brew "starship" # Command-line prompt
+brew "starship" # Prompt customization
+brew "stow" # Dotfiles manager
 brew "tesseract" # OCR engine
-
-# Applications (cask)
+brew "tldr" # Simplified man pages
+brew "tmux" # Terminal multiplexer
+brew "tree" # Directory listing
+brew "unbound" # DNS resolver
+brew "vpn-slice" # VPN management
+brew "wget"
 cask "alfred" # Productivity app
 cask "amethyst" # Window manager
 cask "barrier" # Mouse/keyboard sharing
@@ -90,15 +71,9 @@ cask "gpg-suite" # GPG tools for macOS
 cask "postgres-unofficial" # PostgreSQL app
 cask "postman" # API client
 cask "slack" # Communication tool
+cask "talon" # Accessibility tool
 cask "the-unarchiver" # Archive tool
 cask "zoom" # Video conferencing
-
-# Fonts and Appearance
-brew "neovim" # Vim-compatible editor
-brew "starship" # Command-line prompt
-cask "talon" # Accessibility tool
-
-# VS Code Extensions
 vscode "akamud.vscode-theme-onedark"
 vscode "alexcvzz.vscode-sqlite"
 vscode "aliariff.vscode-erb-beautify"
@@ -150,8 +125,8 @@ vscode "ms-python.isort"
 vscode "ms-python.python"
 vscode "ms-python.vscode-pylance"
 vscode "ms-vscode-remote.remote-containers"
-vscode "ms-vscode-remote.remote-ssh"
 vscode "ms-vscode-remote.remote-ssh-edit"
+vscode "ms-vscode-remote.remote-ssh"
 vscode "ms-vscode-remote.remote-wsl"
 vscode "ms-vscode-remote.vscode-remote-extensionpack"
 vscode "ms-vscode.makefile-tools"

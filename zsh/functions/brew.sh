@@ -26,11 +26,11 @@ check_non_homebrew_apps() {
   total_apps=${#non_homebrew_apps[@]}
   brew_available_apps=()
   brew_unavailable_apps=()
-  for (( i=0; i<total_apps; i++ )); do
+  for ((i = 0; i < total_apps; i++)); do
     app="${non_homebrew_apps[$i]}"
 
     # Calculate and display the completion percentage
-    percentage=$(( (i + 1) * 100 / total_apps ))
+    percentage=$(((i + 1) * 100 / total_apps))
     echo "Checking $app... ($percentage% complete)"
 
     if brew search --cask "^$app$" >/dev/null; then
@@ -115,4 +115,17 @@ reinstall_apps_with_homebrew() {
   done
 
   echo "All specified apps have been processed."
+}
+
+# Generate a new Brewfile backup with a unique timestamp
+generate_brewfile_backup() {
+  local timestamp=$(date +"%Y%m%d_%H%M%S")
+  local backup_file="$DOTFILES/homebrew/Brewfile_backup_$timestamp"
+
+  if command -v brew >/dev/null; then
+    brew bundle dump --file="$backup_file" --force
+    echo "Brewfile backup created at $backup_file"
+  else
+    echo "Homebrew is not installed. Cannot create Brewfile backup."
+  fi
 }

@@ -4,6 +4,30 @@
 open_cmd="open"
 command -v open >/dev/null 2>&1 || open_cmd="xdg-open"
 
+# Commit all changes in the current branch of the given repository with a WIP message
+github_commit_wip() {
+  # Set the default file path to the current directory if not provided
+  local file_path=${1:-$(pwd)}
+
+  # Add a timestamp to the commit message
+  local timestamp
+  timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+  local commit_message="[AUTOMATED] WIP - $timestamp"
+
+  # Change to file_path directory
+  pushd "$file_path" >/dev/null || {
+    echo "Error: Could not access directory."
+    return 1
+  }
+
+  # Add and commit changes
+  git add .
+  git commit -m "$commit_message" || echo "No changes to commit in provided path."
+
+  # Return to the original directory
+  popd >/dev/null || exit
+}
+
 # Get the current branch for a given path (default: current directory)
 github_current_branch() {
   local file_path=${1:-$(pwd)}
@@ -110,4 +134,44 @@ github_force_commit_changes() {
 
   # Return to the original directory
   popd >/dev/null || exit
+}
+
+# Copy the diff of the current pull request
+github_copy_diff() {
+  # Ensure the current directory is a Git repository
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "Error: Not inside a Git repository." >&2
+    return 1
+  fi
+
+  # Ensure the current branch is a pull request
+  if ! git rev-parse --verify HEAD >/dev/null 2>&1; then
+    echo "Error: No current branch." >&2
+    return 1
+  fi
+
+  # Ensure the pull request number is provided
+  if [[ -z "$1" ]]; then
+    echo "Usage: github_copy_diff <pull_request_number>" >&2
+    return 1
+  fi
+
+  # Check if the `gh` CLI is installed
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "Error: GitHub CLI (gh) is not installed." >&2
+    return 1
+  fi
+
+  # Ensure the user is authenticated with GitHub CLI
+  if ! gh auth status >/dev/null 2>&1; then
+    echo "Error: Not authenticated with GitHub CLI." >&2
+    return 1
+  fi
+
+  clipboard_cmd=$(set_clipboard_command)
+
+  # Copy the diff of the specified pull request to the clipboard
+  gh pr diff 214 | clipboard_cmd
+  echo "Diff of pull request #$1 copied to clipboard."
+  return 0
 }

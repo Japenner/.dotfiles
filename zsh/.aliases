@@ -67,7 +67,7 @@ alias g:rs:file='gco "$(g:default)" --'                                         
 alias g:rs='git reset origin/"$(g:default)"'                                           # Reset to the state of the remote default branch
 alias g:undo="git reset --soft HEAD~1"                                                 # Undo the last commit, keeping changes in the working directory
 alias g:update="git stash -u && g:rb && git push -f"                                   # Rebase with default branch and force push
-alias g:wip="ga . && gc --no-verify -m 'WIP'"                                          # Commit all changes under a 'WIP' message without verification
+alias g:wip="github_commit_wip"                                                        # Commit all changes under a 'WIP' message without verification
 alias g:yolo="git push origin master --force --no-verify"                              # Force push changes to master without verification
 
 # =========================== GitHub ========================== #
@@ -90,7 +90,7 @@ alias yarn:clean="rm -rf node_modules && yarn cache clean && yarn install" # Cle
 
 # ============================ MacOS ========================== #
 
-alias brewfile="brew bundle dump --file=$DOTFILES/brew/Brewfile --force" # Generate a new Brewfile backup
+alias brew:dump="generate_brewfile_backup" # Generate a new Brewfile backup
 
 # ========================= Navigation ======================== #
 
