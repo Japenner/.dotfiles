@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 tap "ankitpokhrel/jira-cli"
 tap "heroku/brew"
 tap "homebrew/bundle"

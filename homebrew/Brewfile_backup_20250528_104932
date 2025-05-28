@@ -1,3 +1,5 @@
+#!/usr/bin/env ruby
+
 tap "ankitpokhrel/jira-cli"
 tap "microsoft/mssql-release"
 brew "asdf"
