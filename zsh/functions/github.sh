@@ -171,7 +171,7 @@ github_copy_diff() {
   clipboard_cmd=$(set_clipboard_command)
 
   # Copy the diff of the specified pull request to the clipboard
-  gh pr diff 214 | clipboard_cmd
+  gh pr diff $1 | clipboard_cmd
   echo "Diff of pull request #$1 copied to clipboard."
   return 0
 }
