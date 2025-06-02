@@ -168,10 +168,16 @@ github_copy_diff() {
     return 1
   fi
 
-  clipboard_cmd=$(set_clipboard_command)
+  set_clipboard_command || return 1
 
   # Copy the diff of the specified pull request to the clipboard
-  gh pr diff $1 | clipboard_cmd
+  gh pr diff $1 | $clipboard_cmd
+
+  if [[ $? -ne 0 ]]; then
+    echo "Error: Failed to copy diff to clipboard." >&2
+    return 1
+  fi
+
   echo "Diff of pull request #$1 copied to clipboard."
   return 0
 }
