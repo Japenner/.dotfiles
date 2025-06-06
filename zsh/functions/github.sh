@@ -181,3 +181,38 @@ github_copy_diff() {
   echo "Diff of pull request #$1 copied to clipboard."
   return 0
 }
+
+# Prune local branches that are tracking deleted remotes
+github_prune_local_branches() {
+  git fetch --prune
+
+  branches_to_delete=()
+  while IFS= read -r branch; do
+    branches_to_delete+=("$branch")
+  done < <(git branch -vv | awk '!/^\*/ && /: gone]/{print $1}')
+
+  if [[ ${#branches_to_delete[@]} -eq 0 ]]; then
+    echo "No local branches to prune."
+    return 0
+  fi
+
+  echo "The following branches are tracking deleted remotes:"
+  for branch in "${branches_to_delete[@]}"; do
+    echo "  - $branch"
+  done
+
+  echo -n "Delete these branches? (y/N): "
+  read -r confirm
+
+  if [[ "$confirm" =~ ^[Yy]$ ]]; then
+    for branch in "${branches_to_delete[@]}"; do
+      echo "Deleting $branch..."
+      if ! git branch -d "$branch"; then
+        git branch -D "$branch"
+      fi
+    done
+    echo "✅ Branches deleted."
+  else
+    echo "❌ No branches deleted."
+  fi
+}

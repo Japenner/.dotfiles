@@ -61,6 +61,7 @@ alias g:auth:team="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_adhocte
 alias g:base='gco "$(g:default)" && git pull'                                          # Checkout the default branch and pull changes
 alias g:default="github_default_branch"                                                # Get the default branch of the remote repository
 alias g:find:branch="gb -a | grep -i"                                                  # Find a branch by name
+alias g:prune="github_prune_local_branches"                                            # Prune local branches that have been deleted on the remote
 alias g:rb='git fetch origin && git rebase origin/"$(g:default)"'                      # Stash changes, rebase with default branch, and reapply stash
 alias g:repo="github_user_repo"                                                        # Get the user/repo of the remote repository
 alias g:rs:file='gco "$(g:default)" --'                                                # Revert a file to the state of the default branch
