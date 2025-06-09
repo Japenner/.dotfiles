@@ -6,7 +6,13 @@ command -v open >/dev/null 2>&1 || open_cmd="xdg-open"
 
 # Commit all changes in the current branch of the given repository with a WIP message
 github_commit_wip() {
-  # Set the default file path to the current directory if not provided
+  # Capture whether a directory was provided
+  local dir_provided=false
+  if [ -n "$1" ]; then
+    dir_provided=true
+  fi
+
+  # Set the file path to the provided argument or use current directory
   local file_path=${1:-$(pwd)}
 
   # Add a timestamp to the commit message
@@ -14,7 +20,7 @@ github_commit_wip() {
   timestamp=$(date +"%Y-%m-%d %H:%M:%S")
   local commit_message="[AUTOMATED] WIP - $timestamp"
 
-  # Change to file_path directory
+  # Change to the file_path directory
   pushd "$file_path" >/dev/null || {
     echo "Error: Could not access directory."
     return 1
@@ -24,8 +30,10 @@ github_commit_wip() {
   git add .
   git commit -m "$commit_message" || echo "No changes to commit in provided path."
 
-  # Return to the original directory
-  popd >/dev/null || exit
+  # Return to the original directory if it was changed
+  if [ "$dir_provided" = true ]; then
+    popd >/dev/null || exit
+  fi
 }
 
 # Get the current branch for a given path (default: current directory)
