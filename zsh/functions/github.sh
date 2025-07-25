@@ -215,6 +215,7 @@ github_prune_local_branches() {
       if ! git branch -d "$branch"; then
         git branch -D "$branch"
       fi
+      echo ""
     done
     echo "✅ Branches deleted."
   else
