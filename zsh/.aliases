@@ -59,6 +59,7 @@ alias df:update="github_update_current_branch $DOTFILES" # Update dotfiles curre
 alias g:auth="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_personal"          # Authenticate with the personal SSH key
 alias g:auth:team="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_adhocteam_us" # Authenticate with the team SSH key
 alias g:base='gco "$(g:default)" && git pull'                                          # Checkout the default branch and pull changes
+alias g:cw="git_create_worktree"                                                       # Create a new git worktree
 alias g:default="github_default_branch"                                                # Get the default branch of the remote repository
 alias g:find:branch="gb -a | grep -i"                                                  # Find a branch by name
 alias g:prune="github_prune_local_branches"                                            # Prune local branches that have been deleted on the remote
