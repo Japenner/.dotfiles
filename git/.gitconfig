@@ -1,19 +1,26 @@
 # This is Git's per-user configuration file.
 
-[push]
-  autoSetupRemote = true
-  default = current
+[commit]
+  template = ~/.dotfiles/git/.gitmessage.txt
 
-[pull]
-  rebase = true
-
-# This is the global gitignore file.
 [core]
   excludesfile = ~/.dotfiles/git/.gitignore_global
   editor = code --wait
 
-[commit]
-  template = ~/.dotfiles/git/.gitmessage.txt
+[credential]
+  helper = !~/.dotfiles/git/.git-credentials-helper.sh
+
+[diff]
+  algorithm = histogram  # Better diff algorithm
+  colorMoved = default   # Highlight moved code
+  tool = vscode
+
+[difftool "vscode"]
+  cmd = code --wait --diff $LOCAL $REMOTE
+
+[fetch]
+  prune = true          # Remove deleted remote branches
+  parallel = 0          # Use all available cores
 
 # Include additional configuration files based on the repository type
 [includeIf "gitdir:~/repos/**"]
@@ -22,9 +29,31 @@
 [includeIf "gitdir:~/repos/work/**"]
   path = ~/.dotfiles/git/.gitconfig-work
 
-[credential]
-  helper = "!~/.dotfiles/git/.git-credentials-helper.sh"
+[log]
+  date = iso            # Use ISO date format
 
-[user]
-  email = japenner@gmail.com
-  name = Jacob Penner
+[merge]
+  tool = vscode
+  conflictstyle = diff3  # Show common ancestor in conflicts
+
+[mergetool "vscode"]
+  cmd = code --wait $MERGED
+
+[pull]
+  rebase = true
+
+[push]
+  autoSetupRemote = true
+  default = current
+
+[rebase]
+  autoStash = true      # Auto-stash changes before rebase
+  autoSquash = true     # Auto-squash fixup commits
+  updateRefs = true     # Update branch pointers during rebase
+
+[rerere]
+  enabled = true        # Remember conflict resolutions
+
+[status]
+  showUntrackedFiles = all
+  submoduleSummary = true
