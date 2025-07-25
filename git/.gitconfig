@@ -23,7 +23,7 @@
   parallel = 0          # Use all available cores
 
 # Include additional configuration files based on the repository type
-[includeIf "gitdir:~/repos/**"]
+[includeIf "gitdir:~/**"]
   path = ~/.dotfiles/git/.gitconfig-personal
 
 [includeIf "gitdir:~/repos/work/**"]
