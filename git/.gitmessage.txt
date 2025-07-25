@@ -1,0 +1,9 @@
+# Summary (required, one line, imperative mood — e.g., "Fix bug in S3 presigner")
+
+# What changed?
+
+# Why was this change made?
+
+# Any tradeoffs, risks, or alternatives considered?
+
+# Optional: link to PRs, issues, tickets

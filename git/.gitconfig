@@ -1,26 +1,30 @@
 # This is Git's per-user configuration file.
 
 [push]
-	autoSetupRemote = true
-	default = current
+  autoSetupRemote = true
+  default = current
 
 [pull]
-	rebase = true
+  rebase = true
 
-# Specify the global .gitignore file
+# This is the global gitignore file.
 [core]
-	excludesfile = ~/.gitignore_global
-	editor = code --wait
+  excludesfile = ~/.dotfiles/git/.gitignore_global
+  editor = code --wait
 
-# Add conditional configurations for multiple accounts
-[includeIf "gitdir:$WORK_REPOS/va/"]
-    path = $DOTFILES/git/.gitconfig-work
+[commit]
+  template = ~/.dotfiles/git/.gitmessage.txt
 
-[includeIf "gitdir:$PERSONAL_REPOS/"]
-    path = $DOTFILES/git/.gitconfig-personal
+# Include additional configuration files based on the repository type
+[includeIf "gitdir:~/repos/**"]
+  path = ~/.dotfiles/git/.gitconfig-personal
+
+[includeIf "gitdir:~/repos/work/**"]
+  path = ~/.dotfiles/git/.gitconfig-work
 
 [credential]
-    helper = "!$DOTFILES/git/.git-credentials-helper.sh"
+  helper = "!~/.dotfiles/git/.git-credentials-helper.sh"
+
 [user]
-	email = japenner@gmail.com
-	name = Jacob Penner
+  email = japenner@gmail.com
+  name = Jacob Penner
