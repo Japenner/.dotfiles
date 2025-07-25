@@ -78,6 +78,11 @@ git_create_worktree() {
 
   echo "✅ Worktree ready: $target_path"
   echo "💡 Open with: code $target_path"
+
+  cd "$target_path" || {
+    echo "❌ Error: Failed to change directory to $target_path"
+    return 1
+  }
 }
 
 
