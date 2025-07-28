@@ -28,6 +28,7 @@ git_create_worktree() {
   parent_dir=$(dirname "$root_dir")
   local source_path="$root_dir"
   local target_path="$parent_dir/$branch_name"
+  local local_branch="jap/$branch_name"
 
   if [[ -e "$target_path" ]]; then
     echo "❌ Error: Target path already exists at $target_path"
@@ -39,15 +40,15 @@ git_create_worktree() {
   git -C "$source_path" fetch origin
 
   # Determine whether to use local branch or origin fallback
-  if git -C "$source_path" show-ref --verify --quiet "refs/heads/jap/$branch_name"; then
-    echo "🔄 Using local branch 'jap/$branch_name'"
-    with_git_stash git -C "$source_path" worktree add "$target_path" "jap/$branch_name" || return 1
-  elif git -C "$source_path" ls-remote --exit-code --heads origin "jap/$branch_name" >/dev/null 2>&1; then
-    echo "🌱 Creating local branch 'jap/$branch_name' from origin/jap/$branch_name"
-    with_git_stash git -C "$source_path" worktree add "$target_path" -b "jap/$branch_name" "origin/jap/$branch_name" || return 1
+  if git -C "$source_path" show-ref --verify --quiet "refs/heads/$local_branch"; then
+    echo "🔄 Using local branch '$local_branch'"
+    with_git_stash git -C "$source_path" worktree add "$target_path" "$local_branch" || return 1
+  elif git -C "$source_path" ls-remote --exit-code --heads origin "$local_branch" >/dev/null 2>&1; then
+    echo "🌱 Creating local branch '$local_branch' from origin/$local_branch"
+    with_git_stash git -C "$source_path" worktree add "$target_path" -b "$local_branch" "origin/$local_branch" || return 1
   else
-    echo "❌ Error: Branch 'jap/$branch_name' does not exist locally or remotely"
-    return 1
+    echo "🌱 Creating local branch '$local_branch'"
+    with_git_stash git -C "$source_path" worktree add "$target_path" -b "$local_branch" || return 1
   fi
 
   echo "📦 Copying untracked files from $source_path → $target_path"
