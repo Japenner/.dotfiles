@@ -55,7 +55,6 @@ git_create_worktree() {
 
   # Get untracked files, excluding .git directory and other ignored patterns
   local untracked_files
-  # untracked_files=$(git -C "$source_path" ls-files --others --exclude-standard)
   untracked_files=$(git -C . ls-files --others --exclude storybook-static/ --exclude node_modules --exclude build --exclude .DS_Store --exclude dev-dist --exclude "*/.*/")
 
   if [[ -n "$untracked_files" ]]; then
