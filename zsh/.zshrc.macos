@@ -27,6 +27,7 @@ export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:$PATH"
 export PATH="$HOME/.dotfiles/bin/.local/scripts:$PATH"
 export PATH="/usr/local/sbin:$PATH"
 export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
+export PATH="$HOME/.console-ninja/.bin:$PATH"
 
 # --- De-duplicate $PATH entries ---
 export PATH=$(echo "$PATH" | awk -v RS=: '!a[$1]++ {if (NR==1) p=$1; else p=p":"$1} END{print p}')
