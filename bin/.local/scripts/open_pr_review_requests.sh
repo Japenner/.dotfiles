@@ -54,8 +54,6 @@ validate_dependencies() {
 # ----------------------------#
 
 fetch_pending_review_prs() {
-  echo "🔍 Fetching PRs awaiting your review..."
-
   gh search prs "${SEARCH_PARAMS[@]}" \
     --json url,isDraft \
     | jq -r "$JQ_FILTER"
@@ -130,8 +128,21 @@ main() {
   # Validate required tools
   validate_dependencies
 
-  # Fetch PRs awaiting review
-  mapfile -t pr_urls < <(fetch_pending_review_prs)
+  # Show status message
+  echo "🔍 Fetching PRs awaiting your review..."
+
+  # Fetch PRs awaiting review and store in temp file
+  local temp_file=$(mktemp)
+  fetch_pending_review_prs > "$temp_file"
+
+  # Read URLs into array
+  local pr_urls=()
+  while IFS= read -r url; do
+    [[ -n "$url" ]] && pr_urls+=("$url")
+  done < "$temp_file"
+
+  # Clean up temp file
+  rm "$temp_file"
 
   # Open PRs in browser
   open_prs_in_browser "${pr_urls[@]}"
