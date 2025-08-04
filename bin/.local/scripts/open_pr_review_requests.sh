@@ -1,34 +1,143 @@
 #!/bin/bash
 
-# Function to open URLs in Chrome (or the default browser)
-open_urls_in_browser() {
-  first_url="$1"
-  shift
-  other_urls=("$@")
+set -e
 
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    # macOS: Use 'open' with Google Chrome
-    open -na "Google Chrome" --args --new-window "$first_url"
-    for url in "${other_urls[@]}"; do
-      open -na "Google Chrome" --args "$url"
-    done
-  else
-    # Linux: Use 'xdg-open' or 'google-chrome' directly
-    google-chrome --new-window "$first_url" || xdg-open "$first_url"
-    for url in "${other_urls[@]}"; do
-      google-chrome "$url" || xdg-open "$url"
-    done
+# ----------------------------#
+# Constants & Default Values  #
+# ----------------------------#
+
+# Default Arguments
+MAX_PRS=${1:-100}
+BROWSER="Google Chrome"
+
+# GitHub CLI Query Parameters
+SEARCH_PARAMS=(
+  "--review-requested=@me"
+  "--state=open"
+  "--archived=false"
+  "--limit=$MAX_PRS"
+)
+
+# JSON Query for filtering out drafts
+JQ_FILTER='.[] | select(.isDraft == false) | .url'
+
+# ----------------------------#
+# Helper Functions            #
+# ----------------------------#
+
+show_usage() {
+  echo "Usage: $(basename "$0") [max_prs]"
+  echo "  max_prs    Maximum number of PRs to fetch (default: 100)"
+  echo ""
+  echo "Opens all non-draft PRs awaiting your review in browser tabs"
+}
+
+validate_dependencies() {
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "❌ Error: GitHub CLI (gh) is not installed"
+    exit 1
+  fi
+
+  if ! gh auth status >/dev/null 2>&1; then
+    echo "❌ Error: Not authenticated with GitHub CLI"
+    exit 1
+  fi
+
+  if ! command -v jq >/dev/null 2>&1; then
+    echo "❌ Error: jq is not installed"
+    exit 1
   fi
 }
 
-# Fetch PRs requested for review and filter out drafts
-urls=($(gh search prs --review-requested=@me --state=open --archived=false --json url,isDraft --limit=100 |
-  jq -r '.[] | select(.isDraft == false) | .url'))
+# ----------------------------#
+# PR Fetching Functions       #
+# ----------------------------#
 
-# Check if there are any URLs
-if [[ ${#urls[@]} -gt 0 ]]; then
-  # Open the URLs in the browser
-  open_urls_in_browser "${urls[@]}"
-else
-  echo "No open, non-draft PRs found."
+fetch_pending_review_prs() {
+  echo "🔍 Fetching PRs awaiting your review..."
+
+  gh search prs "${SEARCH_PARAMS[@]}" \
+    --json url,isDraft \
+    | jq -r "$JQ_FILTER"
+}
+
+count_prs() {
+  local urls=("$@")
+  echo "${#urls[@]}"
+}
+
+# ----------------------------#
+# Browser Functions           #
+# ----------------------------#
+
+open_url_in_new_window() {
+  local url="$1"
+
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS: Open first URL in new window
+    open -na "$BROWSER" --args --new-window "$url"
+  else
+    # Linux: Use google-chrome or fallback to xdg-open
+    google-chrome --new-window "$url" 2>/dev/null || xdg-open "$url"
+  fi
+}
+
+open_url_in_new_tab() {
+  local url="$1"
+
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS: Open subsequent URLs in new tabs
+    open -na "$BROWSER" --args "$url"
+  else
+    # Linux: Open in new tab
+    google-chrome "$url" 2>/dev/null || xdg-open "$url"
+  fi
+}
+
+open_prs_in_browser() {
+  local urls=("$@")
+  local pr_count=$(count_prs "${urls[@]}")
+
+  if [[ $pr_count -eq 0 ]]; then
+    echo "ℹ️  No PRs awaiting your review"
+    return 0
+  fi
+
+  echo "🌐 Opening $pr_count PR$([ $pr_count -ne 1 ] && echo "s") in browser..."
+
+  # Open first URL in new window
+  open_url_in_new_window "${urls[0]}"
+
+  # Open remaining URLs in new tabs
+  for url in "${urls[@]:1}"; do
+    open_url_in_new_tab "$url"
+  done
+
+  echo "✅ Opened $pr_count PR review$([ $pr_count -ne 1 ] && echo "s")"
+}
+
+# ----------------------------#
+# Main Execution              #
+# ----------------------------#
+
+main() {
+  # Show help if requested
+  if [[ "$1" == "--help" || "$1" == "-h" ]]; then
+    show_usage
+    exit 0
+  fi
+
+  # Validate required tools
+  validate_dependencies
+
+  # Fetch PRs awaiting review
+  mapfile -t pr_urls < <(fetch_pending_review_prs)
+
+  # Open PRs in browser
+  open_prs_in_browser "${pr_urls[@]}"
+}
+
+# Run main function if script is executed directly
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  main "$@"
 fi
