@@ -35,18 +35,24 @@ export PATH=$(echo "$PATH" | awk -v RS=: '!a[$1]++ {if (NR==1) p=$1; else p=p":"
 # Tooling and Plugin Initialization
 # ============================================
 
-# --- asdf Version Manager ---
-if [[ -f "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh" ]]; then
-  . "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh"
-elif [[ -f "$HOME/.asdf/asdf.sh" ]]; then
-  . "$HOME/.asdf/asdf.sh"
-fi
+# --- asdf Version Manager (lazy loaded for performance) ---
+asdf() {
+  unfunction asdf
+  if [[ -f "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh" ]]; then
+    . "$HOMEBREW_PREFIX/opt/asdf/libexec/asdf.sh"
+  elif [[ -f "$HOME/.asdf/asdf.sh" ]]; then
+    . "$HOME/.asdf/asdf.sh"
+  fi
+  [ -f "$HOME/.asdf/completions/asdf.bash" ] && source "$HOME/.asdf/completions/asdf.bash"
+  asdf "$@"
+}
 
-# --- asdf Completions ---
-[ -f "$HOME/.asdf/completions/asdf.bash" ] && source "$HOME/.asdf/completions/asdf.bash"
-
-# --- Docker init (optional) ---
-[ -f "$HOME/.docker/init-zsh.sh" ] && source "$HOME/.docker/init-zsh.sh"
+# --- Docker init (lazy loaded for performance) ---
+docker() {
+  unfunction docker
+  [ -f "$HOME/.docker/init-zsh.sh" ] && source "$HOME/.docker/init-zsh.sh"
+  command docker "$@"
+}
 
 # --- GNU Coreutils (optional, if installed) ---
 if [[ -d "$HOMEBREW_PREFIX/opt/coreutils" ]]; then

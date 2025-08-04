@@ -23,7 +23,7 @@ commit_dot_files() {
   git commit -m "$commit_message" || echo "No changes to commit in dotfiles."
 
   # Ensure branch is up-to-date with remote & force push changes
-  github_update_current_branch "$DOTFILES"
+  git_update_current_branch "$DOTFILES"
 
   # Return to the original directory
   popd >/dev/null || exit

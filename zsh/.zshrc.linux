@@ -20,9 +20,17 @@ export PATH=$(echo "$PATH" | awk -v RS=: '{if (!($0 in a)) {a[$0]; printf "%s%s"
 # OpenSSL paths
 export LIBRARY_PATH="$LIBRARY_PATH:/usr/local/opt/openssl/lib"
 
-# Load asdf if available
-[ -f /usr/local/opt/asdf/asdf.sh ] && source /usr/local/opt/asdf/asdf.sh
-[ -f "$HOME/.asdf/completions/asdf.bash" ] && source "$HOME/.asdf/completions/asdf.bash"
+# Load asdf with lazy loading for performance
+asdf() {
+  unfunction asdf
+  if [ -f /usr/local/opt/asdf/asdf.sh ]; then
+    source /usr/local/opt/asdf/asdf.sh
+  elif [ -f "$HOME/.asdf/asdf.sh" ]; then
+    source "$HOME/.asdf/asdf.sh"
+  fi
+  [ -f "$HOME/.asdf/completions/asdf.bash" ] && source "$HOME/.asdf/completions/asdf.bash"
+  asdf "$@"
+}
 
 # Set default editor to VS Code (ensure `code` command is in PATH)
 export EDITOR="code"

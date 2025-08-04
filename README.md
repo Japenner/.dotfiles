@@ -104,8 +104,7 @@ A comprehensive setup for managing my development environment across multiple ma
         - `dotfiles.sh`: Functions for managing this dotfiles repository.
         - `environment.sh`: Environment variable setup for specific workflows.
         - `files.sh`: Functions for file manipulation.
-        - `git.sh`: Git shortcuts and workflow enhancements.
-        - `github.sh`: Helpers for interacting with GitHub repositories.
+        - `git.sh`: Git shortcuts/workflow enhancements & Helpers for interacting with GitHub repositories.
         - `ruby.sh`: Ruby environment management helpers.
         - `vs-code.sh`: VS Code-related functions, including extension management.
 - **local**:

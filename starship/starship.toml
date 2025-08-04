@@ -1,0 +1,256 @@
+# Starship Configuration
+# https://starship.rs/config/
+
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Inserts a blank line between shell prompts
+add_newline = true
+
+# Modern minimal format
+format = """
+$os\
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_state\
+$git_status\
+$git_metrics\
+$fill\
+$nodejs\
+$python\
+$ruby\
+$golang\
+$rust\
+$docker_context\
+$aws\
+$kubernetes\
+$terraform\
+$cmd_duration\
+$time\
+$line_break\
+$character"""
+
+# Clean continuation prompt
+continuation_prompt = "▶▶ "
+
+[fill]
+symbol = " "
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[❮](bold yellow)"
+
+[username]
+style_user = "bold blue"
+style_root = "bold red"
+format = "[$user]($style)"
+disabled = false
+show_always = false
+
+[hostname]
+ssh_only = true
+format = "[@$hostname](bold yellow) "
+
+[directory]
+style = "cyan bold"
+read_only = " 🔒"
+truncation_length = 3
+truncate_to_repo = true
+format = "[$path]($style)[$read_only]($read_only_style) "
+home_symbol = "~"
+
+[git_branch]
+symbol = "🌱 "
+style = "purple bold"
+format = "[$symbol$branch]($style) "
+truncation_length = 25
+truncation_symbol = "…"
+
+[git_status]
+style = "red bold"
+format = "([$all_status$ahead_behind]($style) )"
+
+ahead = "⇡${count}"
+behind = "⇣${count}"
+conflicted = "⚡"
+deleted = "✘${count}"
+diverged = "⇕⇡${ahead_count}⇣${behind_count}"
+modified = "!${count}"
+renamed = "»${count}"
+staged = '[++\($count\)](green)'
+stashed = "\\$${count}"
+untracked = "?${count}"
+up_to_date = "✓"
+
+[git_state]
+format = '\([$state( $progress_current/$progress_total)]($style)\) '
+style = "bright-black"
+
+[git_metrics]
+added_style = "bold blue"
+deleted_style = "bold red"
+format = "([+$added]($added_style) )([-$deleted]($deleted_style) )"
+disabled = false
+
+[cmd_duration]
+min_time = 2_000
+format = " [$duration](bold yellow)"
+show_milliseconds = false
+
+[time]
+disabled = false
+format = " [$time]($style)"
+time_format = "%H:%M"
+style = "bright-white"
+use_12hr = false
+
+# Language and tool modules
+[nodejs]
+symbol = "⬢ "
+style = "green bold"
+format = "[$symbol($version )]($style)"
+
+[python]
+symbol = "🐍 "
+style = "yellow bold"
+format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+
+[ruby]
+symbol = "💎 "
+style = "red bold"
+format = "[$symbol($version )]($style)"
+
+[rust]
+symbol = "🦀 "
+style = "red bold"
+format = "[$symbol($version )]($style)"
+
+[golang]
+symbol = "🐹 "
+style = "cyan bold"
+format = "[$symbol($version )]($style)"
+
+[docker_context]
+symbol = "🐳 "
+style = "blue bold"
+format = "[$symbol$context]($style) "
+
+[aws]
+symbol = "☁️ "
+style = "bold orange"
+format = '[$symbol($profile )(\($region\) )]($style)'
+
+[kubernetes]
+symbol = "⎈ "
+style = "blue bold"
+format = '[$symbol$context( \($namespace\))]($style) '
+disabled = false
+
+[terraform]
+symbol = "💠 "
+style = "bold purple"
+format = "[$symbol$workspace]($style) "
+
+# Disable the package module, hiding it from the prompt completely
+[package]
+disabled = true
+
+[memory_usage]
+disabled = true
+
+# OS symbol (minimal)
+[os]
+style = "bright-white bold"
+disabled = false
+
+[os.symbols]
+Alpine = "🏔️ "
+Amazon = "🙂 "
+Android = "🤖 "
+Arch = "🎗️ "
+CentOS = "💠 "
+Debian = "🌀 "
+DragonFly = "🐉 "
+Emscripten = "🔗 "
+EndeavourOS = "🚀 "
+Fedora = "🎩 "
+FreeBSD = "😈 "
+Garuda = "🦅 "
+Gentoo = "🗜️ "
+HardenedBSD = "🛡️ "
+Illumos = "🐦 "
+Linux = "🐧 "
+Macos = "🍎 "
+Manjaro = "🥭 "
+Mariner = "🌊 "
+MidnightBSD = "🌘 "
+Mint = "🌿 "
+NetBSD = "🚩 "
+NixOS = "❄️ "
+OpenBSD = "🐡 "
+OpenCloudOS = "☁️ "
+openEuler = "🦌 "
+openSUSE = "🦎 "
+OracleLinux = "🦴 "
+Pop = "🍭 "
+Raspbian = "🍓 "
+Redhat = "🎩 "
+RedHatEnterprise = "🎩 "
+Redox = "🧪 "
+Solus = "⛵ "
+SUSE = "🦎 "
+Ubuntu = "🎯 "
+Unknown = "❓ "
+Windows = "🪟 "
+
+# Clean up modules that can be noisy
+[helm]
+disabled = true
+
+[java]
+disabled = true
+
+[lua]
+disabled = true
+
+[nim]
+disabled = true
+
+[nix_shell]
+disabled = true
+
+[ocaml]
+disabled = true
+
+[perl]
+disabled = true
+
+[php]
+disabled = true
+
+[pulumi]
+disabled = true
+
+[purescript]
+disabled = true
+
+[red]
+disabled = true
+
+[rlang]
+disabled = true
+
+[scala]
+disabled = true
+
+[swift]
+disabled = true
+
+[vagrant]
+disabled = true
+
+[zig]
+disabled = true

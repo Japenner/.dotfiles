@@ -21,10 +21,10 @@ ruby_edit_gem() {
 # Fix Rubocop issues by creating a new branch, applying autofixes, committing, and pushing changes
 ruby_fix_rubocop_issues() {
   local default_branch
-  default_branch=$(github_default_branch 2>/dev/null)
+  default_branch=$(git_default_branch 2>/dev/null)
 
   if [[ -z "$default_branch" ]]; then
-    echo "Failed to retrieve the default branch. Ensure github_default_branch function is defined."
+    echo "Failed to retrieve the default branch. Ensure git_default_branch function is defined."
     return 1
   fi
 

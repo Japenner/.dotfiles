@@ -52,7 +52,7 @@ alias df:pull="git -C $DOTFILES pull"                    # Pull latest changes i
 alias df:refresh="$DOTFILES/bin/refresh.zsh"             # Refresh dotfiles
 alias df:reload="source $HOME/.zshrc"                    # Reload .zshrc configuration
 alias df:setup="$DOTFILES/bin/setup.zsh"                 # Set up dotfiles environment
-alias df:update="github_update_current_branch $DOTFILES" # Update dotfiles current branch
+alias df:update="git_update_current_branch $DOTFILES" # Update dotfiles current branch
 
 # ============================ Git ============================ #
 
@@ -60,22 +60,22 @@ alias g:auth="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_personal"   
 alias g:auth:team="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_adhocteam_us" # Authenticate with the team SSH key
 alias g:base='gco "$(g:default)" && git pull'                                          # Checkout the default branch and pull changes
 alias g:cw="git_create_worktree"                                                       # Create a new git worktree
-alias g:default="github_default_branch"                                                # Get the default branch of the remote repository
+alias g:default="git_default_branch"                                                # Get the default branch of the remote repository
 alias g:find:branch="gb -a | grep -i"                                                  # Find a branch by name
-alias g:prune="github_prune_local_branches"                                            # Prune local branches that have been deleted on the remote
+alias g:prune="git_prune_local_branches"                                            # Prune local branches that have been deleted on the remote
 alias g:rb='git fetch origin && git rebase origin/"$(g:default)"'                      # Stash changes, rebase with default branch, and reapply stash
 alias g:repo="github_user_repo"                                                        # Get the user/repo of the remote repository
 alias g:rs:file='gco "$(g:default)" --'                                                # Revert a file to the state of the default branch
 alias g:rs='git reset origin/"$(g:default)"'                                           # Reset to the state of the remote default branch
 alias g:undo="git reset --soft HEAD~1"                                                 # Undo the last commit, keeping changes in the working directory
 alias g:update="git stash -u && g:rb && git push -f"                                   # Rebase with default branch and force push
-alias g:wip="github_commit_wip"                                                        # Commit all changes under a 'WIP' message without verification
+alias g:wip="git_commit_wip"                                                        # Commit all changes under a 'WIP' message without verification
 alias g:yolo="git push origin master --force --no-verify"                              # Force push changes to master without verification
 
 # =========================== GitHub ========================== #
 
 alias gh:cdiff="github_copy_diff"                    # Copy the diff of the current pull request to clipboard
-alias gh:commit="github_force_commit_changes"        # Commit and forcefully push changes in directory
+alias gh:commit="git_force_commit_changes"        # Commit and forcefully push changes in directory
 alias gh:compare="github_compare_current_branch"     # Open GitHub compare page for the current branch
 alias gh:open="github_open_current_repo"             # Open GitHub repository in browser
 alias gh:publish='"$(gh:commit)" && "$(gh:compare)"' # Add and commit all changes, push to repo, and open GitHub compare page
@@ -118,9 +118,9 @@ alias r:console="rails_start_console"                 # Rails console for given 
 alias r:db:reset="rails_reset_database"               # Reset database, load schema, and seed data for given environment
 alias r:fix:cops="with_stash ruby_fix_rubocop_issues" # Fix Rubocop issues by stashing changes, fixing issues, and restoring the stash
 alias r:foreman="ruby_start_foreman"                  # Start Foreman with bin/foreman
+alias r:ls="lsof -wni tcp:3000"                       # List services on port 3000
 alias r:migrate="rails_run_migrations"                # Run pending migrations
 alias r:server="start_rails_server"                   # Start Rails server
-alias r:servers="lsof -wni tcp:3000"                  # List services on port 3000
 alias r:spec="run_specs"                              # Run RSpec test for given directory or file
 alias r:specs="rails_run_rspec_tests"                 # Run RSpec tests
 alias r:tests="rails_run_tests"                       # Run Minitest tests
@@ -135,6 +135,9 @@ alias nato="print_nato_alphabet"                                          # Disp
 alias path='echo $PATH | tr -s ":" "\n"'                                  # Display PATH directories, each on a new line
 alias pp="python -m json.tool"                                            # Pretty-print JSON using Python’s JSON tool
 alias toolbox="BUNDLE_GEMFILE=${HOME}/Gemfile.global bundle exec toolbox" # Run Toolbox with global Gemfile
+alias tools:check="check_modern_tools"                                    # Check if modern tools are installed
+alias tools:install="install_modern_tools"                                # Install modern tools if not already installed
+alias tools:install:cargo="cargo_install_modern_tools"                    # Install modern tools using Cargo
 
 # ============================ Unix =========================== #
 

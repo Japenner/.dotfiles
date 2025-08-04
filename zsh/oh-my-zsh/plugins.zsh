@@ -19,18 +19,31 @@ ZSH_PLUGINS=(
   zsh-users/zsh-syntax-highlighting
 )
 
+# Only install missing plugins, never auto-update
 for plugin_repo in "${ZSH_PLUGINS[@]}"; do
   plugin_name="${plugin_repo##*/}"
   plugin_path="$ZSH_CUSTOM/plugins/$plugin_name"
 
   if [[ ! -d "$plugin_path" ]]; then
     echo "🔧 Installing $plugin_name..."
-    git clone "https://github.com/$plugin_repo" "$plugin_path"
-  elif [[ -d "$plugin_path/.git" ]]; then
-    echo "🔄 Updating $plugin_name..."
-    git -C "$plugin_path" pull --quiet
+    git clone --depth=1 "https://github.com/$plugin_repo" "$plugin_path"
   fi
 done
+
+# Manual update function for when you actually want updates
+update_zsh_plugins() {
+  echo "🔄 Updating Zsh plugins..."
+  for plugin_repo in "${ZSH_PLUGINS[@]}"; do
+    plugin_name="${plugin_repo##*/}"
+    plugin_path="$ZSH_CUSTOM/plugins/$plugin_name"
+
+    if [[ -d "$plugin_path/.git" ]]; then
+      echo "  Updating $plugin_name..."
+      git -C "$plugin_path" pull --quiet
+    fi
+  done
+  echo "✅ Plugin updates complete!"
+}
 
 # Plugins for Oh My Zsh
 plugins=(
@@ -48,7 +61,8 @@ plugins=(
   z
 )
 
-export ZSH_THEME="powerlevel10k/powerlevel10k" # Set theme to Powerlevel10k
+# Use default theme or none (Starship will handle the prompt)
+export ZSH_THEME=""
 
 # Load Oh My Zsh
 source "$ZSH/oh-my-zsh.sh"
