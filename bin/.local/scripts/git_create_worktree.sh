@@ -183,7 +183,7 @@ get_untracked_files() {
     --exclude build \
     --exclude .DS_Store \
     --exclude dev-dist \
-    --exclude "*/.*/")
+    --exclude "*/.*/"
 }
 
 create_symlink() {
@@ -239,19 +239,60 @@ change_to_worktree() {
 # Main Execution              #
 # ----------------------------#
 
-git_create_worktree() {
-  parse_arguments "$@"
-  validate_arguments || return $?
-  initialize_paths
-  validate_target_path
-  prepare_directories
-  fetch_remote_changes
-  create_worktree
-  create_symlinks
-  change_to_worktree
+main() {
+  parse_arguments "$@" || {
+    echo "❌ Failed to parse arguments"
+    return 1
+  }
+
+  validate_arguments || {
+    echo "❌ Argument validation failed"
+    return 1
+  }
+
+  initialize_paths || {
+    echo "❌ Failed to initialize paths"
+    return 1
+  }
+
+  validate_target_path || {
+    echo "❌ Target path validation failed"
+    return 1
+  }
+
+  prepare_directories || {
+    echo "❌ Failed to prepare directories"
+    return 1
+  }
+
+  echo "🔄 Fetching remote changes..."
+  fetch_remote_changes || {
+    echo "❌ Failed to fetch remote changes"
+    return 1
+  }
+
+  echo "🌱 Creating worktree..."
+  create_worktree || {
+    echo "❌ Failed to create worktree"
+    return 1
+  }
+
+  echo "🔗 Creating symlinks..."
+  create_symlinks || {
+    echo "❌ Failed to create symlinks (non-fatal)"
+  }
+
+  change_to_worktree || {
+    echo "❌ Failed to change to worktree directory"
+    return 1
+  }
+
+  echo "✅ Worktree creation completed successfully!"
+  echo "📁 Location: $TARGET_PATH"
+  echo "🌿 Branch: $LOCAL_BRANCH"
 }
 
-# If sourced, don't run automatically
+# Run main function if script is executed directly
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  git_create_worktree "$@"
+  main "$@"
 fi
