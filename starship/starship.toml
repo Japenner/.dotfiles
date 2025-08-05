@@ -7,6 +7,103 @@
 # Inserts a blank line between shell prompts
 add_newline = true
 
+# format = '$all'
+
+# Which is equivalent to
+# format = """
+# $username\
+# $hostname\
+# $localip\
+# $shlvl\
+# $singularity\
+# $kubernetes\
+# $directory\
+# $vcsh\
+# $fossil_branch\
+# $fossil_metrics\
+# $git_branch\
+# $git_commit\
+# $git_state\
+# $git_metrics\
+# $git_status\
+# $hg_branch\
+# $pijul_channel\
+# $docker_context\
+# $package\
+# $c\
+# $cmake\
+# $cobol\
+# $daml\
+# $dart\
+# $deno\
+# $dotnet\
+# $elixir\
+# $elm\
+# $erlang\
+# $fennel\
+# $gleam\
+# $golang\
+# $guix_shell\
+# $haskell\
+# $haxe\
+# $helm\
+# $java\
+# $julia\
+# $kotlin\
+# $gradle\
+# $lua\
+# $nim\
+# $nodejs\
+# $ocaml\
+# $opa\
+# $perl\
+# $php\
+# $pulumi\
+# $purescript\
+# $python\
+# $quarto\
+# $raku\
+# $rlang\
+# $red\
+# $ruby\
+# $rust\
+# $scala\
+# $solidity\
+# $swift\
+# $terraform\
+# $typst\
+# $vlang\
+# $vagrant\
+# $zig\
+# $buf\
+# $nix_shell\
+# $conda\
+# $meson\
+# $spack\
+# $memory_usage\
+# $aws\
+# $gcloud\
+# $openstack\
+# $azure\
+# $nats\
+# $direnv\
+# $env_var\
+# $mise\
+# $crystal\
+# $custom\
+# $sudo\
+# $cmd_duration\
+# $line_break\
+# $jobs\
+# $battery\
+# $time\
+# $status\
+# $os\
+# $container\
+# $netns\
+# $shell\
+# $character"""
+
 # Modern minimal format
 format = """
 $os\
@@ -19,6 +116,7 @@ $git_status\
 $git_metrics\
 $fill\
 $nodejs\
+$deno\
 $python\
 $ruby\
 $golang\
@@ -40,7 +138,7 @@ symbol = " "
 
 [character]
 success_symbol = "[❯](bold green)"
-error_symbol = "[❯](bold red)"
+error_symbol = "[✗](bold red)"
 vimcmd_symbol = "[❮](bold yellow)"
 
 [username]
@@ -57,7 +155,7 @@ format = "[@$hostname](bold yellow) "
 [directory]
 style = "cyan bold"
 read_only = " 🔒"
-truncation_length = 3
+truncation_length = 100
 truncate_to_repo = true
 format = "[$path]($style)[$read_only]($read_only_style) "
 home_symbol = "~"
@@ -66,31 +164,31 @@ home_symbol = "~"
 symbol = "🌱 "
 style = "purple bold"
 format = "[$symbol$branch]($style) "
-truncation_length = 25
+truncation_length = 100
 truncation_symbol = "…"
 
 [git_status]
-style = "red bold"
-format = "([$all_status$ahead_behind]($style) )"
+style = "yellow bold"
+format = "([$all_status $ahead_behind]($style) )"
 
-ahead = "⇡${count}"
-behind = "⇣${count}"
-conflicted = "⚡"
-deleted = "✘${count}"
-diverged = "⇕⇡${ahead_count}⇣${behind_count}"
-modified = "!${count}"
-renamed = "»${count}"
-staged = '[++\($count\)](green)'
-stashed = "\\$${count}"
-untracked = "?${count}"
-up_to_date = "✓"
+ahead = "[⇡${count}](bold yellow)"
+behind = "[⇣${count}](bold red)"
+conflicted = "[⚡](bold red)"
+deleted = "[✘${count}](bold red)"
+diverged = "[⇕⇡${ahead_count}⇣${behind_count}](bold yellow)"
+modified = "[✎${count}](bold blue)"
+renamed = "[»${count}](bold blue)"
+staged = '[+${count}](bold green)'
+stashed = "[⚑${count}](bold red)"
+untracked = "[+${count}](bold yellow)"
+up_to_date = "[✓](bold green)"
 
 [git_state]
 format = '\([$state( $progress_current/$progress_total)]($style)\) '
 style = "bright-black"
 
 [git_metrics]
-added_style = "bold blue"
+added_style = "bold green"
 deleted_style = "bold red"
 format = "([+$added]($added_style) )([-$deleted]($deleted_style) )"
 disabled = false
@@ -105,7 +203,7 @@ disabled = false
 format = " [$time]($style)"
 time_format = "%H:%M"
 style = "bright-white"
-use_12hr = false
+use_12hr = true
 
 # Language and tool modules
 [nodejs]
