@@ -54,8 +54,8 @@ validate_environment() {
     return 1
   fi
 
-  if ! command -v $EDITOR >/dev/null 2>&1; then
-    log_error "$EDITOR is not available"
+  if ! command -v $CODE_EDITOR >/dev/null 2>&1; then
+    log_error "$CODE_EDITOR is not available"
     return 1
   fi
 
@@ -158,12 +158,12 @@ setup_workspace() {
 
   log_success "Workspace configuration created"
 
-  if ! $EDITOR "$workspace_file"; then
+  if ! $CODE_EDITOR "$workspace_file"; then
     log_error "Failed to open workspace"
     return 1
   fi
 
-  log_success "Opened workspace in $EDITOR"
+  log_success "Opened workspace in $CODE_EDITOR"
 }
 
 cleanup_on_error() {
