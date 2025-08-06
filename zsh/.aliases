@@ -54,8 +54,8 @@ alias df:update="git_update_current_branch $DOTFILES" # Update dotfiles current 
 
 # ============================ Git ============================ #
 
-alias g:ac="${scripts_path}/git_generate_commit_message.sh -a -s"                      # Silently generate and apply a commit message using AI
-alias g:ac:dry="${scripts_path}/git_generate_commit_message.sh -a -d"                  # Generate a commit message using AI, show what would be committed without applying,
+alias g:ac="${scripts_path}/git_generate_commit_message.sh -a"                         # Generate and apply a commit message using AI
+alias g:ac:dry="${scripts_path}/git_generate_commit_message.sh -d"                     # Generate a commit message using AI, show what would be committed without applying,
 alias g:auth:team="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_adhocteam_us" # Authenticate with the team SSH key
 alias g:auth="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_personal"          # Authenticate with the personal SSH key
 alias g:base='gco "$(g:default)" && git pull'                                          # Checkout the default branch and pull changes
