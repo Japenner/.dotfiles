@@ -74,15 +74,15 @@ alias g:yolo="git push origin master --force --no-verify"                       
 
 # =========================== GitHub ========================== #
 
-alias gh:cdiff="github_copy_diff"                         # Copy the diff of the current pull request to clipboard
-alias gh:commit="git_force_commit_changes"                # Commit and forcefully push changes in directory
-alias gh:compare="github_compare_current_branch"          # Open GitHub compare page for the current branch
-alias gh:open="github_open_current_repo"                  # Open GitHub repository in browser
-alias gh:pr-review="${scripts_path}/review_pr.sh"         # Run script to review pull requests
-alias gh:pr="ruby ${scripts_path}/generate_pr.rb"         # Run script to create a new pull request based on work
-alias gh:publish='"$(gh:commit)" && "$(gh:compare)"'      # Add and commit all changes, push to repo, and open GitHub compare page
-alias gh:rr="${scripts_path}/open_pr_review_requests.sh"  # Open pull requests where a review is requested
-alias gh:update-all="${scripts_path}/update_git_repos.sh" # Run script to update all git repositories
+alias gh:cdiff="github_copy_diff"                            # Copy the diff of the current pull request to clipboard
+alias gh:commit="git_force_commit_changes"                   # Commit and forcefully push changes in directory
+alias gh:compare="github_compare_current_branch"             # Open GitHub compare page for the current branch
+alias gh:open="github_open_current_repo"                     # Open GitHub repository in browser
+alias gh:pr-review="${scripts_path}/review_pr.sh"            # Run script to review pull requests
+alias gh:pr="ruby ${scripts_path}/generate_pr.rb"            # Run script to create a new pull request based on work
+alias gh:publish='"$(gh:commit)" && "$(gh:compare)"'         # Add and commit all changes, push to repo, and open GitHub compare page
+alias gh:rr="${scripts_path}/git_open_pr_review_requests.sh" # Open pull requests where a review is requested
+alias gh:update-all="${scripts_path}/update_git_repos.sh"    # Run script to update all git repositories
 
 # ============================ Java =========================== #
 
