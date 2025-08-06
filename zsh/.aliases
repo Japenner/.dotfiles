@@ -16,6 +16,7 @@ alias e:als:local='$CODE_EDITOR "$DOTFILES/zsh/local/aliases.zsh"' # Open local 
 alias e:df='$CODE_EDITOR "$DOTFILES"'                              # Open dotfiles in the code editor
 alias e:env:local='$CODE_EDITOR "$DOTFILES/zsh/local/env.zsh"'     # Open local environment variables in editor
 alias e:ohmyzsh='$CODE_EDITOR "$HOME/.oh-my-zsh"'                  # Edit Oh My Zsh config
+alias e:starship='$CODE_EDITOR "$DOTFILES/starship/starship.toml"' # Edit Starship config
 alias e:tb='$CODE_EDITOR "$TOOLBOX"'                               # Open toolbox in the code editor
 alias e:zshrc='$CODE_EDITOR "$HOME/.zshrc"'                        # Edit .zshrc file
 
