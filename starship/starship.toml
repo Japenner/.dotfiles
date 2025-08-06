@@ -156,7 +156,7 @@ format = "[@$hostname](bold yellow) "
 style = "cyan bold"
 read_only = " 🔒"
 truncation_length = 100
-truncate_to_repo = true
+truncate_to_repo = false
 format = "[$path]($style)[$read_only]($read_only_style) "
 home_symbol = "~"
 
