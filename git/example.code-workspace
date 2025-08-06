@@ -1,0 +1,26 @@
+{
+  "folders": [
+    {
+      "path": "main"
+    },
+    {
+      "path": "external"
+    },
+    {
+      "path": "feat"
+    },
+    {
+      "path": "fix"
+    },
+    {
+      "path": "improvement"
+    },
+    {
+      "path": "refactor"
+    },
+    {
+      "path": "wip"
+    }
+  ],
+  "settings": {}
+}
