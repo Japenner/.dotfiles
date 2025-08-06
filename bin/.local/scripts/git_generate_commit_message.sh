@@ -23,12 +23,13 @@ show_usage() {
 Usage: $SCRIPT_NAME [model-type] [--apply]
 
 Arguments:
-  [model-type]         Model to use: mini (default), standard, reasoning
+  [model-type]        Model to use: mini (default), standard, reasoning
 
 Options:
   -h, --help          Show this help message
   -a, --apply         Automatically apply the generated commit message
   -d, --dry-run       Show what would be committed without applying
+  -s, --silent        Suppress output messages
 
 Examples:
   $SCRIPT_NAME
@@ -41,18 +42,34 @@ EOF
 }
 
 log_info() {
+  if [[ "${SILENT:-false}" == "true" ]]; then
+    return
+  fi
+
   echo "ℹ️  $*" >&2
 }
 
 log_success() {
+  if [[ "${SILENT:-false}" == "true" ]]; then
+    return
+  fi
+
   echo "✅ $*" >&2
 }
 
 log_error() {
+  if [[ "${SILENT:-false}" == "true" ]]; then
+    return
+  fi
+
   echo "❌ Error: $*" >&2
 }
 
 log_warning() {
+  if [[ "${SILENT:-false}" == "true" ]]; then
+    return
+  fi
+
   echo "⚠️  Warning: $*" >&2
 }
 
