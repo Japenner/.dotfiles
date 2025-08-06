@@ -1,0 +1,339 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# ----------------------------#
+# Constants & Default Values  #
+# ----------------------------#
+
+readonly SCRIPT_NAME="$(basename "$0")"
+readonly PROMPT_TEMPLATE_PATH="$DOTFILES/prompts/generate_commit_message.md"
+readonly CHATGPT_SCRIPT="$DOTFILES/bin/.local/scripts/chatgpt.sh"
+
+# Default Arguments
+MODEL_TYPE="${1:-mini}"
+APPLY_MESSAGE="${2:-false}"
+
+# ----------------------------#
+# Helper Functions            #
+# ----------------------------#
+
+show_usage() {
+  cat << EOF
+Usage: $SCRIPT_NAME [model-type] [--apply]
+
+Arguments:
+  [model-type]         Model to use: mini (default), standard, reasoning
+
+Options:
+  -h, --help          Show this help message
+  -a, --apply         Automatically apply the generated commit message
+  -d, --dry-run       Show what would be committed without applying
+
+Examples:
+  $SCRIPT_NAME
+  $SCRIPT_NAME standard
+  $SCRIPT_NAME reasoning --apply
+  $SCRIPT_NAME --dry-run
+
+Analyzes staged changes and generates a concise commit message using AI.
+EOF
+}
+
+log_info() {
+  echo "ℹ️  $*" >&2
+}
+
+log_success() {
+  echo "✅ $*" >&2
+}
+
+log_error() {
+  echo "❌ Error: $*" >&2
+}
+
+log_warning() {
+  echo "⚠️  Warning: $*" >&2
+}
+
+# ----------------------------#
+# Validation Functions        #
+# ----------------------------#
+
+validate_arguments() {
+  case "${1:-}" in
+    "-h"|"--help")
+      show_usage
+      exit 0
+      ;;
+    "-d"|"--dry-run")
+      MODEL_TYPE="${2:-mini}"
+      APPLY_MESSAGE="dry-run"
+      ;;
+    "-a"|"--apply")
+      MODEL_TYPE="${2:-mini}"
+      APPLY_MESSAGE="true"
+      ;;
+    "")
+      # Use defaults
+      ;;
+    "mini"|"standard"|"reasoning")
+      if [[ "${2:-}" == "--apply" ]]; then
+        APPLY_MESSAGE="true"
+      elif [[ "${2:-}" == "--dry-run" ]]; then
+        APPLY_MESSAGE="dry-run"
+      fi
+      ;;
+    *)
+      log_error "Invalid argument: $1"
+      show_usage
+      exit 1
+      ;;
+  esac
+}
+
+validate_dependencies() {
+  if ! command -v git >/dev/null 2>&1; then
+    log_error "git is not installed"
+    exit 1
+  fi
+
+  if [[ ! -f "$CHATGPT_SCRIPT" ]]; then
+    log_error "ChatGPT script not found at $CHATGPT_SCRIPT"
+    exit 1
+  fi
+
+  if [[ ! -x "$CHATGPT_SCRIPT" ]]; then
+    log_error "ChatGPT script is not executable: $CHATGPT_SCRIPT"
+    exit 1
+  fi
+
+  if [[ ! -f "$PROMPT_TEMPLATE_PATH" ]]; then
+    log_error "Prompt template not found at $PROMPT_TEMPLATE_PATH"
+    exit 1
+  fi
+}
+
+validate_git_repository() {
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    log_error "Not inside a Git repository"
+    exit 1
+  fi
+}
+
+validate_staged_changes() {
+  if ! git diff --cached --quiet; then
+    return 0  # There are staged changes
+  else
+    log_error "No staged changes found. Use 'git add' to stage files first."
+    exit 1
+  fi
+}
+
+# ----------------------------#
+# Git Functions               #
+# ----------------------------#
+
+get_staged_diff() {
+  log_info "Analyzing staged changes..."
+
+  local diff
+  diff=$(git diff --cached)
+
+  if [[ -z "$diff" ]]; then
+    log_error "No staged changes found"
+    exit 1
+  fi
+
+  echo "$diff"
+}
+
+get_staged_files() {
+  local staged_files
+  staged_files=$(git diff --cached --name-only)
+  echo "$staged_files"
+}
+
+get_change_stats() {
+  local stats
+  stats=$(git diff --cached --stat)
+  echo "$stats"
+}
+
+# ----------------------------#
+# Prompt Functions            #
+# ----------------------------#
+
+create_commit_prompt() {
+  local diff="$1"
+  local files="$2"
+  local stats="$3"
+  local template
+
+  if [[ ! -r "$PROMPT_TEMPLATE_PATH" ]]; then
+    log_error "Cannot read prompt template at $PROMPT_TEMPLATE_PATH"
+    exit 1
+  fi
+
+  template=$(cat "$PROMPT_TEMPLATE_PATH")
+
+  # Replace placeholders with actual content
+  template="${template//\$DIFF/$diff}"
+  template="${template//\$FILES/$files}"
+  template="${template//\$STATS/$stats}"
+
+  echo "$template"
+}
+
+# ----------------------------#
+# Commit Message Processing   #
+# ----------------------------#
+
+extract_commit_message() {
+  local ai_response="$1"
+
+  # Remove markdown formatting and extract the commit message
+  local commit_message
+
+  # First, try to find a line that looks like a commit message (starts with common prefixes)
+  commit_message=$(echo "$ai_response" | grep -E "^\s*[a-z]+(\([^)]*\))?:\s+" | head -1 | sed 's/^[[:space:]]*//')
+
+  # If no conventional commit found, look for any line that starts with a word
+  if [[ -z "$commit_message" ]]; then
+    commit_message=$(echo "$ai_response" | grep -E "^\s*[A-Za-z]" | head -1 | sed 's/^[[:space:]]*//')
+  fi
+
+  # If still nothing, try to extract from bullet points
+  if [[ -z "$commit_message" ]]; then
+    commit_message=$(echo "$ai_response" | grep -E "^\s*[•*-]\s*" | head -1 | sed 's/^[[:space:]]*[•*-][[:space:]]*//')
+  fi
+
+  # Clean up common prefixes and suffixes
+  commit_message=$(echo "$commit_message" | sed 's/^Commit message:[[:space:]]*//')
+  commit_message=$(echo "$commit_message" | sed 's/^Suggested commit:[[:space:]]*//')
+  commit_message=$(echo "$commit_message" | sed 's/^Message:[[:space:]]*//')
+  commit_message=$(echo "$commit_message" | sed 's/[[:space:]]*$//')
+
+  echo "$commit_message"
+}
+
+apply_commit_message() {
+  local commit_message="$1"
+
+  log_info "Applying commit message..."
+
+  if git commit -m "$commit_message"; then
+    log_success "Changes committed successfully!"
+    log_info "Commit message: $commit_message"
+  else
+    log_error "Failed to commit changes"
+    exit 1
+  fi
+}
+
+show_dry_run() {
+  local commit_message="$1"
+  local files="$2"
+  local stats="$3"
+
+  echo ""
+  echo "🔍 Dry Run - What would be committed:"
+  echo "===================================="
+  echo ""
+  echo "📁 Files to be committed:"
+  echo "$files"
+  echo ""
+  echo "📊 Change statistics:"
+  echo "$stats"
+  echo ""
+  echo "💬 Generated commit message:"
+  echo "\"$commit_message\""
+  echo ""
+  echo "To apply this commit, run:"
+  echo "  git commit -m \"$commit_message\""
+  echo "  # or"
+  echo "  $SCRIPT_NAME $MODEL_TYPE --apply"
+}
+
+# ----------------------------#
+# Main Execution              #
+# ----------------------------#
+
+main() {
+  # Parse arguments
+  validate_arguments "$@"
+
+  # Validate environment
+  validate_git_repository
+  validate_dependencies
+  validate_staged_changes
+
+  # Get staged changes information
+  log_info "Gathering staged changes..."
+  local diff files stats
+  diff=$(get_staged_diff)
+  files=$(get_staged_files)
+  stats=$(get_change_stats)
+
+  # Create the commit message prompt
+  log_info "Preparing prompt for AI analysis..."
+  local prompt
+  prompt=$(create_commit_prompt "$diff" "$files" "$stats")
+
+  # Create temporary file for the prompt
+  local temp_prompt_file
+  temp_prompt_file=$(mktemp)
+  trap "rm -f '$temp_prompt_file'" EXIT
+
+  echo "$prompt" > "$temp_prompt_file"
+
+  # Get AI-generated commit message
+  log_info "Generating commit message with AI..."
+  local ai_response commit_message
+  ai_response=$("$CHATGPT_SCRIPT" "$temp_prompt_file" "$MODEL_TYPE")
+
+  # Extract clean commit message from AI response
+  commit_message=$(extract_commit_message "$ai_response")
+
+  if [[ -z "$commit_message" ]]; then
+    log_error "Failed to extract commit message from AI response"
+    log_info "Raw AI response:"
+    echo "$ai_response"
+    exit 1
+  fi
+
+  # Handle different modes
+  case "$APPLY_MESSAGE" in
+    "true")
+      apply_commit_message "$commit_message"
+      ;;
+    "dry-run")
+      show_dry_run "$commit_message" "$files" "$stats"
+      ;;
+    *)
+      echo ""
+      echo "💬 Generated commit message:"
+      echo "\"$commit_message\""
+      echo ""
+      echo "Apply this commit? (y/N): "
+      read -r response
+      case "$response" in
+        [Yy]|[Yy][Ee][Ss])
+          apply_commit_message "$commit_message"
+          ;;
+        *)
+          log_info "Commit message not applied. You can manually commit with:"
+          echo "  git commit -m \"$commit_message\""
+          ;;
+      esac
+      ;;
+  esac
+}
+
+# ----------------------------#
+# Script Execution            #
+# ----------------------------#
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  main "$@"
+fi

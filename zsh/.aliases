@@ -59,6 +59,7 @@ alias g:auth="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_personal"   
 alias g:base='gco "$(g:default)" && git pull'                                          # Checkout the default branch and pull changes
 alias g:clwt="${scripts_path}/git_clone_to_worktree.sh"                                # Clone a git repository into a worktree
 alias g:cw="${scripts_path}/git_create_worktree.sh"                                    # Create a new git worktree
+alias g:ac="${scripts_path}/git_generate_commit_message.sh -a"                         # Generate and apply a commit message using AI
 alias g:default="git_default_branch"                                                   # Get the default branch of the remote repository
 alias g:find:branch="gb -a | grep -i"                                                  # Find a branch by name
 alias g:prune="git_prune_local_branches"                                               # Prune local branches that have been deleted on the remote
