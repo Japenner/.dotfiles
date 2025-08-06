@@ -5,6 +5,7 @@
 scripts_path="${DOTFILES}/bin/.local/scripts"
 
 alias branch="${scripts_path}/branch.sh"                     # Create a new branch and update GH ticket
+alias chatgpt="${scripts_path}/chatgpt.sh"                   # Send a prompt or file to OpenAI and get a response
 alias cht="sh ${scripts_path}/tmux-cht.sh"                   # Run tmux cheat sheet script
 alias slack:away="${scripts_path}/set_slack_status.sh set"   # Set Slack status to away
 alias slack:back="${scripts_path}/set_slack_status.sh clear" # Set Slack status to back
