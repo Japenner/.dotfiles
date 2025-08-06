@@ -1,51 +1,134 @@
 {
+  "[dockerfile]": {
+    "editor.defaultFormatter": "ms-azuretools.vscode-containers"
+  },
+
+  "[dotenv]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+
+  "[hosts]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+
+  "[ignore]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
 
   "[javascriptreact]": {
-    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[jsonc]": {
+    "editor.quickSuggestions": {
+      "strings": true
+    },
+    "prettier.trailingComma": "none"
+  },
+
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "editor.tabSize": 4
+  },
+
+  "[properties]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
   },
 
   "[python]": {
     "editor.formatOnType": true
+  },
+  "[ruby]": {
+    "editor.codeActionsOnSave": { "source.fixAll": "always" },
+    // "editor.defaultFormatter": "rubocop.vscode-rubocop"
+    "editor.defaultFormatter": "Shopify.ruby-lsp", // Use the Ruby LSP as the default formatter
+    "editor.formatOnSave": true, // Format files automatically when saving
+    "editor.formatOnType": true, // Enable formatting while typing
+    "editor.insertSpaces": true, // Use spaces and not tabs for indentation
+    "editor.semanticHighlighting.enabled": true, // Enable semantic highlighting
+    "editor.tabSize": 2 // Use 2 spaces for indentation
+  },
+
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+
+  "[sql]": {
+    "editor.formatOnSave": false,
+    "editor.defaultFormatter": "inferrinizzard.prettier-sql-vscode"
+    // "editor.defaultFormatter": "mtxr.sqltools"
   },
 
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
 
-  "diffEditor.ignoreTrimWhitespace": false,
+  "[vue]": {
+    // "editor.defaultFormatter": "Vue.volar"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "breadcrumbs.enabled": true,
+
+  // "github.copilot.chat.codeGeneration.instructions": [],
+  // "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  // "github.copilot.chat.pullRequestDescriptionGeneration.instructions": [],
+
+  "diffEditor.codeLens": true,
+  "diffEditor.ignoreTrimWhitespace": true,
 
   "editor.accessibilitySupport": "off",
+  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
+
+  "editor.codeActionsOnSave": {
+    "source.addMissingImports": "always",
+    "source.fixAll": "always",
+    "source.organizeImports": "always",
+    "source.removeUnusedImports": "always",
+    "source.sortImports": "always"
+  },
+
+  "editor.codeLensFontFamily": "Operator Mono, Menlo, Monaco, 'Courier New', monospace",
   "editor.cursorBlinking": "solid",
   "editor.cursorStyle": "line",
-  "editor.cursorWidth": 5,
+  "editor.cursorWidth": 3,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.fontFamily": "Operator Mono, Menlo, Monaco, 'Courier New', monospace",
   "editor.fontSize": 14,
   "editor.fontWeight": "400",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.inlineSuggest.enabled": true,
   "editor.letterSpacing": 0.5,
   "editor.lineHeight": 25,
   "editor.renderWhitespace": "all",
   "editor.rulers": [120],
+  "editor.stickyScroll.enabled": true,
   "editor.suggestSelection": "first",
   "editor.tabSize": 2,
 
   "errorLens.excludeBySource": [
-    "ts(2604)",
     "css(css-semicolonexpected)",
-    "ts(2448)"
+    "ts(2448)",
+    "ts(2604)"
   ],
 
   "eslint.codeActionsOnSave.rules": ["eslint:recommended", "eslint:fix"],
   "eslint.format.enable": true,
+  "eslint.run": "onSave",
 
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
 
   "files.associations": {
-    "*.erb": "erb"
+    "*.erb": "erb",
+    "*.sql": "postgres"
   },
   "files.exclude": {
     "**/.classpath": true,
@@ -55,65 +138,88 @@
   },
   "files.insertFinalNewline": true,
   "files.trimTrailingWhitespace": true,
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/dist/**": true,
+    "**/build/**": true
+  },
 
   "git.autofetch": true,
   "git.confirmSync": false,
   "git.enableCommitSigning": true,
+  "git.enabled": true,
   "git.enableSmartCommit": true,
+  "git.openRepositoryInParentFolders": "never",
+  "git.smartCommitChanges": "tracked",
+  "git.useEditorAsCommitInput": true,
+  "git.useForcePushWithLease": true,
+  "git.verboseCommit": true,
 
   "go.inferGopath": true,
   "go.toolsManagement.autoUpdate": true,
 
-  "mssql.connections": [
-    {
-      "server": "{{put-server-name-here}}",
-      "database": "{{put-database-name-here}}",
-      "user": "{{put-username-here}}",
-      "password": "{{put-password-here}}"
-    }
-  ],
+  "markdown.validate.referenceLinks.enabled": "ignore",
+
+  // "markdownlint.run": "onSave",
+  "markdownlint.config": {
+    "MD003": { "style": "atx" },
+    "MD007": { "indent": 4 },
+    "MD013": false,
+    "MD024": false,
+    "MD041": false
+  },
 
   "nxConsole.showNodeVersionOnStartup": false,
 
   "redhat.telemetry.enabled": false,
 
-  "ruby.codeCompletion": "rcodetools",
-  "ruby.format": "rubocop",
-  "ruby.lint": {
-    "rubocop": {
-      "useBundler": true
-    }
+  "rubyLsp.formatter": "auto",
+  "rubyLsp.rubyVersionManager": {
+    "identifier": "asdf"
   },
 
   "search.smartCase": true,
+  "search.useGlobalIgnoreFiles": true,
+  "search.useIgnoreFiles": true,
 
   "security.workspace.trust.untrustedFiles": "open",
 
-  "solargraph.autoformat": true,
-  "solargraph.checkGemVersion": true,
-  "solargraph.completion": true,
-  "solargraph.definitions": true,
-  "solargraph.formatting": true,
+  // "sync.autoUpload": true,
+  // "sync.gist": "216674d854479feea2addf7f870098b7",
+  // "sync.quietSync": true,
+  // "sync.removeExtensions": false,
 
-  "sync.autoUpload": true,
-  "sync.gist": "216674d854479feea2addf7f870098b7",
-  "sync.quietSync": true,
-  "sync.removeExtensions": false,
-
+  "typescript.implementationsCodeLens.enabled": true,
+  "typescript.referencesCodeLens.enabled": true,
   "typescript.updateImportsOnFileMove.enabled": "always",
 
   "window.restoreWindows": "all",
-  "window.zoomLevel": 1,
+  "window.titleBarStyle": "custom",
+
+  "workbench.colorCustomizations": {
+    "editorLineNumber.foreground": "#888888",
+    "errorLens.errorForeground": "#ff6c6b",
+    "errorLens.infoForeground": "#51afef",
+    "errorLens.warningForeground": "#ECBE7B"
+  },
+  "workbench.colorTheme": "Cobalt2",
+  "workbench.editor.highlightModifiedTabs": true,
   "workbench.iconTheme": "material-icon-theme",
   "workbench.sideBar.location": "right",
 
   "yaml.customTags": ["!encrypted/pkcs1-oaep scalar", "!vault scalar"],
   "vsicons.dontShowNewVersionMessage": true,
-  "editor.bracketPairColorization.independentColorPoolPerBracketType": true,
-  "editor.codeLensFontFamily": "FiraCode",
-  "workbench.colorTheme": "Cobalt2",
-  "[ruby]": {
-    "editor.defaultFormatter": "LoranKloeze.ruby-rubocop-revived"
+  "terminal.integrated.env.osx": {},
+  "console-ninja.featureSet": "Community",
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
   },
-  "git.openRepositoryInParentFolders": "never"
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "github.copilot.nextEditSuggestions.enabled": true,
+  "docker.extension.enableComposeLanguageServer": false,
+  "diffEditor.hideUnchangedRegions.enabled": true,
+  "terminal.integrated.env.linux": {}
 }
