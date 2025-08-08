@@ -2,7 +2,7 @@
 
 # Default values for DOTFILES and STOW_FOLDERS if not provided
 : "${DOTFILES:=$HOME/.dotfiles}"
-: "${STOW_FOLDERS:=bin,git,nvim,ruby,tmux,zsh}"
+: "${STOW_FOLDERS:=bin,git,nvim,ruby,tmux,zsh,starship}"
 
 # Ensure DOTFILES directory and STOW_FOLDERS are set
 if [[ -z "$DOTFILES" || -z "$STOW_FOLDERS" ]]; then

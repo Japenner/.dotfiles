@@ -2,7 +2,7 @@
 
 # Set default STOW_FOLDERS if not provided
 if [[ -z $STOW_FOLDERS ]]; then
-    STOW_FOLDERS="bin,git,nvim,ruby,tmux,zsh"
+    STOW_FOLDERS="bin,git,nvim,ruby,tmux,zsh,starship"
 fi
 
 # Set default DOTFILES directory if not provided
@@ -14,6 +14,8 @@ fi
 export STOW_FOLDERS
 export DOTFILES
 
+echo "🚀 Setting up dotfiles..."
+
 # Check if the refresh.zsh script exists
 if [[ -f "$DOTFILES/bin/refresh.zsh" ]]; then
     # Source the script
@@ -22,3 +24,5 @@ else
     echo "Error: refresh.zsh script not found at $DOTFILES/bin/refresh.zsh" >&2
     exit 1
 fi
+
+echo "✅ Dotfiles setup complete!"

@@ -2,7 +2,7 @@
 
 # Default values for DOTFILES and STOW_FOLDERS if not provided
 : "${DOTFILES:=$HOME/.dotfiles}"
-: "${STOW_FOLDERS:=bin,git,nvim,ruby,tmux,zsh}"
+: "${STOW_FOLDERS:=bin,git,nvim,ruby,tmux,zsh,starship}"
 
 # Check if GNU Stow is installed
 if ! command -v stow &>/dev/null; then
