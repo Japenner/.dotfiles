@@ -119,12 +119,19 @@ reinstall_apps_with_homebrew() {
 
 # Generate a new Brewfile backup with a unique timestamp
 generate_brewfile_backup() {
-  local timestamp=$(date +"%Y%m%d_%H%M%S")
-  local backup_file="$DOTFILES/homebrew/Brewfile_backup_$timestamp"
+  local TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+  local HOMEBREW_DIR="$DOTFILES/homebrew/Brewfile_backup_$TIMESTAMP"
+
+  echo "🍺 Creating Homebrew backup..."
 
   if command -v brew >/dev/null; then
-    brew bundle dump --file="$backup_file" --force
-    echo "Brewfile backup created at $backup_file"
+    brew bundle dump --file="$HOMEBREW_DIR/Brewfile" --force
+
+    # Create timestamped backup
+    cp "$HOMEBREW_DIR/Brewfile" "$HOMEBREW_DIR/Brewfile_backup_$TIMESTAMP"
+
+    echo "✅ Brewfile backed up to: Brewfile_backup_$TIMESTAMP"
+    echo "📍 Main Brewfile updated at: $HOMEBREW_DIR/Brewfile"
   else
     echo "Homebrew is not installed. Cannot create Brewfile backup."
   fi
