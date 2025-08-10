@@ -2,13 +2,13 @@
 
 # ======================== Automation ======================== #
 
-scripts_path="${DOTFILES}/bin/.local/scripts"
+bin_path="${DOTFILES}/.local/bin"
 
-alias branch="${scripts_path}/branch.sh"                     # Create a new branch and update GH ticket
-alias chatgpt="${scripts_path}/chatgpt.sh"                   # Send a prompt or file to OpenAI and get a response
-alias cht="sh ${scripts_path}/tmux-cht.sh"                   # Run tmux cheat sheet script
-alias slack:away="${scripts_path}/set_slack_status.sh set"   # Set Slack status to away
-alias slack:back="${scripts_path}/set_slack_status.sh clear" # Set Slack status to back
+alias branch="${bin_path}/branch.sh"                     # Create a new branch and update GH ticket
+alias chatgpt="${bin_path}/chatgpt.sh"                   # Send a prompt or file to OpenAI and get a response
+alias cht="sh ${bin_path}/tmux-cht.sh"                   # Run tmux cheat sheet script
+# alias slack:away="${bin_path}/set_slack_status.sh set"   # Set Slack status to away
+# alias slack:back="${bin_path}/set_slack_status.sh clear" # Set Slack status to back
 
 # ======================= Config Editing ====================== #
 
@@ -44,22 +44,22 @@ alias lzd="lazydocker"                               # Open Lazydocker for manag
 
 # ========================== Dotfiles ========================= #
 
-alias df:cleanup="$DOTFILES/bin/cleanup.zsh"          # Clean up dotfiles
+alias df:cleanup="${bin_path}/dotfiles/cleanup.zsh"   # Clean up dotfiles
 alias df:commit="commit_dot_files"                    # Commit and forcefully push changes in dotfiles
 alias df:pull="git -C $DOTFILES pull"                 # Pull latest changes in dotfiles
-alias df:refresh="$DOTFILES/bin/refresh.zsh"          # Refresh dotfiles
+alias df:refresh="${bin_path}/dotfiles/refresh.zsh"   # Refresh dotfiles
 alias df:reload="source $HOME/.zshrc"                 # Reload .zshrc configuration
-alias df:setup="$DOTFILES/bin/setup.zsh"              # Set up dotfiles environment
+alias df:setup="${bin_path}/dotfiles/setup.zsh"       # Set up dotfiles environment
 alias df:update="git_update_current_branch $DOTFILES" # Update dotfiles current branch
 
 # ============================ Git ============================ #
 
-alias g:ac="${scripts_path}/git_generate_commit_message.sh -a -s"                      # Silently generate and apply a commit message using AI
+alias g:ac="${bin_path}/generate-commit-message.sh -a -s"                              # Silently generate and apply a commit message using AI
 alias g:auth:team="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_adhocteam_us" # Authenticate with the team SSH key
 alias g:auth="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_personal"          # Authenticate with the personal SSH key
 alias g:base='gco "$(g:default)" && git pull'                                          # Checkout the default branch and pull changes
-alias g:clwt="${scripts_path}/git_clone_to_worktree.sh"                                # Clone a git repository into a worktree
-alias g:cw="${scripts_path}/git_create_worktree.sh"                                    # Create a new git worktree
+alias g:clwt="${bin_path}/clone-to-worktree.sh"                                        # Clone a git repository into a worktree
+alias g:cw="${bin_path}/create-worktree.sh"                                            # Create a new git worktree
 alias g:default="git_default_branch"                                                   # Get the default branch of the remote repository
 alias g:find:branch="gb -a | grep -i"                                                  # Find a branch by name
 alias g:prune="git_prune_local_branches"                                               # Prune local branches that have been deleted on the remote
@@ -74,15 +74,15 @@ alias g:yolo="git push origin master --force --no-verify"                       
 
 # =========================== GitHub ========================== #
 
-alias gh:cdiff="github_copy_diff"                            # Copy the diff of the current pull request to clipboard
-alias gh:commit="git_force_commit_changes"                   # Commit and forcefully push changes in directory
-alias gh:compare="github_compare_current_branch"             # Open GitHub compare page for the current branch
-alias gh:open="github_open_current_repo"                     # Open GitHub repository in browser
-alias gh:pr-review="${scripts_path}/review_pr.sh"            # Run script to review pull requests
-# alias gh:pr="ruby ${scripts_path}/generate_pr.rb"            # Run script to create a new pull request based on work
-alias gh:publish='"$(gh:commit)" && "$(gh:compare)"'         # Add and commit all changes, push to repo, and open GitHub compare page
-alias gh:rr="${scripts_path}/git_open_pr_review_requests.sh" # Open pull requests where a review is requested
-alias gh:update-all="${scripts_path}/update_git_repos.sh"    # Run script to update all git repositories
+alias gh:cdiff="github_copy_diff"                      # Copy the diff of the current pull request to clipboard
+alias gh:commit="git_force_commit_changes"             # Commit and forcefully push changes in directory
+alias gh:compare="github_compare_current_branch"       # Open GitHub compare page for the current branch
+alias gh:open="github_open_current_repo"               # Open GitHub repository in browser
+alias gh:pr-review="${bin_path}/generate-pr-review.sh" # Run script to review pull requests
+# alias gh:pr="ruby ${bin_path}/generate_pr.rb"        # Run script to create a new pull request based on work
+alias gh:publish='"$(gh:commit)" && "$(gh:compare)"'   # Add and commit all changes, push to repo, and open GitHub compare page
+alias gh:rr="${bin_path}/open-pr-review-requests.sh"   # Open pull requests where a review is requested
+alias gh:update-all="${bin_path}/update-all-repos.sh"  # Run script to update all git repositories
 
 # ============================ Java =========================== #
 
@@ -113,7 +113,7 @@ alias nv:tb="cd $TOOLBOX"               # Navigate to toolbox directory
 
 alias c="clear"                           # Clear terminal screen
 alias serve="python3 -m http.server 8000" # Start Python HTTP server
-alias todo="$EDITOR $HOME/.todo"          # Open todo file in editor
+alias todo="$CODE_EDITOR $HOME/.todo"     # Open todo file in editor
 
 # =========================== Rails =========================== #
 
