@@ -8,7 +8,7 @@ set -euo pipefail
 
 readonly SCRIPT_NAME="$(basename "$0")"
 readonly PROMPT_TEMPLATE_PATH="$DOTFILES/prompts/generate_commit_message.md"
-readonly CHATGPT_SCRIPT="$DOTFILES/bin/.local/scripts/chatgpt.sh"
+readonly CHATGPT_SCRIPT="$DOTFILES/.local/bin/scripts/chatgpt.sh"
 
 # Default Arguments
 MODEL_TYPE="${1:-mini}"
