@@ -7,9 +7,6 @@
   excludesfile = ~/.dotfiles/git/.gitignore_global
   editor = code --wait
 
-[credential]
-  helper = !~/.dotfiles/git/.git-credentials-helper.sh
-
 [diff]
   algorithm = histogram  # Better diff algorithm
   colorMoved = default   # Highlight moved code

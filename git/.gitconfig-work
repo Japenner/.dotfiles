@@ -1,5 +1,6 @@
-# This is Git's per-user configuration file.
-
 [user]
-	name = Jacob Penner
-	email = jpenner@skinclique.com
+  name = Jacob Penner
+  email = jpenner@skinclique.com
+
+[credential]
+  helper = !gh auth git-credential
