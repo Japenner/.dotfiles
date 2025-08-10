@@ -111,6 +111,7 @@ $username\
 $hostname\
 $directory\
 $git_branch\
+$git_commit\
 $git_state\
 $git_status\
 $git_metrics\
@@ -125,7 +126,9 @@ $docker_context\
 $aws\
 $kubernetes\
 $terraform\
+$jobs\
 $cmd_duration\
+$battery\
 $time\
 $line_break\
 $character"""
@@ -155,33 +158,43 @@ format = "[@$hostname](bold yellow) "
 [directory]
 style = "cyan bold"
 read_only = " 🔒"
-truncation_length = 100
+truncation_length = 50
 truncate_to_repo = false
 format = "[$path]($style)[$read_only]($read_only_style) "
 home_symbol = "~"
+fish_style_pwd_dir_length = 1
+truncation_symbol = "…/"
 
 [git_branch]
 symbol = "🌱 "
 style = "purple bold"
-format = "[$symbol$branch]($style) "
-truncation_length = 100
+format = "[$symbol$branch(:$remote_branch)]($style) "
+truncation_length = 32
 truncation_symbol = "…"
+only_attached = false
 
 [git_status]
 style = "yellow bold"
-format = "([$all_status $ahead_behind]($style) )"
-
+format = "([$all_status$ahead_behind]($style) )"
 ahead = "[⇡${count}](bold yellow)"
 behind = "[⇣${count}](bold red)"
-conflicted = "[⚡](bold red)"
+conflicted = "[⚡${count}](bold red)"
 deleted = "[✘${count}](bold red)"
 diverged = "[⇕⇡${ahead_count}⇣${behind_count}](bold yellow)"
 modified = "[✎${count}](bold blue)"
 renamed = "[»${count}](bold blue)"
 staged = '[+${count}](bold green)'
 stashed = "[⚑${count}](bold red)"
-untracked = "[+${count}](bold yellow)"
-up_to_date = "[✓](bold green)"
+untracked = "[?${count}](bold yellow)"
+up_to_date = ""  # Hide when clean
+ignore_submodules = true
+
+[git_commit]
+commit_hash_length = 7
+format = '[\($hash$tag\)]($style) '
+style = "bright-white"
+only_detached = true
+tag_symbol = " 🏷 "
 
 [git_state]
 format = '\([$state( $progress_current/$progress_total)]($style)\) '
@@ -197,6 +210,7 @@ disabled = false
 min_time = 2_000
 format = " [$duration](bold yellow)"
 show_milliseconds = false
+show_notifications = false
 
 [time]
 disabled = false
@@ -210,16 +224,24 @@ use_12hr = true
 symbol = "⬢ "
 style = "green bold"
 format = "[$symbol($version )]($style)"
+detect_files = ["package.json", ".nvmrc", ".node-version", "yarn.lock", "pnpm-lock.yaml"]
+detect_folders = ["node_modules"]
 
 [python]
 symbol = "🐍 "
 style = "yellow bold"
 format = '[${symbol}${pyenv_prefix}(${version} )(\($virtualenv\) )]($style)'
+detect_extensions = ["py", "ipynb"]
+detect_files = [".python-version", "Pipfile", "requirements.txt", "pyproject.toml", "tox.ini"]
+detect_folders = [".venv", "venv", "__pycache__"]
 
 [ruby]
 symbol = "💎 "
 style = "red bold"
 format = "[$symbol($version )]($style)"
+detect_extensions = ["rb"]
+detect_files = ["Gemfile", ".ruby-version", "Rakefile"]
+detect_folders = [".bundle"]
 
 [rust]
 symbol = "🦀 "
@@ -246,11 +268,16 @@ symbol = "⎈ "
 style = "blue bold"
 format = '[$symbol$context( \($namespace\))]($style) '
 disabled = false
+# Only show when k8s files present
+detect_files = ["k8s", "kustomization.yaml", "kustomization.yml"]
+detect_folders = [".kube"]
 
 [terraform]
 symbol = "💠 "
 style = "bold purple"
 format = "[$symbol$workspace]($style) "
+detect_files = ["*.tf", "*.tfplan", "*.tfstate"]
+detect_folders = [".terraform"]
 
 # Disable the package module, hiding it from the prompt completely
 [package]
@@ -262,6 +289,32 @@ disabled = true
 # OS symbol (minimal)
 [os]
 style = "bright-white bold"
+disabled = false
+
+[jobs]
+symbol = "✦ "
+style = "bold blue"
+format = "[$symbol$number]($style) "
+
+[battery]
+full_symbol = "🔋 "
+charging_symbol = "⚡ "
+discharging_symbol = "💀 "
+format = "[$symbol$percentage]($style) "
+
+[[battery.display]]
+threshold = 30
+style = "bold red"
+
+[status]
+symbol = "✘ "
+success_symbol = ""
+not_executable_symbol = "🚫 "
+not_found_symbol = "🔍 "
+sigint_symbol = "🧱 "
+signal_symbol = "⚡ "
+style = "bold red"
+format = '[$symbol$status]($style) '
 disabled = false
 
 [os.symbols]
