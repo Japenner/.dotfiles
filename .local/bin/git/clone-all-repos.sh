@@ -1,0 +1,365 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# ----------------------------#
+# Constants & Configuration   #
+# ----------------------------#
+
+readonly SCRIPT_NAME="$(basename "$0")"
+readonly DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+readonly CLONE_TO_WORKTREE_SCRIPT="$DOTFILES/.local/bin/git/clone-to-worktree.sh"
+
+# Colors for output
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+RED='\033[0;31m'
+TEAL='\033[0;36m'
+YELLOW='\033[1;33m'
+
+# ----------------------------#
+# Helper Functions            #
+# ----------------------------#
+
+show_usage() {
+  cat << EOF
+Usage: $SCRIPT_NAME <organization> [options]
+
+Arguments:
+  <organization>            GitHub organization name or user
+
+Options:
+  -l, --limit <number>      Maximum number of repositories to clone (default: 100)
+  -t, --type <type>         Repository type: all|public|private|forks|sources (default: all)
+  -f, --filter <pattern>    Filter repositories by name pattern (grep regex)
+  -o, --output-dir <dir>    Custom directory name for storing repositories (default: organization name)
+  -d, --dry-run            Show what would be cloned without actually cloning
+  -h, --help               Show this help message
+
+Directory Structure:
+  Default: Repositories will be cloned into ~/repos/work/<organization>/<repo-name>/
+  Custom:  Repositories will be cloned into ~/repos/work/<output-dir>/<repo-name>/
+
+Examples:
+  $SCRIPT_NAME my-org
+  $SCRIPT_NAME my-org --limit 50 --type public
+  $SCRIPT_NAME my-org --filter "^frontend-" --dry-run
+  $SCRIPT_NAME username --type sources
+  $SCRIPT_NAME my-org --output-dir "client-projects"
+  $SCRIPT_NAME my-org --output-dir "legacy-code" --type sources
+EOF
+}
+
+log_info() {
+    echo -e "${TEAL}ℹ️ $1${NC}"
+}
+
+log_success() {
+  echo -e "${GREEN}✅ $1${NC}"
+}
+
+log_error() {
+  echo -e "${RED}❌ $1${NC}" >&2
+}
+
+log_warning() {
+  echo -e "${YELLOW}⚠️ $1${NC}"
+}
+
+validate_environment() {
+  if ! command -v gh >/dev/null 2>&1; then
+    log_error "GitHub CLI (gh) is not installed or not in PATH"
+    log_info "Install it with: brew install gh"
+    return 1
+  fi
+
+  if ! gh auth status >/dev/null 2>&1; then
+    log_error "GitHub CLI is not authenticated"
+    log_info "Run: gh auth login"
+    return 1
+  fi
+
+  if [[ ! -f "$CLONE_TO_WORKTREE_SCRIPT" ]]; then
+    log_error "clone-to-worktree.sh script not found at $CLONE_TO_WORKTREE_SCRIPT"
+    return 1
+  fi
+
+  if [[ ! -x "$CLONE_TO_WORKTREE_SCRIPT" ]]; then
+    log_error "clone-to-worktree.sh script is not executable"
+    log_info "Run: chmod +x $CLONE_TO_WORKTREE_SCRIPT"
+    return 1
+  fi
+}
+
+parse_arguments() {
+  local organization=""
+  local limit=100
+  local repo_type="all"
+  local filter_pattern=""
+  local output_dir=""
+  local dry_run=false
+
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      -h|--help)
+        show_usage
+        exit 0
+        ;;
+      -l|--limit)
+        if [[ -z "${2:-}" || ! "${2:-}" =~ ^[0-9]+$ ]]; then
+          log_error "Option $1 requires a numeric argument"
+          show_usage
+          return 1
+        fi
+        limit="$2"
+        shift 2
+        ;;
+      -t|--type)
+        if [[ -z "${2:-}" ]]; then
+          log_error "Option $1 requires an argument"
+          show_usage
+          return 1
+        fi
+        case "$2" in
+          all|public|private|forks|sources)
+            repo_type="$2"
+            ;;
+          *)
+            log_error "Invalid repository type: $2"
+            log_info "Valid types: all, public, private, forks, sources"
+            return 1
+            ;;
+        esac
+        shift 2
+        ;;
+      -f|--filter)
+        if [[ -z "${2:-}" ]]; then
+          log_error "Option $1 requires an argument"
+          show_usage
+          return 1
+        fi
+        filter_pattern="$2"
+        shift 2
+        ;;
+      -o|--output-dir)
+        if [[ -z "${2:-}" ]]; then
+          log_error "Option $1 requires an argument"
+          show_usage
+          return 1
+        fi
+        output_dir="$2"
+        shift 2
+        ;;
+      -d|--dry-run)
+        dry_run=true
+        shift
+        ;;
+      -*)
+        log_error "Unknown option: $1"
+        show_usage
+        return 1
+        ;;
+      *)
+        if [[ -z "$organization" ]]; then
+          organization="$1"
+        else
+          log_error "Too many arguments"
+          show_usage
+          return 1
+        fi
+        shift
+        ;;
+    esac
+  done
+
+  if [[ -z "$organization" ]]; then
+    log_error "Organization name is required"
+    show_usage
+    return 1
+  fi
+
+  # Use organization name as default output directory if not specified
+  if [[ -z "$output_dir" ]]; then
+    output_dir="$organization"
+  fi
+
+  # Export for use in other functions
+  export ORGANIZATION="$organization"
+  export REPO_LIMIT="$limit"
+  export REPO_TYPE="$repo_type"
+  export FILTER_PATTERN="$filter_pattern"
+  export OUTPUT_DIR="$output_dir"
+  export DRY_RUN="$dry_run"
+}
+
+get_repositories() {
+  local organization="$1"
+  local limit="$2"
+  local repo_type="$3"
+
+  # Send log messages to stderr to avoid mixing with repository output
+  log_info "Fetching repositories from organization: $organization" >&2
+  log_info "Type: $repo_type, Limit: $limit" >&2
+
+  # Build gh command based on repo type
+  local gh_cmd="gh repo list $organization --limit $limit --json nameWithOwner,isPrivate,isFork"
+
+  case "$repo_type" in
+    public)
+      gh_cmd+=" -q '[.[] | select(.isPrivate == false)] | .[].nameWithOwner'"
+      ;;
+    private)
+      gh_cmd+=" -q '[.[] | select(.isPrivate == true)] | .[].nameWithOwner'"
+      ;;
+    forks)
+      gh_cmd+=" -q '[.[] | select(.isFork == true)] | .[].nameWithOwner'"
+      ;;
+    sources)
+      gh_cmd+=" -q '[.[] | select(.isFork == false)] | .[].nameWithOwner'"
+      ;;
+    all|*)
+      gh_cmd+=" -q '.[].nameWithOwner'"
+      ;;
+  esac
+
+  # Execute the command and handle errors
+  if ! eval "$gh_cmd" 2>/dev/null; then
+    log_error "Failed to fetch repositories from organization: $organization" >&2
+    log_info "Make sure the organization exists and you have access to it" >&2
+    return 1
+  fi
+}
+
+filter_repositories() {
+  local filter_pattern="$1"
+
+  if [[ -n "$filter_pattern" ]]; then
+    log_info "Applying filter pattern: $filter_pattern" >&2
+    grep -E "$filter_pattern"
+  else
+    cat
+  fi
+}
+
+clone_repository() {
+  local repo="$1"
+  local output_dir="$2"
+  local dry_run="$3"
+
+  local repo_url="https://github.com/$repo.git"
+  local repo_name="${repo#*/}"  # Extract just the repository name (after the slash)
+
+  if [[ "$dry_run" == "true" ]]; then
+    log_info "[DRY RUN] Would clone: $repo into $output_dir/$repo_name"
+    return 0
+  fi
+
+  log_info "Cloning repository: $repo into $output_dir/$repo_name"
+
+  # Create output directory if it doesn't exist
+  local target_dir="$HOME/repos/work/$output_dir"
+  if [[ ! -d "$target_dir" ]]; then
+    mkdir -p "$target_dir"
+    log_info "Created directory: $target_dir"
+  fi
+
+  # Change to target directory before calling clone-to-worktree
+  if ! (cd "$target_dir" && "$CLONE_TO_WORKTREE_SCRIPT" "$repo_url"); then
+    log_error "Failed to clone repository: $repo"
+    return 1
+  fi
+
+  log_success "Successfully cloned: $repo"
+}
+
+clone_all_repositories() {
+  local organization="$1"
+  local limit="$2"
+  local repo_type="$3"
+  local filter_pattern="$4"
+  local output_dir="$5"
+  local dry_run="$6"
+
+  local repos
+  local repo_count=0
+  local success_count=0
+  local failed_repos=()
+
+  # Get list of repositories
+  repos=$(get_repositories "$organization" "$limit" "$repo_type" | filter_repositories "$filter_pattern")
+
+  if [[ -z "$repos" ]]; then
+    log_warning "No repositories found matching the criteria"
+    return 0
+  fi
+
+  # Count total repositories
+  repo_count=$(echo "$repos" | wc -l | tr -d ' ')
+
+  if [[ "$dry_run" == "true" ]]; then
+    log_info "DRY RUN: Found $repo_count repositories to clone"
+    echo "$repos" | while read -r repo; do
+      local repo_name="${repo#*/}"
+      log_info "[DRY RUN] Would clone: $repo into $output_dir/$repo_name"
+    done
+    return 0
+  fi
+
+  log_info "Found $repo_count repositories to clone"
+  echo
+
+  # Clone each repository
+  while IFS= read -r repo; do
+    [[ -z "$repo" ]] && continue
+
+    if clone_repository "$repo" "$output_dir" "$dry_run"; then
+      ((success_count++))
+    else
+      failed_repos+=("$repo")
+    fi
+
+    echo  # Add spacing between operations
+  done <<< "$repos"
+
+  # Summary
+  log_info "Clone operation completed"
+  log_success "Successfully cloned: $success_count/$repo_count repositories"
+
+  if [[ ${#failed_repos[@]} -gt 0 ]]; then
+    log_warning "Failed to clone ${#failed_repos[@]} repositories:"
+    printf '  - %s\n' "${failed_repos[@]}"
+  fi
+}
+
+cleanup_on_error() {
+  log_error "Script interrupted or failed"
+}
+
+# ----------------------------#
+# Main Execution              #
+# ----------------------------#
+
+main() {
+  # Set up error handling
+  trap cleanup_on_error ERR INT TERM
+
+  # Parse and validate arguments
+  parse_arguments "$@"
+
+  # Validate environment
+  validate_environment
+
+  # Execute main workflow
+  clone_all_repositories "$ORGANIZATION" "$REPO_LIMIT" "$REPO_TYPE" "$FILTER_PATTERN" "$OUTPUT_DIR" "$DRY_RUN"
+
+  log_success "All done! 🎉"
+}
+
+# ----------------------------#
+# Script Execution            #
+# ----------------------------#
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  main "$@"
+fi

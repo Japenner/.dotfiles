@@ -27,7 +27,7 @@
   path = ~/.dotfiles/git/.gitconfig-work
 
 [log]
-  date = iso            # Use ISO date format
+  date = iso
 
 [merge]
   tool = vscode

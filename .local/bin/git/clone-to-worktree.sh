@@ -10,6 +10,14 @@ readonly SCRIPT_NAME="$(basename "$0")"
 readonly PROJECTS_DIR="$(pwd)"
 readonly DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 
+# Colors for output
+BLUE='\033[0;34m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+RED='\033[0;31m'
+TEAL='\033[0;36m'
+YELLOW='\033[1;33m'
+
 # ----------------------------#
 # Helper Functions            #
 # ----------------------------#
@@ -32,15 +40,19 @@ EOF
 }
 
 log_info() {
-  echo "ℹ️  $*"
+    echo -e "${TEAL}ℹ️ $1${NC}"
 }
 
 log_success() {
-  echo "✅ $*"
+  echo -e "${GREEN}✅ $1${NC}"
 }
 
 log_error() {
-  echo "❌ Error: $*" >&2
+  echo -e "${RED}❌ $1${NC}" >&2
+}
+
+log_warning() {
+  echo -e "${YELLOW}⚠️ $1${NC}"
 }
 
 get_repo_name_from_url() {
@@ -158,10 +170,10 @@ setup_workspace() {
 
   log_success "Workspace configuration created"
 
-  if ! $CODE_EDITOR "$workspace_file"; then
-    log_error "Failed to open workspace"
-    return 1
-  fi
+  # if ! $CODE_EDITOR "$workspace_file"; then
+  #   log_error "Failed to open workspace"
+  #   return 1
+  # fi
 
   log_success "Opened workspace in $CODE_EDITOR"
 }
