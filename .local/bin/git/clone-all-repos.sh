@@ -34,12 +34,12 @@ Options:
   -t, --type <type>         Repository type: all|public|private|forks|sources (default: all)
   -f, --filter <pattern>    Filter repositories by name pattern (grep regex)
   -o, --output-dir <dir>    Custom directory name for storing repositories (default: organization name)
-  -d, --dry-run            Show what would be cloned without actually cloning
-  -h, --help               Show this help message
+  -d, --dry-run             Show what would be cloned without actually cloning
+  -h, --help                Show this help message
 
 Directory Structure:
-  Default: Repositories will be cloned into ~/repos/work/<organization>/<repo-name>/
-  Custom:  Repositories will be cloned into ~/repos/work/<output-dir>/<repo-name>/
+  Default: Repositories will be cloned into <YOUR_CURRENT_DIR>/<organization>/<repo-name>/
+  Custom:  Repositories will be cloned into <YOUR_CURRENT_DIR>/<output-dir>/<repo-name>/
 
 Examples:
   $SCRIPT_NAME my-org
@@ -236,6 +236,11 @@ filter_repositories() {
 
   if [[ -n "$filter_pattern" ]]; then
     log_info "Applying filter pattern: $filter_pattern" >&2
+    # Validate regex pattern before using it
+    if ! echo "" | grep -E "$filter_pattern" >/dev/null 2>&1; then
+      log_error "Invalid regex pattern: $filter_pattern" >&2
+      return 1
+    fi
     grep -E "$filter_pattern"
   else
     cat
@@ -258,7 +263,7 @@ clone_repository() {
   log_info "Cloning repository: $repo into $output_dir/$repo_name"
 
   # Create output directory if it doesn't exist
-  local target_dir="$HOME/repos/work/$output_dir"
+  local target_dir="$(pwd)/$output_dir"
   if [[ ! -d "$target_dir" ]]; then
     mkdir -p "$target_dir"
     log_info "Created directory: $target_dir"
@@ -294,8 +299,8 @@ clone_all_repositories() {
     return 0
   fi
 
-  # Count total repositories
-  repo_count=$(echo "$repos" | wc -l | tr -d ' ')
+  # Count total repositories (handle empty lines properly)
+  repo_count=$(echo "$repos" | grep -c '^.' || echo "0")
 
   if [[ "$dry_run" == "true" ]]; then
     log_info "DRY RUN: Found $repo_count repositories to clone"
