@@ -41,7 +41,7 @@ readonly EXIT_PERMISSION_ERROR=126
 readonly EXIT_COMMAND_NOT_FOUND=127
 
 # Colors for output (check if terminal supports colors)
-if [[ -t 1 ]] && command -v tput >/dev/null 2>&1 && tput colors >/dev/null 2>&1; then
+if [[ -t 1 ]]; then
   readonly BLUE='\033[0;34m'
   readonly GREEN='\033[0;32m'
   readonly NC='\033[0m' # No Color
@@ -70,8 +70,7 @@ QUIET=false
 # ----------------------------#
 
 show_usage() {
-  cat << EOF
-${BOLD}$SCRIPT_NAME${NC} v$SCRIPT_VERSION
+  printf "%b\n" "${BOLD}$SCRIPT_NAME${NC} v$SCRIPT_VERSION
 
 Usage: $SCRIPT_NAME <arg1> [options]
 
@@ -89,8 +88,7 @@ Examples:
   $SCRIPT_NAME arg1
   $SCRIPT_NAME arg1 --dry-run --verbose
 
-For more information, see: https://github.com/japenner/.dotfiles
-EOF
+For more information, see: https://github.com/japenner/.dotfiles"
 }
 
 show_version() {
@@ -99,15 +97,15 @@ show_version() {
 
 # Logging functions with level support
 log_debug() {
-  [[ "$VERBOSE" == true ]] && echo -e "${DIM}🔍 DEBUG: $1${NC}" >&2
+  [[ "$VERBOSE" == true ]] && echo -e "${DIM}🔍 DEBUG: $1${NC}" >&2 || true
 }
 
 log_info() {
-  [[ "$QUIET" == false ]] && echo -e "${TEAL}ℹ️  $1${NC}"
+  [[ "$QUIET" == false ]] && echo -e "${TEAL}ℹ️  $1${NC}" || true
 }
 
 log_success() {
-  [[ "$QUIET" == false ]] && echo -e "${GREEN}✅ $1${NC}"
+  [[ "$QUIET" == false ]] && echo -e "${GREEN}✅ $1${NC}" || true
 }
 
 log_error() {
@@ -115,7 +113,7 @@ log_error() {
 }
 
 log_warning() {
-  [[ "$QUIET" == false ]] && echo -e "${YELLOW}⚠️  WARNING: $1${NC}" >&2
+  [[ "$QUIET" == false ]] && echo -e "${YELLOW}⚠️  WARNING: $1${NC}" >&2 || true
 }
 
 log_fatal() {
@@ -208,12 +206,10 @@ parse_arguments() {
         ;;
       -d|--dry-run)
         dry_run=true
-        log_debug "Dry run mode enabled"
         shift
         ;;
       -v|--verbose)
         VERBOSE=true
-        log_debug "Verbose mode enabled"
         shift
         ;;
       -q|--quiet)
@@ -315,7 +311,10 @@ run_command() {
 # ----------------------------#
 
 main() {
-  # Set up error handling and cleanup
+  # Parse and validate arguments first (before setting up traps)
+  parse_arguments "$@"
+
+  # Set up error handling and cleanup after argument parsing
   trap cleanup_on_error ERR INT TERM
   trap cleanup_on_exit EXIT
 
@@ -323,9 +322,6 @@ main() {
   log_debug "Starting $SCRIPT_NAME v$SCRIPT_VERSION"
   log_debug "Script directory: $SCRIPT_DIR"
   log_debug "Working directory: $(pwd)"
-
-  # Parse and validate arguments
-  parse_arguments "$@"
 
   # Pre-flight checks
   check_dependencies
