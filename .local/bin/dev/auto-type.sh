@@ -9,7 +9,144 @@
 # - Dry-run mode for testing
 # - Comprehensive help and logging
 #
-# Usage: typer.sh [options] "<text_to_type>"
+# Usage: auto-type.sh [options] "<text_to_type>"
+
+# --------------------------------------------------------------------#
+
+# ## 🎯 **Primary Use Cases**
+
+# ### **1. Terminal/CLI Automation**
+# ```bash
+# # Quickly type complex commands
+# auto-type "docker exec -it $(docker ps -q --filter name=web) /bin/bash"
+# auto-type "kubectl get pods -n production --selector=app=frontend"
+# auto-type "ssh user@server.example.com -i ~/.ssh/production.key"
+# ```
+
+# ### **2. Serial Device Communication**
+# ```bash
+# # Your original use case - perfect for hardware debugging
+# auto-type "cat /dev/ttyACM3"
+# auto-type "screen /dev/ttyUSB0 115200"
+# auto-type "minicom -D /dev/ttyS0"
+# ```
+
+# ### **3. Demo Presentations & Screencasts**
+# ```bash
+# # Type commands slowly for audience to follow
+# auto-type -d 150 "git clone https://github.com/user/project.git"
+# auto-type -d 200 "cd project && npm install && npm start"
+# ```
+
+# ### **4. Testing & QA Scenarios**
+# ```bash
+# # Simulate user input for testing applications
+# auto-type "admin@example.com"  # Login forms
+# auto-type "P@ssw0rd123!"       # Password fields
+# auto-type "SELECT * FROM users WHERE status = 'active';"  # SQL testing
+# ```
+
+# ## 🔧 **Advanced Use Cases**
+
+# ### **5. Automation Scripts Integration**
+# ```bash
+# #!/bin/bash
+# # Part of larger automation workflow
+# tmux new-session -d -s testing
+# tmux send-keys -t testing "auto-type 'pytest --verbose'" Enter
+# ```
+
+# ### **6. Remote System Management**
+# ```bash
+# # When copy-paste isn't available (KVM, IPMI consoles)
+# auto-type "sudo systemctl restart nginx"
+# auto-type "tail -f /var/log/nginx/error.log"
+# ```
+
+# ### **7. Development Workflows**
+# ```bash
+# # Quickly input common development commands
+# auto-type "git add . && git commit -m 'feat: add new feature'"
+# auto-type "docker-compose up -d && docker logs -f web"
+# auto-type "npm run test:coverage && open coverage/index.html"
+# ```
+
+# ### **8. Training & Education**
+# ```bash
+# # Demonstrate commands to students/colleagues
+# auto-type -d 300 "find . -name '*.js' -exec grep -l 'TODO' {} \;"
+# auto-type -d 250 "awk '{sum+=$1} END {print sum}' data.txt"
+# ```
+
+# ## 🎨 **Creative Use Cases**
+
+# ### **9. Multi-Step Command Sequences**
+# ```bash
+# # Create aliases for complex workflows
+# alias deploy-prod="auto-type 'git checkout main && git pull && ./deploy.sh production'"
+# alias start-dev="auto-type 'docker-compose up -d && npm run dev'"
+# ```
+
+# ### **10. Accessibility & Ergonomics**
+# ```bash
+# # Reduce repetitive typing strain
+# auto-type "frequently used long commands that hurt to type repeatedly"
+# ```
+
+# ### **11. Live Coding Sessions**
+# ```bash
+# # Control typing speed for live audiences
+# auto-type -d 100 "function fibonacci(n) { return n <= 1 ? n : fibonacci(n-1) + fibonacci(n-2); }"
+# ```
+
+# ### **12. Security Testing**
+# ```bash
+# # Controlled input for penetration testing
+# auto-type --dry-run "'; DROP TABLE users; --"  # Test SQL injection safely first
+# ```
+
+# ## 🚀 **Workflow Integration Examples**
+
+# ### **With tmux:**
+# ```bash
+# # Send commands to specific tmux sessions
+# tmux send-keys "auto-type 'long-command-here'" Enter
+# ```
+
+# ### **With Ansible/Configuration Management:**
+# ```bash
+# # Part of system setup playbooks
+# - name: Configure terminal session
+#   shell: auto-type "export PATH=$PATH:/usr/local/bin"
+# ```
+
+# ### **With Shell Functions:**
+# ```bash
+# # Create smart wrappers
+# dev_connect() {
+#     auto-type "ssh developer@$1.dev.company.com"
+# }
+# ```
+
+# ## 💡 **Best Scenarios Summary**
+
+# **Most Valuable When:**
+# - ✅ **Commands are long and complex**
+# - ✅ **Repetitive typing causes strain**
+# - ✅ **Demonstration/teaching scenarios**
+# - ✅ **Copy-paste is unavailable/unreliable**
+# - ✅ **Precise timing control needed**
+# - ✅ **Automation requires human-like typing**
+
+# **Less Useful When:**
+# - ❌ Simple, short commands
+# - ❌ Copy-paste works perfectly
+# - ❌ Batch processing is possible
+# - ❌ Real automation tools (expect, ansible) are better fits
+
+# The script excels in **bridging the gap** between manual typing and full automation - perfect for scenarios where you need the **human touch** but want to **reduce repetitive effort**! 🎯
+
+# --------------------------------------------------------------------#
 
 set -euo pipefail
 
@@ -101,7 +238,7 @@ ${BOLD}Supported Platforms:${NC}
   - macOS: Uses AppleScript for System Events simulation
   - Windows: Currently not supported
 
-For more information, see: https://github.com/japenner/.dotfiles/.local/dev/typer.sh"
+For more information, see: https://github.com/japenner/.dotfiles/.local/dev/auto-type.sh"
 }
 
 show_version() {
