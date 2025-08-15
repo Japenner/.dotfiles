@@ -70,7 +70,7 @@ A comprehensive setup for managing my development environment across multiple ma
 
 ### tmux
 
-- **tmux-cht.sh**:
+- **tmux-cht**:
     - Script that integrates `cht.sh` (cheat.sh) with tmux, enabling quick access to coding cheatsheets directly in a new tmux pane.
 - **tmux-sessionizer**:
     - A utility for managing tmux sessions, allowing quick switching between sessions based on workspace or project, enhancing multitasking capabilities.

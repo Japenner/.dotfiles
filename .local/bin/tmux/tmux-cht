@@ -8,7 +8,7 @@
 # Use `fzf` to allow the user to select an item from two files:
 # `~/.tmux-cht-languages` and `~/.tmux-cht-command`.
 # `selected` will hold the user's choice or be empty if nothing is selected.
-selected=`cat ~/.tmux-cht-languages ~/.tmux-cht-command | fzf`
+selected=`cat ~/.dotfiles/.local/bin/tmux/.tmux-cht-languages ~/.dotfiles/.local/bin/tmux/.tmux-cht-command | fzf`
 
 if [[ -z $selected ]]; then
     exit 0
@@ -17,7 +17,7 @@ fi
 read -p "Enter Query: " query
 
 # Check if the selected item exists in the file `~/.tmux-cht-languages`.
-if grep -qs "$selected" ~/.tmux-cht-languages; then
+if grep -qs "$selected" ~/.dotfiles/.local/bin/tmux/.tmux-cht-languages; then
     # If the selected item is found in `~/.tmux-cht-languages`, format the query for a language search:
     # Replace spaces with plus signs in the `query` to make it URL-friendly.
     query=`echo $query | tr ' ' '+'`
