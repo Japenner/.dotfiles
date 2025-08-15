@@ -131,6 +131,15 @@ alias r:spec="run_specs"                              # Run RSpec test for given
 alias r:specs="rails_run_rspec_tests"                 # Run RSpec tests
 alias r:tests="rails_run_tests"                       # Run Minitest tests
 
+# =========================== TMux ============================ #
+
+alias tmux:a='tmux attach-session -t'
+alias tmux:k='tmux kill-session -t'
+alias tmux:ka='tmux_kill_all'
+alias tmux:ls='tmux list-sessions'
+alias tmux:n='tmux_new_session'
+alias tmux:r='tmux source-file ~/.tmux.conf'
+
 # ========================== Utility ========================== #
 
 alias awsume=". awsume"                                                   # Source awsume to assume AWS roles easily

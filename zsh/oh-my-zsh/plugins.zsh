@@ -53,6 +53,7 @@ plugins=(
   node
   ruby
   docker
+  tmux
   zsh-autosuggestions
   zsh-completions
   zsh-syntax-highlighting
