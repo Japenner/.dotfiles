@@ -6,7 +6,7 @@ bin_path="${DOTFILES}/.local/bin"
 
 alias branch="branch"                       # Create a new branch and update GH ticket
 alias chatgpt="chatgpt"                     # Send a prompt or file to OpenAI and get a response
-# alias cht="${DOTFILES}/tmux/tmux-cht"     # Run tmux cheat sheet script
+alias cht="${DOTFILES}/tmux/tmux-cht.sh"    # Run tmux cheat sheet script
 # alias slack:away="set_slack_status set"   # Set Slack status to away
 # alias slack:back="set_slack_status clear" # Set Slack status to back
 

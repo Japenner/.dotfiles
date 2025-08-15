@@ -1,0 +1,9 @@
+#!/usr/bin/env zsh
+
+# work_dir="$HOME/repos/skinclique"
+
+# alias sc="cd $work_dir"
+
+# alias sc:papi="cd $work_dir/provider-api"
+# alias sc:papp="cd $work_dir/provider-app"
+# alias sc:pati="cd $work_dir/patient-app"
