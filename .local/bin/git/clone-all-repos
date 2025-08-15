@@ -8,7 +8,7 @@ set -euo pipefail
 
 readonly SCRIPT_NAME="$(basename "$0")"
 readonly DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
-readonly CLONE_TO_WORKTREE_SCRIPT="$DOTFILES/.local/bin/git/clone-to-worktree.sh"
+readonly CLONE_TO_WORKTREE_SCRIPT="$DOTFILES/.local/bin/git/clone-to-worktree"
 
 # Colors for output
 BLUE='\033[0;34m'
@@ -81,12 +81,12 @@ validate_environment() {
   fi
 
   if [[ ! -f "$CLONE_TO_WORKTREE_SCRIPT" ]]; then
-    log_error "clone-to-worktree.sh script not found at $CLONE_TO_WORKTREE_SCRIPT"
+    log_error "clone-to-worktree script not found at $CLONE_TO_WORKTREE_SCRIPT"
     return 1
   fi
 
   if [[ ! -x "$CLONE_TO_WORKTREE_SCRIPT" ]]; then
-    log_error "clone-to-worktree.sh script is not executable"
+    log_error "clone-to-worktree script is not executable"
     log_info "Run: chmod +x $CLONE_TO_WORKTREE_SCRIPT"
     return 1
   fi

@@ -9,7 +9,7 @@
 # - Dry-run mode for testing
 # - Comprehensive help and logging
 #
-# Usage: auto-type.sh [options] "<text_to_type>"
+# Usage: auto-type [options] "<text_to_type>"
 
 # --------------------------------------------------------------------#
 
@@ -238,7 +238,7 @@ ${BOLD}Supported Platforms:${NC}
   - macOS: Uses AppleScript for System Events simulation
   - Windows: Currently not supported
 
-For more information, see: https://github.com/japenner/.dotfiles/.local/dev/auto-type.sh"
+For more information, see: https://github.com/japenner/.dotfiles/.local/dev/auto-type"
 }
 
 show_version() {

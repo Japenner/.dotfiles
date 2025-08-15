@@ -86,7 +86,7 @@ Examples:
   $SCRIPT_NAME https://github.com/user/repo.git --name my-project
   $SCRIPT_NAME https://github.com/user/repo.git --dry-run --verbose
 
-For more information, see: https://github.com/japenner/.dotfiles/git/clone-to-worktree.sh"
+For more information, see: https://github.com/japenner/.dotfiles/git/clone-to-worktree"
 }
 
 show_version() {

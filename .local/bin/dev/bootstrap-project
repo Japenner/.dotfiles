@@ -11,7 +11,7 @@
 # - Comprehensive error handling and logging
 # - Dry-run support for testing configurations
 #
-# Usage: bootstrap-project.sh [options]
+# Usage: bootstrap-project [options]
 
 set -euo pipefail
 

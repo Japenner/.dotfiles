@@ -4,11 +4,11 @@
 
 bin_path="${DOTFILES}/.local/bin"
 
-alias branch="branch.sh"                     # Create a new branch and update GH ticket
-alias chatgpt="chatgpt.sh"                   # Send a prompt or file to OpenAI and get a response
-# alias cht="${DOTFILES}/tmux/tmux-cht.sh"     # Run tmux cheat sheet script
-# alias slack:away="set_slack_status.sh set"   # Set Slack status to away
-# alias slack:back="set_slack_status.sh clear" # Set Slack status to back
+alias branch="branch"                       # Create a new branch and update GH ticket
+alias chatgpt="chatgpt"                     # Send a prompt or file to OpenAI and get a response
+# alias cht="${DOTFILES}/tmux/tmux-cht"     # Run tmux cheat sheet script
+# alias slack:away="set_slack_status set"   # Set Slack status to away
+# alias slack:back="set_slack_status clear" # Set Slack status to back
 
 # ======================= Config Editing ====================== #
 
@@ -54,13 +54,13 @@ alias df:update="git_update_current_branch $DOTFILES" # Update dotfiles current 
 
 # ============================ Git ============================ #
 
-alias g:ac="generate-commit-message.sh -a -s"                                          # Silently generate and apply a commit message using AI
+alias g:ac="generate-commit-message -a -s"                                             # Silently generate and apply a commit message using AI
 alias g:auth:team="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_adhocteam_us" # Authenticate with the team SSH key
 alias g:auth="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_personal"          # Authenticate with the personal SSH key
 alias g:base='gco "$(g:default)" && git pull'                                          # Checkout the default branch and pull changes
-alias g:clwt="clone-to-worktree.sh"                                                    # Clone a git repository into a worktree
-alias g:cw="create-worktree.sh"                                                        # Create a new git worktree
-alias g:cwall="clone-all-repos.sh"                                                     # Clone all repositories
+alias g:clwt="clone-to-worktree"                                                       # Clone a git repository into a worktree
+alias g:cw="create-worktree"                                                           # Create a new git worktree
+alias g:cwall="clone-all-repos"                                                        # Clone all repositories
 alias g:default="git_default_branch"                                                   # Get the default branch of the remote repository
 alias g:find:branch="gb -a | grep -i"                                                  # Find a branch by name
 alias g:prune="git_prune_local_branches"                                               # Prune local branches that have been deleted on the remote
@@ -79,11 +79,11 @@ alias gh:cdiff="github_copy_diff"                    # Copy the diff of the curr
 alias gh:commit="git_force_commit_changes"           # Commit and forcefully push changes in directory
 alias gh:compare="github_compare_current_branch"     # Open GitHub compare page for the current branch
 alias gh:open="github_open_current_repo"             # Open GitHub repository in browser
-alias gh:pr-review="generate-pr-review.sh"           # Run script to review pull requests
+alias gh:pr-review="generate-pr-review"              # Run script to review pull requests
 # alias gh:pr="ruby generate_pr.rb"                  # Run script to create a new pull request based on work
 alias gh:publish='"$(gh:commit)" && "$(gh:compare)"' # Add and commit all changes, push to repo, and open GitHub compare page
-alias gh:rr="open-pr-review-requests.sh"             # Open pull requests where a review is requested
-alias gh:update-all="update-all-repos.sh"            # Run script to update all git repositories
+alias gh:rr="open-pr-review-requests"                # Open pull requests where a review is requested
+alias gh:update-all="update-all-repos"               # Run script to update all git repositories
 
 # ============================ Java =========================== #
 
