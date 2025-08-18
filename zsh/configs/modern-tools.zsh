@@ -3,6 +3,26 @@
 # ============================================
 # Modern CLI Tool Replacements
 # ============================================
+#
+# - atuin: Enhanced shell history
+# - bat: Modern 'cat' with syntax highlighting
+# - btop: Modern 'top' replacement
+# - delta: Enhanced 'git diff' viewer
+# - direnv: Auto-load environment variables
+# - dust: Modern 'du' replacement
+# - eza: Modern 'ls' replacement with icons
+# - fd: Modern 'find' replacement
+# - httpie: Modern 'curl' replacement
+# - hyperfine: Command benchmarking
+# - just: Modern command runner
+# - ncdu: Interactive disk usage browser
+# - procs: Modern 'ps' replacement
+# - ripgrep (rg): Fast 'grep' replacement
+# - starship: Cross-shell prompt
+# - watchexec: Auto-run commands on file changes
+# - zoxide: Smart 'cd' replacement with learning
+#
+# ============================================
 
 # Only load in interactive shells
 [[ $- != *i* ]] && return
@@ -41,6 +61,42 @@ if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh)"
 fi
 
+# Enhanced shell history with atuin
+if command -v atuin >/dev/null 2>&1; then
+  eval "$(atuin init zsh)"
+fi
+
+# Disk usage tools
+if command -v dust >/dev/null 2>&1; then
+  alias du='dust'
+fi
+
+if command -v ncdu >/dev/null 2>&1; then
+  alias dui='ncdu'  # Interactive disk usage
+fi
+
+# System monitoring
+if command -v btop >/dev/null 2>&1; then
+  alias top='btop'
+  alias htop='btop'
+elif command -v htop >/dev/null 2>&1; then
+  alias top='htop'
+fi
+
+if command -v procs >/dev/null 2>&1; then
+  alias ps='procs'
+fi
+
+# HTTP client
+if command -v http >/dev/null 2>&1; then
+  alias curl='http'  # HTTPie uses 'http' command
+fi
+
+# Auto-load environment variables
+if command -v direnv >/dev/null 2>&1; then
+  eval "$(direnv hook zsh)"
+fi
+
 # ============================================
 # Modern Tool Installation Helper
 # ============================================
@@ -51,7 +107,7 @@ install_modern_tools() {
   if [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS with Homebrew
     if command -v brew >/dev/null 2>&1; then
-      brew install eza bat ripgrep fd zoxide starship delta
+      brew install eza bat ripgrep fd zoxide starship delta dust btop procs httpie just direnv atuin hyperfine watchexec ncdu
       echo "✅ Modern tools installed! Restart your shell to use them."
     else
       echo "❌ Homebrew not found. Please install Homebrew first:"
@@ -130,7 +186,7 @@ install_modern_tools() {
 install_via_cargo() {
   if command -v cargo >/dev/null 2>&1; then
     echo "🦀 Installing modern tools via Cargo..."
-    cargo install eza bat ripgrep fd-find zoxide starship git-delta
+    cargo install eza bat ripgrep fd-find zoxide starship git-delta dust bottom procs just direnv atuin hyperfine watchexec
     echo "✅ Cargo installation complete!"
   else
     echo "❌ Cargo not found. Install Rust first: https://rustup.rs/"
@@ -141,7 +197,7 @@ install_via_cargo() {
 check_modern_tools() {
   echo "🔍 Checking modern tool installation status:"
 
-  local tools=("eza" "bat" "rg" "fd" "zoxide" "starship" "delta")
+  local tools=("eza" "bat" "rg" "fd" "zoxide" "starship" "delta" "dust" "btop" "procs" "http" "just" "direnv" "atuin" "hyperfine" "watchexec" "ncdu")
   local missing=()
 
   for tool in "${tools[@]}"; do
