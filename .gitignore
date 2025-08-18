@@ -1,5 +1,6 @@
-bin/.local/bin
+.local/state/*
 
 zsh/local/*
 !zsh/local/*.example
+
 zsh/.p10k.zsh
