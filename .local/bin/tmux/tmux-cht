@@ -1,35 +1,608 @@
 #!/usr/bin/env bash
 
-# This script provides a tmux-based interface to access cheat sheets from cht.sh,
-# allowing users to search by programming language or command. It uses fzf for
-# selection, prompts for a query, and opens a new tmux window to display the
-# results from cht.sh.
+# tmux-cht - A tmux-based interface to access cheat sheets from cht.sh
+#
+# Provides an interactive interface for browsing programming language and command
+# cheat sheets using fzf for selection and tmux for display. Supports caching,
+# preview functionality, and robust error handling.
+#
+# Configuration is embedded as global variables for easy maintenance and
+# distribution without external file dependencies.
+#
+# Usage: tmux-cht [options]
+# Examples:
+#   tmux-cht                    # Interactive mode
+#   tmux-cht -l                 # List available topics
+#   tmux-cht -c                 # Enable caching
+#   tmux-cht -v                 # Verbose output
 
-# Use `fzf` to allow the user to select an item from two files:
-# `~/.tmux-cht-languages` and `~/.tmux-cht-command`.
-# `selected` will hold the user's choice or be empty if nothing is selected.
-selected=`cat ~/.dotfiles/.local/bin/tmux/.tmux-cht-languages ~/.dotfiles/.local/bin/tmux/.tmux-cht-command | fzf`
+set -euo pipefail
 
-if [[ -z $selected ]]; then
-    exit 0
+# ----------------------------#
+# Script Metadata & Config    #
+# ----------------------------#
+
+readonly SCRIPT_NAME="$(basename "$0")"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly SCRIPT_VERSION="2.0.0"
+readonly DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+
+# Script-specific configuration
+readonly CACHE_DIR="${HOME}/.cache/tmux-cht"
+readonly CACHE_EXPIRE_HOURS=24
+
+# Exit codes
+readonly EXIT_SUCCESS=0
+readonly EXIT_GENERAL_ERROR=1
+readonly EXIT_USAGE_ERROR=2
+readonly EXIT_PERMISSION_ERROR=126
+readonly EXIT_COMMAND_NOT_FOUND=127
+
+# Colors for output (check if terminal supports colors)
+if [[ -t 1 ]]; then
+  readonly BLUE='\033[0;34m'
+  readonly GREEN='\033[0;32m'
+  readonly NC='\033[0m' # No Color
+  readonly RED='\033[0;31m'
+  readonly TEAL='\033[0;36m'
+  readonly YELLOW='\033[1;33m'
+  readonly BOLD='\033[1m'
+  readonly DIM='\033[2m'
+else
+  readonly BLUE=''
+  readonly GREEN=''
+  readonly NC=''
+  readonly RED=''
+  readonly TEAL=''
+  readonly YELLOW=''
+  readonly BOLD=''
+  readonly DIM=''
 fi
 
-read -p "Enter Query: " query
+# Global variables
+VERBOSE=false
+QUIET=false
+USE_CACHE=false
+LIST_ONLY=false
 
-# Check if the selected item exists in the file `~/.tmux-cht-languages`.
-if grep -qs "$selected" ~/.dotfiles/.local/bin/tmux/.tmux-cht-languages; then
-    # If the selected item is found in `~/.tmux-cht-languages`, format the query for a language search:
-    # Replace spaces with plus signs in the `query` to make it URL-friendly.
-    query=`echo $query | tr ' ' '+'`
+TMUX_CHT_LANGUAGES="ArnoldC bash c cpp css gdb golang haskell html javascript lua nodejs php python rails ruby rust solidity tmux typescript v vlang zsh"
+TMUX_CHT_COMMANDS="awk cargo cat chmod chown cp docker docker-compose find git git-commit git-rebase git-status git-worktree grep head jq kill less ls lsof make man mv ps rename rg rm sed ssh stow tail tar tldr tr xargs"
 
-    # Open a new tmux window and run a bash command to perform a language search on cht.sh:
-    # 1. Print the query URL.
-    # 2. Use `curl` to fetch results from cht.sh based on the selected language and query.
-    # 3. Keep the tmux window open indefinitely with a `while` loop to allow the user to view the output.
-    tmux neww bash -c "echo \"curl cht.sh/$selected/$query/\" & curl cht.sh/$selected/$query & while [ : ]; do sleep 1; done"
-else
-    # If the selected item is not in `~/.tmux-cht-languages`, assume it's a command search:
-    # Open a new tmux window and run a bash command to search for a command's cheat sheet on cht.sh.
-    # Display the result in `less` for easy navigation.
-    tmux neww bash -c "curl -s cht.sh/$selected~$query | less"
+# ----------------------------#
+# Helper Functions            #
+# ----------------------------#
+
+show_usage() {
+  printf "%b\n" "${BOLD}$SCRIPT_NAME${NC} v$SCRIPT_VERSION
+
+A tmux-based interface to access cheat sheets from cht.sh.
+
+Usage: $SCRIPT_NAME [options]
+
+Options:
+  ${BOLD}-c, --cache${NC}          Enable caching for faster repeated queries
+  ${BOLD}-h, --help${NC}           Show this help message
+  ${BOLD}-l, --list${NC}           List all available languages and commands
+  ${BOLD}-q, --quiet${NC}          Suppress non-error output
+  ${BOLD}-v, --verbose${NC}        Enable verbose output
+  ${BOLD}--version${NC}            Show version information
+
+Examples:
+  $SCRIPT_NAME                    # Interactive mode
+  $SCRIPT_NAME -l                 # List all available topics
+  $SCRIPT_NAME -c                 # Use cache when available
+  $SCRIPT_NAME -v                 # Enable verbose output
+
+Requirements:
+  - Must be run from within a tmux session
+  - Requires: fzf, tmux, curl
+  - Built-in support for $(echo $TMUX_CHT_LANGUAGES | wc -w | tr -d ' ') languages and $(echo $TMUX_CHT_COMMANDS | wc -w | tr -d ' ') commands
+
+For more information, see: https://github.com/japenner/.dotfiles"
+}
+
+show_version() {
+  echo "$SCRIPT_NAME v$SCRIPT_VERSION"
+}
+
+# Logging functions with level support
+log_debug() {
+  [[ "$VERBOSE" == true ]] && echo -e "${DIM}🔍 DEBUG: $1${NC}" >&2 || true
+}
+
+log_info() {
+  [[ "$QUIET" == false ]] && echo -e "${TEAL}ℹ️  $1${NC}" || true
+}
+
+log_success() {
+  [[ "$QUIET" == false ]] && echo -e "${GREEN}✅ $1${NC}" || true
+}
+
+log_error() {
+  echo -e "${RED}❌ ERROR: $1${NC}" >&2
+}
+
+log_warning() {
+  [[ "$QUIET" == false ]] && echo -e "${YELLOW}⚠️  WARNING: $1${NC}" >&2 || true
+}
+
+log_fatal() {
+  echo -e "${RED}💀 FATAL: $1${NC}" >&2
+  exit "${2:-$EXIT_GENERAL_ERROR}"
+}
+
+# Check if a command exists
+command_exists() {
+  command -v "$1" >/dev/null 2>&1
+}
+
+# Check if a topic exists in either languages or commands
+topic_exists() {
+  local topic="$1"
+  [[ " $TMUX_CHT_LANGUAGES $TMUX_CHT_COMMANDS " =~ " $topic " ]]
+}
+
+# Get all available topics as a sorted list
+get_all_topics() {
+  printf "%s\n%s\n" "$TMUX_CHT_LANGUAGES" "$TMUX_CHT_COMMANDS" | tr ' ' '\n' | sort
+}
+
+# Add helper functions for topic management (for future maintenance)
+get_topic_count() {
+  local lang_count=$(echo $TMUX_CHT_LANGUAGES | wc -w | tr -d ' ')
+  local cmd_count=$(echo $TMUX_CHT_COMMANDS | wc -w | tr -d ' ')
+  echo "Languages: $lang_count, Commands: $cmd_count, Total: $((lang_count + cmd_count))"
+}
+
+# Validate that required commands are available
+
+# Validate that required commands are available
+check_dependencies() {
+  local missing_deps=()
+  local required_commands=("fzf" "tmux" "curl")
+
+  for cmd in "${required_commands[@]}"; do
+    if ! command_exists "$cmd"; then
+      missing_deps+=("$cmd")
+    fi
+  done
+
+  if [[ ${#missing_deps[@]} -gt 0 ]]; then
+    log_error "Missing required dependencies: ${missing_deps[*]}"
+    log_info "Install with: brew install ${missing_deps[*]}"
+    log_fatal "Cannot continue without required dependencies" $EXIT_COMMAND_NOT_FOUND
+  fi
+}
+
+# Validate file/directory exists
+validate_path() {
+  local path="$1"
+  local type="${2:-file}" # file, directory, or any
+
+  if [[ ! -e "$path" ]]; then
+    log_fatal "Path does not exist: $path" $EXIT_GENERAL_ERROR
+  fi
+
+  case "$type" in
+    file)
+      [[ ! -f "$path" ]] && log_fatal "Not a file: $path" $EXIT_GENERAL_ERROR
+      ;;
+    directory)
+      [[ ! -d "$path" ]] && log_fatal "Not a directory: $path" $EXIT_GENERAL_ERROR
+      ;;
+  esac
+}
+
+# Check if required configuration is available
+check_config() {
+  # Validate that we have topics defined
+  if [[ -z "$TMUX_CHT_LANGUAGES" ]]; then
+    log_fatal "No languages defined in TMUX_CHT_LANGUAGES" $EXIT_GENERAL_ERROR
+  fi
+
+  if [[ -z "$TMUX_CHT_COMMANDS" ]]; then
+    log_fatal "No commands defined in TMUX_CHT_COMMANDS" $EXIT_GENERAL_ERROR
+  fi
+
+  log_debug "Configuration loaded: $(get_topic_count)"
+}
+
+# Validate tmux environment
+check_tmux_environment() {
+  if [[ -z "${TMUX:-}" ]]; then
+    log_error "This script must be run from within a tmux session"
+    log_info "Start tmux first: tmux new-session"
+    log_fatal "Not running in tmux session" $EXIT_PERMISSION_ERROR
+  fi
+
+  log_debug "Running in tmux session: ${TMUX}"
+}
+
+# List all available topics
+list_available_topics() {
+  echo -e "${BOLD}Available Languages:${NC}"
+  # Convert space-separated string to newline-separated, sort, and format
+  echo "$TMUX_CHT_LANGUAGES" | tr ' ' '\n' | sort | column -c 80
+
+  echo
+  echo -e "${BOLD}Available Commands:${NC}"
+  echo "$TMUX_CHT_COMMANDS" | tr ' ' '\n' | sort | column -c 80
+}
+
+# Setup cache directory if caching is enabled
+setup_cache_directory() {
+  if [[ "$USE_CACHE" == true ]]; then
+    if ! mkdir -p "$CACHE_DIR" 2>/dev/null; then
+      log_warning "Failed to create cache directory: $CACHE_DIR"
+      log_warning "Proceeding without caching"
+      USE_CACHE=false
+      return 1
+    fi
+    log_debug "Cache directory: $CACHE_DIR"
+  fi
+}
+
+# Get cache file path for a topic and query
+get_cache_file_path() {
+  local topic="$1"
+  local query="$2"
+  local sanitized_query
+
+  # Sanitize query for filename
+  sanitized_query=$(echo "$query" | tr ' /' '_' | tr -cd '[:alnum:]_-')
+  echo "${CACHE_DIR}/${topic}_${sanitized_query}.cache"
+}
+
+# Check if cache file is valid and not expired
+is_cache_file_valid() {
+  local cache_file="$1"
+
+  if [[ ! -f "$cache_file" ]]; then
+    log_debug "Cache miss: file doesn't exist"
+    return 1
+  fi
+
+  # Check if cache is older than CACHE_EXPIRE_HOURS
+  local cache_age_hours
+  if command_exists stat; then
+    # macOS stat command
+    cache_age_hours=$(( ($(date +%s) - $(stat -f %m "$cache_file" 2>/dev/null || echo 0)) / 3600 ))
+  else
+    # Fallback for systems without stat
+    cache_age_hours=$CACHE_EXPIRE_HOURS
+  fi
+
+  if [[ $cache_age_hours -ge $CACHE_EXPIRE_HOURS ]]; then
+    log_debug "Cache expired: ${cache_age_hours}h old (limit: ${CACHE_EXPIRE_HOURS}h)"
+    return 1
+  fi
+
+  log_debug "Cache hit: ${cache_age_hours}h old"
+  return 0
+}
+
+# Fetch cheat sheet from cht.sh with error handling
+fetch_cheat_sheet() {
+  local url="$1"
+  local output_file="$2"
+  local temp_file="${output_file}.tmp"
+
+  log_debug "Fetching: $url"
+
+  # Try to fetch with timeout and user agent
+  if ! curl -s --max-time 10 \
+            --user-agent "tmux-cht/$SCRIPT_VERSION" \
+            --fail \
+            --location \
+            "$url" > "$temp_file" 2>/dev/null; then
+    log_error "Failed to fetch cheat sheet from cht.sh"
+    log_info "Check your internet connection or try again later"
+    rm -f "$temp_file"
+    return 1
+  fi
+
+  # Validate that we got content
+  if [[ ! -s "$temp_file" ]]; then
+    log_error "Received empty response from cht.sh"
+    rm -f "$temp_file"
+    return 1
+  fi
+
+  # Move temp file to final location
+  mv "$temp_file" "$output_file"
+  log_debug "Content saved to: $output_file"
+  return 0
+}
+
+# Interactive topic selection using fzf
+select_topic_interactive() {
+  local selected
+
+  log_debug "Starting interactive topic selection"
+
+  # Combine languages and commands, sort, and use fzf with preview
+  if ! selected=$(printf "%s\n%s\n" "$TMUX_CHT_LANGUAGES" "$TMUX_CHT_COMMANDS" | \
+                 tr ' ' '\n' | \
+                 sort | \
+                 fzf --prompt="Select language or command: " \
+                     --height=50% \
+                     --border \
+                     --preview-window=right:50% \
+                     --preview='echo "Topic: {}"; echo; echo "Getting preview..."; timeout 2s curl -s "cht.sh/{}/::help" 2>/dev/null | head -10 || echo "No preview available"' \
+                     --header="Use arrow keys to navigate, Enter to select, Esc to cancel"); then
+    log_info "No selection made or cancelled by user"
+    return 1
+  fi
+
+  if [[ -z "$selected" ]]; then
+    log_info "No topic selected"
+    return 1
+  fi
+
+  echo "$selected"
+  return 0
+}
+
+# Get query from user with validation
+get_user_query() {
+  local topic="$1"
+  local query
+
+  log_info "Selected topic: $topic"
+
+  while true; do
+    echo -n "Enter query for '$topic' (or 'q' to quit): "
+    read -r query
+
+    if [[ "$query" == "q" || "$query" == "quit" ]]; then
+      log_info "Cancelled by user"
+      exit $EXIT_SUCCESS
+    fi
+
+    if [[ -n "$query" ]]; then
+      break
+    fi
+
+    log_warning "Query cannot be empty. Please try again or type 'q' to quit."
+  done
+
+  echo "$query"
+}
+
+# Determine if topic is a programming language
+is_programming_language() {
+  local topic="$1"
+  # Check if topic exists in the languages string
+  [[ " $TMUX_CHT_LANGUAGES " =~ " $topic " ]]
+}
+
+# Build cht.sh URL based on topic type and query
+build_cht_url() {
+  local topic="$1"
+  local query="$2"
+  local url
+
+  if is_programming_language "$topic"; then
+    # For programming languages, format query with + for spaces
+    local formatted_query
+    formatted_query=$(echo "$query" | tr ' ' '+')
+    url="cht.sh/${topic}/${formatted_query}/"
+  else
+    # For commands, use ~ separator
+    url="cht.sh/${topic}~${query}"
+  fi
+
+  echo "$url"
+}
+
+# Display content in a new tmux window
+display_content_in_tmux() {
+  local title="$1"
+  local content_file="$2"
+  local topic="$3"
+  local window_name="cht:${title}"
+
+  # Limit window name length for tmux
+  if [[ ${#window_name} -gt 20 ]]; then
+    window_name="${window_name:0:17}..."
+  fi
+
+  # Create tmux command based on content type
+  local tmux_command
+  if is_programming_language "$topic"; then
+    # For programming languages, try to use syntax highlighting
+    tmux_command="less -R +Gg '$content_file'"
+  else
+    # For commands, use less with search capabilities
+    tmux_command="less -R '$content_file'"
+  fi
+
+  # Create new tmux window
+  if ! tmux new-window -n "$window_name" "$tmux_command" 2>/dev/null; then
+    log_error "Failed to create tmux window"
+    return 1
+  fi
+
+  log_success "Opened cheat sheet in new tmux window: $window_name"
+  return 0
+}
+
+parse_arguments() {
+  while [[ $# -gt 0 ]]; do
+    case $1 in
+      -h|--help)
+        show_usage
+        exit $EXIT_SUCCESS
+        ;;
+      --version)
+        show_version
+        exit $EXIT_SUCCESS
+        ;;
+      -c|--cache)
+        USE_CACHE=true
+        shift
+        ;;
+      -l|--list)
+        LIST_ONLY=true
+        shift
+        ;;
+      -v|--verbose)
+        VERBOSE=true
+        shift
+        ;;
+      -q|--quiet)
+        QUIET=true
+        shift
+        ;;
+      --)
+        shift
+        break
+        ;;
+      -*)
+        log_error "Unknown option: $1"
+        show_usage
+        exit $EXIT_USAGE_ERROR
+        ;;
+      *)
+        log_error "Unexpected argument: $1"
+        show_usage
+        exit $EXIT_USAGE_ERROR
+        ;;
+    esac
+  done
+
+  # Validate conflicting options
+  if [[ "$VERBOSE" == true && "$QUIET" == true ]]; then
+    log_error "Cannot use both --verbose and --quiet options"
+    exit $EXIT_USAGE_ERROR
+  fi
+
+  log_debug "Options: USE_CACHE=$USE_CACHE, LIST_ONLY=$LIST_ONLY, VERBOSE=$VERBOSE, QUIET=$QUIET"
+}
+
+cleanup_on_error() {
+  local exit_code=$?
+  log_debug "Script interrupted or failed (exit code: $exit_code)"
+
+  # Clean up any temporary files
+  find /tmp -name "tmux-cht-*.tmp" -user "$(whoami)" -delete 2>/dev/null || true
+
+  exit $exit_code
+}
+
+cleanup_on_exit() {
+  local exit_code=$?
+
+  # General cleanup
+  log_debug "Cleaning up temporary files"
+  find /tmp -name "tmux-cht-*.tmp" -user "$(whoami)" -delete 2>/dev/null || true
+
+  if [[ $exit_code -eq 0 ]]; then
+    log_debug "Script completed successfully"
+  else
+    log_debug "Script exited with code: $exit_code"
+  fi
+}
+
+# Function to run the main cheat sheet workflow
+run_cheat_sheet_workflow() {
+  local selected_topic query url content_file
+
+  # Interactive topic selection
+  log_info "Starting topic selection..."
+  if ! selected_topic=$(select_topic_interactive); then
+    exit $EXIT_SUCCESS
+  fi
+
+  # Get user query
+  query=$(get_user_query "$selected_topic")
+
+  # Build URL
+  url=$(build_cht_url "$selected_topic" "$query")
+  log_debug "Built URL: $url"
+
+  # Handle caching or direct fetch
+  if [[ "$USE_CACHE" == true ]]; then
+    content_file=$(get_cache_file_path "$selected_topic" "$query")
+
+    if is_cache_file_valid "$content_file"; then
+      log_info "Using cached result"
+    else
+      log_info "Fetching fresh content..."
+      if ! fetch_cheat_sheet "$url" "$content_file"; then
+        log_fatal "Failed to fetch cheat sheet" $EXIT_GENERAL_ERROR
+      fi
+    fi
+  else
+    # Use temporary file without caching
+    content_file=$(mktemp -t "tmux-cht-XXXXXX")
+
+    log_info "Fetching content..."
+    if ! fetch_cheat_sheet "$url" "$content_file"; then
+      rm -f "$content_file"
+      log_fatal "Failed to fetch cheat sheet" $EXIT_GENERAL_ERROR
+    fi
+  fi
+
+  # Validate content
+  if [[ ! -s "$content_file" ]]; then
+    log_fatal "No content received for query: $query" $EXIT_GENERAL_ERROR
+  fi
+
+  # Display in tmux
+  if ! display_content_in_tmux "${selected_topic}:${query}" "$content_file" "$selected_topic"; then
+    log_fatal "Failed to display content in tmux" $EXIT_GENERAL_ERROR
+  fi
+
+  # Clean up temporary file if not cached
+  if [[ "$USE_CACHE" == false ]]; then
+    rm -f "$content_file"
+  fi
+}
+
+# ----------------------------#
+# Main Execution              #
+# ----------------------------#
+
+main() {
+  # Parse and validate arguments first
+  parse_arguments "$@"
+
+  # Set up error handling and cleanup
+  trap cleanup_on_error ERR INT TERM
+  trap cleanup_on_exit EXIT
+
+  # Initial setup
+  log_debug "Starting $SCRIPT_NAME v$SCRIPT_VERSION"
+  log_debug "Script directory: $SCRIPT_DIR"
+  log_debug "Working directory: $(pwd)"
+
+  # Pre-flight checks
+  check_dependencies
+  check_config
+
+  # Handle list-only mode
+  if [[ "$LIST_ONLY" == true ]]; then
+    list_available_topics
+    exit $EXIT_SUCCESS
+  fi
+
+  # Validate tmux environment for interactive mode
+  check_tmux_environment
+
+  # Setup caching if requested
+  setup_cache_directory
+
+  # Run the main workflow
+  run_cheat_sheet_workflow
+
+  log_success "Cheat sheet session completed! 🎉"
+}
+
+# ----------------------------#
+# Script Execution            #
+# ----------------------------#
+
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  main "$@"
 fi
