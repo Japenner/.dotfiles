@@ -44,18 +44,20 @@ alias lzd="lazydocker"                               # Open Lazydocker for manag
 
 # ========================== Dotfiles ========================= #
 
-alias df:cleanup="cleanup.zsh"                        # Clean up dotfiles
+local_df_dir="$DOTFILES/.local/bin/dotfiles"
+
+alias df:cleanup="${local_df_dir}/cleanup.zsh"        # Clean up dotfiles
 alias df:commit="commit_dot_files"                    # Commit and forcefully push changes in dotfiles
 alias df:pull="git -C $DOTFILES pull"                 # Pull latest changes in dotfiles
-alias df:refresh="refresh.zsh"                        # Refresh dotfiles
+alias df:refresh="${local_df_dir}/refresh.zsh"        # Refresh dotfiles
 alias df:reload="source $HOME/.zshrc"                 # Reload .zshrc configuration
-alias df:setup="setup.zsh"                            # Set up dotfiles environment
+alias df:setup="${local_df_dir}/setup.zsh"            # Set up dotfiles environment
 alias df:update="git_update_current_branch $DOTFILES" # Update dotfiles current branch
 
 # ============================ Git ============================ #
 
-alias g:ac="${scripts_path}/git_generate_commit_message.sh -a"                         # Generate and apply a commit message using AI
-alias g:ac:dry="${scripts_path}/git_generate_commit_message.sh -d"                     # Generate a commit message using AI, show what would be committed without applying,
+alias g:ac="git_generate_commit_message -a"                                            # Generate and apply a commit message using AI
+alias g:ac:dry="git_generate_commit_message -d"                                        # Generate a commit message using AI, show what would be committed without applying,
 alias g:auth:team="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_adhocteam_us" # Authenticate with the team SSH key
 alias g:auth="eval ${ssh-agent -s} && ssh-add $HOME/.ssh/id_ed25519_personal"          # Authenticate with the personal SSH key
 alias g:base='gco "$(g:default)" && git pull'                                          # Checkout the default branch and pull changes
@@ -134,12 +136,19 @@ alias r:tests="rails_run_tests"                       # Run Minitest tests
 
 # =========================== TMux ============================ #
 
-alias tmux:a='tmux attach-session -t'
-alias tmux:k='tmux kill-session -t'
-alias tmux:ka='tmux_kill_all'
-alias tmux:ls='tmux list-sessions'
-alias tmux:n='tmux_new_session'
-alias tmux:r='tmux source-file ~/.tmux.conf'
+alias t:a='tmux attach-session -t'        # Attach to a tmux session by name
+alias t:k='tmux kill-session -t'          # Kill a tmux session by name
+alias t:ka='tmux_kill_all'                # Kill all tmux sessions
+alias t:ls='tmux list-sessions'           # List all tmux sessions
+alias t:n='tmux_new_session'              # Create a new tmux session with a given name
+alias t:r='tmux source-file ~/.tmux.conf' # Reload tmux configuration
+alias t:sh='tmux split-window -h'         # Split the current tmux pane horizontally
+alias t:sp='tmux_swap_panes'              # Swap the current tmux pane with the next one
+alias t:sv='tmux split-window -v'         # Split the current tmux pane vertically
+alias t:sw='tmux switch-client -t'        # Switch to a tmux session by name
+alias t:up='tmux copy-mode -u'            # Enter copy mode and scroll up
+alias t:xp='tmux kill-pane'               # Close the current tmux pane
+alias t:zo='tmux resize-pane -Z'          # Toggle zoom for the current tmux pane
 
 # ========================== Utility ========================== #
 
@@ -172,6 +181,6 @@ alias vim="nvim"          # Use vim command to open Neovim
 
 # =========================== VS Code ========================= #
 
-alias code:backup="code:backup:extensions && code:backup:settings"                                  # Backup VS Code extensions and settings
-alias code:backup:extensions="$CODE_EDITOR --list-extensions > $DOTFILES/vscode/extension-list.txt" # Backup VS Code extensions
-alias code:backup:settings='cat "$(find_vscode_settings)" > "$DOTFILES"/vscode/settings.json'       # Backup VS Code settings
+alias code:b="code:backup:extensions && code:backup:settings"                        # Backup VS Code extensions and settings
+alias code:be="$CODE_EDITOR --list-extensions > $DOTFILES/vscode/extension-list.txt" # Backup VS Code extensions
+alias code:bs='cat "$(find_vscode_settings)" > "$DOTFILES"/vscode/settings.json'     # Backup VS Code settings
