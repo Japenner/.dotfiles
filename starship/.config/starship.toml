@@ -186,7 +186,7 @@ renamed = "[»${count}](bold blue)"
 staged = '[+${count}](bold green)'
 stashed = "[⚑${count}](bold red)"
 untracked = "[?${count}](bold yellow)"
-up_to_date = ""  # Hide when clean
+up_to_date = "[✓](bold green)"
 ignore_submodules = true
 
 [git_commit]
