@@ -13,6 +13,7 @@ readonly CHATGPT_SCRIPT="$DOTFILES/.local/bin/scripts/chatgpt"
 # Default Arguments
 MODEL_TYPE="${1:-mini}"
 APPLY_MESSAGE="${2:-false}"
+SILENT="${3:-false}"
 
 # ----------------------------#
 # Helper Functions            #
@@ -78,35 +79,43 @@ log_warning() {
 # ----------------------------#
 
 validate_arguments() {
-  case "${1:-}" in
-    "-h"|"--help")
-      show_usage
-      exit 0
-      ;;
-    "-d"|"--dry-run")
-      MODEL_TYPE="${2:-mini}"
-      APPLY_MESSAGE="dry-run"
-      ;;
-    "-a"|"--apply")
-      MODEL_TYPE="${2:-mini}"
-      APPLY_MESSAGE="true"
-      ;;
-    "")
-      # Use defaults
-      ;;
-    "mini"|"standard"|"reasoning")
-      if [[ "${2:-}" == "--apply" ]]; then
-        APPLY_MESSAGE="true"
-      elif [[ "${2:-}" == "--dry-run" ]]; then
+  local arg1="${1:-}"
+  local arg2="${2:-}"
+
+  # Handle combinations of flags
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      "-h"|"--help")
+        show_usage
+        exit 0
+        ;;
+      "-d"|"--dry-run")
         APPLY_MESSAGE="dry-run"
-      fi
-      ;;
-    *)
-      log_error "Invalid argument: $1"
-      show_usage
-      exit 1
-      ;;
-  esac
+        shift
+        ;;
+      "-a"|"--apply")
+        APPLY_MESSAGE="true"
+        shift
+        ;;
+      "-s"|"--silent")
+        SILENT="true"
+        shift
+        ;;
+      "mini"|"standard"|"reasoning")
+        MODEL_TYPE="$1"
+        shift
+        ;;
+      "")
+        # Empty argument, skip
+        shift
+        ;;
+      *)
+        log_error "Invalid argument: $1"
+        show_usage
+        exit 1
+        ;;
+    esac
+  done
 }
 
 validate_dependencies() {
@@ -307,7 +316,13 @@ main() {
   # Get AI-generated commit message
   log_info "Generating commit message with AI..."
   local ai_response commit_message
-  ai_response=$("$CHATGPT_SCRIPT" "$temp_prompt_file" "$MODEL_TYPE")
+
+  if [[ "${SILENT:-false}" == "true" ]]; then
+    # Suppress chatgpt script output in silent mode
+    ai_response=$("$CHATGPT_SCRIPT" "$temp_prompt_file" "$MODEL_TYPE" 2>/dev/null | grep -A 1000 "ChatGPT Response:" | tail -n +3)
+  else
+    ai_response=$("$CHATGPT_SCRIPT" "$temp_prompt_file" "$MODEL_TYPE")
+  fi
 
   # Extract clean commit message from AI response
   commit_message=$(extract_commit_message "$ai_response")
@@ -328,21 +343,26 @@ main() {
       show_dry_run "$commit_message" "$files" "$stats"
       ;;
     *)
-      echo ""
-      echo "💬 Generated commit message:"
-      echo "\"$commit_message\""
-      echo ""
-      echo "Apply this commit? (y/N): "
-      read -r response
-      case "$response" in
-        [Yy]|[Yy][Ee][Ss])
-          apply_commit_message "$commit_message"
-          ;;
-        *)
-          log_info "Commit message not applied. You can manually commit with:"
-          echo "  git commit -m \"$commit_message\""
-          ;;
-      esac
+      if [[ "${SILENT:-false}" == "true" ]]; then
+        # In silent mode, just output the commit message
+        echo "$commit_message"
+      else
+        echo ""
+        echo "💬 Generated commit message:"
+        echo "\"$commit_message\""
+        echo ""
+        echo "Apply this commit? (y/N): "
+        read -r response
+        case "$response" in
+          [Yy]|[Yy][Ee][Ss])
+            apply_commit_message "$commit_message"
+            ;;
+          *)
+            log_info "Commit message not applied. You can manually commit with:"
+            echo "  git commit -m \"$commit_message\""
+            ;;
+        esac
+      fi
       ;;
   esac
 }
