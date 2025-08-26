@@ -2,18 +2,33 @@
 
 # Open Google Chrome on macOS or Linux
 open_chrome() {
+  local urls=("$@")
+
   if [[ "$OSTYPE" == "darwin"* ]]; then
     # macOS: Use `open` to launch Google Chrome
-    open -a "Google Chrome"
+    if [[ ${#urls[@]} -eq 0 ]]; then
+      open -a "Google Chrome"
+    else
+      for url in "${urls[@]}"; do
+        open -a "Google Chrome" "$url"
+      done
+    fi
   elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Linux: Use `google-chrome` or `chromium` based on availability
+    local chrome_cmd=""
     if command -v google-chrome &>/dev/null; then
-      google-chrome &
+      chrome_cmd="google-chrome"
     elif command -v chromium &>/dev/null; then
-      chromium &
+      chrome_cmd="chromium"
     else
       echo "Google Chrome or Chromium is not installed on this system."
       return 1
+    fi
+
+    if [[ ${#urls[@]} -eq 0 ]]; then
+      $chrome_cmd &
+    else
+      $chrome_cmd "${urls[@]}" &
     fi
   else
     echo "Unsupported OS: $OSTYPE"
