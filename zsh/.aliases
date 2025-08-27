@@ -9,9 +9,7 @@ alias chatgpt="chatgpt"                     # Send a prompt or file to OpenAI an
 alias cht="tmux-cht"                        # Run tmux cheat sheet script
 # alias slack:away="set_slack_status set"   # Set Slack status to away
 # alias slack:back="set_slack_status clear" # Set Slack status to back
-alias script:init="cat ${templates_path}/example-script.sh > new-script.sh &&\
- chmod +x new-script.sh &&\
- echo 'Created new-script.sh'"              # Create a new script file
+alias script:init="generate_script"         # Create a new script file
 
 # ======================= Config Editing ====================== #
 
@@ -121,6 +119,7 @@ alias nv:tb="cd $TOOLBOX"               # Navigate to toolbox directory
 alias c="clear"                           # Clear terminal screen
 alias serve="python3 -m http.server 8000" # Start Python HTTP server
 alias todo="$CODE_EDITOR $DOTFILES/.TODO" # Open todo file in editor
+alias todo:n="todo_add"                   # Add new todo item
 
 # =========================== Rails =========================== #
 

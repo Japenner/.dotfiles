@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+# Generate a new script from the template
+generate_script() {
+  script_name=${1:-"new-script.sh"}
+  cat ${templates_path}/example-script.sh > $script_name
+  chmod +x $script_name
+  echo "Created $script_name"
+}
+
 # Open Google Chrome on macOS or Linux
 open_chrome() {
   local urls=("$@")
@@ -79,5 +87,14 @@ set_clipboard_command() {
   else
     echo "Error: No suitable clipboard command found."
     return 1
+  fi
+}
+
+# Add new todo item
+todo_add() {
+  if [[ -z "$1" ]]; then
+    echo "- [ ] " >> "$DOTFILES/.TODO" && $CODE_EDITOR "$DOTFILES/.TODO"
+  else
+    echo "- [ ] $*" >> "$DOTFILES/.TODO"
   fi
 }
