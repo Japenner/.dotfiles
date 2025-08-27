@@ -137,26 +137,23 @@ alias r:spec="run_specs"                              # Run RSpec test for given
 alias r:specs="rails_run_rspec_tests"                 # Run RSpec tests
 alias r:tests="rails_run_tests"                       # Run Minitest tests
 
-# =========================== TMux ============================ #
+# =========================== Tmux ============================ #
 
 alias t:a='tmux attach-session -t'         # Attach to a tmux session by name
-alias t:cd='tmux switch-client -t'         # Switch to a tmux session by name
+alias t:cd='tmux_navigate'                 # Switch to a tmux session by name
+alias t:dev="tmux_four_panes"              # Create a 4-pane layout
 alias t:ka='tmux_kill_all'                 # Kill all tmux sessions
 alias t:ls='tmux list-sessions'            # List all tmux sessions
 alias t:n='tmux_new_session'               # Create a new tmux session with a given name
 alias t:rl='tmux source-file ~/.tmux.conf' # Reload tmux configuration
 alias t:rm='tmux kill-session -t'          # Kill a tmux session by name
 alias t:rn='tmux rename-session'           # Rename the current session
+alias t:s='tmux swap-pane -D'              # Swap the current tmux pane with the next one
 alias t:sh='tmux split-window -h'          # Split the current tmux pane horizontally
 alias t:sv='tmux split-window -v'          # Split the current tmux pane vertically
 alias t:up='tmux copy-mode -u'             # Enter copy mode and scroll up
 alias t:xp='tmux kill-pane'                # Close the current tmux pane
 alias t:zo='tmux resize-pane -Z'           # Toggle zoom for the current tmux pane
-alias t:s='tmux swap-pane -D'              # Swap the current tmux pane with the next one
-alias t:dev="tmux split-window -h &&\
-  tmux split-window -v &&\
-  tmux select-pane -L &&\
-  tmux split-window -v"                    # Create a 4-pane layout
 
 # ========================== Utility ========================== #
 
