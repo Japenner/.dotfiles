@@ -18,6 +18,7 @@ dendron.dendron
 denoland.vscode-deno
 dineug.vuerd-vscode
 docker.docker
+donjayamanne.githistory
 dotiful.dotfiles-syntax-highlighting
 dsznajder.es7-react-js-snippets
 eamodio.gitlens

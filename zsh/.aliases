@@ -2,24 +2,27 @@
 
 # ======================== Automation ======================== #
 
-bin_path="${DOTFILES}/.local/bin"
+templates_path="${DOTFILES}/__resources__/templates"
 
 alias branch="branch"                       # Create a new branch and update GH ticket
 alias chatgpt="chatgpt"                     # Send a prompt or file to OpenAI and get a response
 alias cht="tmux-cht"                        # Run tmux cheat sheet script
 # alias slack:away="set_slack_status set"   # Set Slack status to away
 # alias slack:back="set_slack_status clear" # Set Slack status to back
+alias script:init="cat ${templates_path}/example-script.sh > new-script.sh &&\
+ chmod +x new-script.sh &&\
+ echo 'Created new-script.sh'"              # Create a new script file
 
 # ======================= Config Editing ====================== #
 
-alias e:als='$CODE_EDITOR "$DOTFILES/zsh/.aliases"'                # Open aliases config in editor
-alias e:als:local='$CODE_EDITOR "$DOTFILES/zsh/local/aliases.zsh"' # Open local aliases config in editor
-alias e:df='$CODE_EDITOR "$DOTFILES"'                              # Open dotfiles in the code editor
-alias e:env:local='$CODE_EDITOR "$DOTFILES/zsh/local/env.zsh"'     # Open local environment variables in editor
-alias e:ohmyzsh='$CODE_EDITOR "$HOME/.oh-my-zsh"'                  # Edit Oh My Zsh config
-alias e:starship='$CODE_EDITOR "$DOTFILES/starship/starship.toml"' # Edit Starship config
-alias e:tb='$CODE_EDITOR "$TOOLBOX"'                               # Open toolbox in the code editor
-alias e:zshrc='$CODE_EDITOR "$HOME/.zshrc"'                        # Edit .zshrc file
+alias e:als='$CODE_EDITOR "$DOTFILES/zsh/.aliases"'                        # Open aliases config in editor
+alias e:als:local='$CODE_EDITOR "$DOTFILES/zsh/local/aliases.zsh"'         # Open local aliases config in editor
+alias e:df='$CODE_EDITOR "$DOTFILES"'                                      # Open dotfiles in the code editor
+alias e:env:local='$CODE_EDITOR "$DOTFILES/zsh/local/env.zsh"'             # Open local environment variables in editor
+alias e:ohmyzsh='$CODE_EDITOR "$HOME/.oh-my-zsh"'                          # Edit Oh My Zsh config
+alias e:starship='$CODE_EDITOR "$DOTFILES/starship/.config/starship.toml"' # Edit Starship config
+alias e:tb='$CODE_EDITOR "$TOOLBOX"'                                       # Open toolbox in the code editor
+alias e:zshrc='$CODE_EDITOR "$HOME/.zshrc"'                                # Edit .zshrc file
 
 # ========================== Docker =========================== #
 
@@ -117,7 +120,7 @@ alias nv:tb="cd $TOOLBOX"               # Navigate to toolbox directory
 
 alias c="clear"                           # Clear terminal screen
 alias serve="python3 -m http.server 8000" # Start Python HTTP server
-alias todo="$CODE_EDITOR $HOME/.todo"     # Open todo file in editor
+alias todo="$CODE_EDITOR $DOTFILES/.TODO" # Open todo file in editor
 
 # =========================== Rails =========================== #
 
@@ -136,23 +139,24 @@ alias r:tests="rails_run_tests"                       # Run Minitest tests
 
 # =========================== TMux ============================ #
 
-alias t:a='tmux attach-session -t'        # Attach to a tmux session by name
-alias t:cd='tmux switch-client -t'        # Switch to a tmux session by name
-alias t:ka='tmux_kill_all'                # Kill all tmux sessions
-alias t:ls='tmux list-sessions'           # List all tmux sessions
-alias t:n='tmux_new_session'              # Create a new tmux session with a given name
-alias t:r='tmux source-file ~/.tmux.conf' # Reload tmux configuration
-alias t:rm='tmux kill-session -t'         # Kill a tmux session by name
-alias t:sh='tmux split-window -h'         # Split the current tmux pane horizontally
-alias t:sv='tmux split-window -v'         # Split the current tmux pane vertically
-alias t:up='tmux copy-mode -u'            # Enter copy mode and scroll up
-alias t:xp='tmux kill-pane'               # Close the current tmux pane
-alias t:zo='tmux resize-pane -Z'          # Toggle zoom for the current tmux pane
-alias t:s='tmux swap-pane -D'             # Swap the current tmux pane with the next one
+alias t:a='tmux attach-session -t'         # Attach to a tmux session by name
+alias t:cd='tmux switch-client -t'         # Switch to a tmux session by name
+alias t:ka='tmux_kill_all'                 # Kill all tmux sessions
+alias t:ls='tmux list-sessions'            # List all tmux sessions
+alias t:n='tmux_new_session'               # Create a new tmux session with a given name
+alias t:rl='tmux source-file ~/.tmux.conf' # Reload tmux configuration
+alias t:rm='tmux kill-session -t'          # Kill a tmux session by name
+alias t:rn='tmux rename-session'           # Rename the current session
+alias t:sh='tmux split-window -h'          # Split the current tmux pane horizontally
+alias t:sv='tmux split-window -v'          # Split the current tmux pane vertically
+alias t:up='tmux copy-mode -u'             # Enter copy mode and scroll up
+alias t:xp='tmux kill-pane'                # Close the current tmux pane
+alias t:zo='tmux resize-pane -Z'           # Toggle zoom for the current tmux pane
+alias t:s='tmux swap-pane -D'              # Swap the current tmux pane with the next one
 alias t:dev="tmux split-window -h &&\
   tmux split-window -v &&\
   tmux select-pane -L &&\
-  tmux split-window -v"                   # Create a 4-pane layout
+  tmux split-window -v"                    # Create a 4-pane layout
 
 # ========================== Utility ========================== #
 
@@ -185,6 +189,8 @@ alias vim="nvim"          # Use vim command to open Neovim
 
 # =========================== VS Code ========================= #
 
-alias code:b="code:backup:extensions && code:backup:settings"                        # Backup VS Code extensions and settings
-alias code:be="$CODE_EDITOR --list-extensions > $DOTFILES/vscode/extension-list.txt" # Backup VS Code extensions
-alias code:bs='cat "$(find_vscode_settings)" > "$DOTFILES"/vscode/settings.json'     # Backup VS Code settings
+vs_code_path="$DOTFILES/vscode/.config/Code/User"
+
+alias code:b="code:be && code:bs"                                                 # Backup VS Code extensions and settings
+alias code:be="$CODE_EDITOR --list-extensions > $vs_code_path/extension-list.txt" # Backup VS Code extensions
+alias code:bs='cat "$(find_vscode_settings)" > "$vs_code_path/settings.json"'     # Backup VS Code settings
