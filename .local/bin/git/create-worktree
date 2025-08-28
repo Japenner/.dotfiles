@@ -69,6 +69,7 @@ Arguments:
   ${BOLD}<branch-name>${NC}        Name of the branch to create worktree for
 
 Options:
+  ${BOLD}-D, --delete${NC}         Delete worktree, prune worktrees, and delete branch
   ${BOLD}-e, --external${NC}       Create worktree in external/ for inspecting remote branches
   ${BOLD}-f, --from <base>${NC}    Create new branch from specified base branch
   ${BOLD}-d, --dry-run${NC}        Show what would happen without actually doing anything
@@ -82,8 +83,9 @@ Examples:
   $SCRIPT_NAME bugfix --from main
   $SCRIPT_NAME remote-branch --external
   $SCRIPT_NAME new-feature --dry-run --verbose
+  $SCRIPT_NAME old-feature --delete
 
-For more information, see: https://github.com/japenner/.dotfiles"
+For more information, see: https://github.com/japenner/.dotfiles/.local/bin/git/create-worktree"
 }
 
 show_version() {
@@ -168,6 +170,7 @@ parse_arguments() {
   local external=false
   local base_branch=""
   local dry_run=false
+  local delete_mode=false
 
   while [[ $# -gt 0 ]]; do
     case $1 in
@@ -178,6 +181,10 @@ parse_arguments() {
       --version)
         show_version
         exit $EXIT_SUCCESS
+        ;;
+      -D|--delete)
+        delete_mode=true
+        shift
         ;;
       -e|--external)
         external=true
@@ -232,6 +239,14 @@ parse_arguments() {
     exit $EXIT_USAGE_ERROR
   fi
 
+  # Validate that conflicting options aren't used together
+  if [[ "$delete_mode" == true ]]; then
+    if [[ "$external" == true || -n "$base_branch" ]]; then
+      log_error "Delete mode (-D) cannot be used with --external or --from options"
+      exit $EXIT_USAGE_ERROR
+    fi
+  fi
+
   # Validate branch name
   if [[ ! "$branch_name" =~ ^[a-zA-Z0-9._/-]+$ ]]; then
     log_fatal "Invalid branch name: $branch_name (only alphanumeric, dots, underscores, slashes, and hyphens allowed)" $EXIT_USAGE_ERROR
@@ -242,8 +257,9 @@ parse_arguments() {
   export EXTERNAL="$external"
   export BASE_BRANCH="$base_branch"
   export DRY_RUN="$dry_run"
+  export DELETE_MODE="$delete_mode"
 
-  log_debug "Arguments parsed: BRANCH_NAME=$BRANCH_NAME, EXTERNAL=$EXTERNAL, BASE_BRANCH=$BASE_BRANCH, DRY_RUN=$DRY_RUN"
+  log_debug "Arguments parsed: BRANCH_NAME=$BRANCH_NAME, EXTERNAL=$EXTERNAL, BASE_BRANCH=$BASE_BRANCH, DRY_RUN=$DRY_RUN, DELETE_MODE=$DELETE_MODE"
 }
 
 # Function to run commands with optional dry-run support
@@ -522,6 +538,81 @@ cleanup_on_exit() {
 }
 
 # ----------------------------#
+# Deletion Functions          #
+# ----------------------------#
+
+find_worktree_path() {
+  local branch="$1"
+  local worktree_info
+
+  # Get worktree info and extract the path for the given branch
+  worktree_info=$(git worktree list --porcelain 2>/dev/null | grep -A 1 "branch refs/heads/$branch" | head -1 | cut -d' ' -f2-)
+
+  if [[ -n "$worktree_info" && -d "$worktree_info" ]]; then
+    echo "$worktree_info"
+    return 0
+  fi
+
+  return 1
+}
+
+delete_worktree_and_branch() {
+  local branch_to_delete="$BRANCH_NAME"
+  local worktree_path
+
+  # For non-external branches, use the jap/ prefix
+  if [[ "$EXTERNAL" != true ]]; then
+    branch_to_delete="jap/$BRANCH_NAME"
+  fi
+
+  log_info "Deleting worktree and branch for: $branch_to_delete"
+
+  # Find the worktree path
+  if worktree_path=$(find_worktree_path "$branch_to_delete"); then
+    log_info "Found worktree at: $worktree_path"
+
+    # Remove the worktree directory
+    log_info "Removing worktree directory: $worktree_path"
+    run_command "rm -rf '$worktree_path'" "Removing worktree directory"
+
+  else
+    log_warning "No worktree found for branch '$branch_to_delete'"
+
+    # Try to find by directory name pattern
+    local root_dir parent_dir potential_path
+    root_dir=$(git rev-parse --show-toplevel)
+    parent_dir=$(dirname "$root_dir")
+
+    if [[ "$EXTERNAL" == true ]]; then
+      potential_path="$parent_dir/external/$BRANCH_NAME"
+    else
+      potential_path="$parent_dir/$BRANCH_NAME"
+    fi
+
+    if [[ -d "$potential_path" ]]; then
+      log_info "Found directory at expected location: $potential_path"
+      run_command "rm -rf '$potential_path'" "Removing directory"
+    else
+      log_warning "No directory found at: $potential_path"
+    fi
+  fi
+
+  # Prune worktrees to clean up references
+  log_info "Pruning worktrees"
+  run_command "git worktree prune" "Pruning worktrees"
+
+  # Check if branch exists before trying to delete it
+  if branch_exists_locally "$branch_to_delete"; then
+    log_info "Deleting branch: $branch_to_delete"
+    run_command "git branch -D '$branch_to_delete'" "Deleting branch"
+  else
+    log_warning "Branch '$branch_to_delete' does not exist locally"
+  fi
+
+  log_success "Worktree and branch deletion completed!"
+}
+
+# ----------------------------#
 # Main Execution              #
 # ----------------------------#
 
@@ -541,6 +632,12 @@ main() {
   # Pre-flight checks
   check_dependencies
   validate_git_repo
+
+  # Handle delete mode
+  if [[ "$DELETE_MODE" == true ]]; then
+    delete_worktree_and_branch
+    return $EXIT_SUCCESS
+  fi
 
   # Initialize paths and validate target
   initialize_paths
