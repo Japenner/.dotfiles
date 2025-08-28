@@ -6,6 +6,7 @@ tmux_four_panes() {
   tmux split-window -v
   tmux select-pane -L
   tmux split-window -v
+  tmux select-pane -U
 }
 
 # Kill all tmux sessions
