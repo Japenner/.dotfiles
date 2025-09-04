@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Auto-setup branch tracking and naming conventions
+if [ $3 == 1 ]; then  # branch checkout
+    branch_name=$(git symbolic-ref --short HEAD)
+    if [[ $branch_name =~ ^(feature|bugfix|hotfix|main|master)/.+ ]]; then
+        echo "✅ Good branch naming: $branch_name"
+    else
+        echo "💡 Consider using: feature/your-feature-name"
+    fi
+fi

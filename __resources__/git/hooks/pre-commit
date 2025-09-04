@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Get list of staged files
+staged_files=$(git diff --cached --name-only --diff-filter=ACM)
+
+# Run prettier check on staged files only
+echo "🎨 Checking code formatting..."
+if [ ! -z "$staged_files" ]; then
+    echo "$staged_files" | xargs npx prettier --check || exit 1
+fi
+
+# Run linting on staged files only
+staged_js_files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(js|jsx|ts|tsx)$')
+if [ ! -z "$staged_js_files" ]; then
+    echo "🔍 Running linter..."
+    echo "$staged_js_files" | xargs npx eslint || exit 1
+
+    # Type checking (run on whole project if TS files changed)
+    echo "📝 Type checking..."
+    npx tsc --noEmit || exit 1
+else
+    echo "No JS/TS files to lint"
+fi

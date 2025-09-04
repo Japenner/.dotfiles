@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# Skip hook if not run interactively (e.g., `git commit -m`)
+if [[ ! -t 0 ]]; then
+  echo "🔕 Skipping reflection prompts (non-interactive commit)."
+  exit 0
+fi
+
+# Pre-commit reflection prompt
+echo ""
+echo "🔍 Pre-Commit Reflection Prompt"
+echo "This commit is a checkpoint. Let's pause for clarity and alignment."
+echo ""
+echo "🧠 Tip: Use multi-line commit messages for context:"
+echo "- What changed?"
+echo "- Why it changed?"
+echo "- Any context or decisions worth noting?"
+echo ""
+
+# --- Reflective Prompts ---
+read -p "1. Have you surfaced any key design decisions or tradeoffs? (y/n): " decision_shared
+read -p "2. Will this change affect someone else's area of ownership? (y/n): " domain_impact
+read -p "3. Is this commit scoped cleanly and reviewable on its own? (y/n): " scoped_commit
+read -p "4. Have you invited any feedback or async review where needed? (y/n): " invited_feedback
+
+# --- Detect Large Diffs ---
+lines_changed=$(git diff --cached --numstat | awk '{added+=$1; deleted+=$2} END {print added + deleted}')
+file_count=$(git diff --cached --name-only | wc -l)
+
+LARGE_DIFF_THRESHOLD=500
+LARGE_FILE_COUNT_THRESHOLD=10
+
+echo ""
+if [[ "$lines_changed" -gt "$LARGE_DIFF_THRESHOLD" || "$file_count" -gt "$LARGE_FILE_COUNT_THRESHOLD" ]]; then
+  echo "⚠️  Warning: Large diff detected — $lines_changed lines across $file_count files."
+  echo "   Consider breaking this into smaller commits for easier review."
+  read -p "   Proceed anyway? (y/n): " proceed_large
+  if [[ "$proceed_large" != "y" ]]; then
+    echo "❌ Commit aborted due to size. Consider splitting your work."
+    exit 1
+  fi
+fi
+
+# --- Detect PR Merge Patterns ---
+if git diff --cached | grep -qiE "merge pull request|squash.*pr"; then
+  echo ""
+  echo "⚠️  Warning: Detected a possible PR merge in this commit."
+  echo "   Consider double-checking whether this should be broken up or better documented."
+  read -p "   Proceed with commit? (y/n): " proceed_merge
+  if [[ "$proceed_merge" != "y" ]]; then
+    echo "❌ Commit aborted due to detected PR merge pattern."
+    exit 1
+  fi
+fi
+
+# --- Final Reflection Gate ---
+echo ""
+if [[ "$decision_shared" != "y" || "$domain_impact" != "y" || "$scoped_commit" != "y" ]]; then
+  echo "⚠️  It looks like one or more reflective areas could use more clarity or surfacing."
+  read -p "   Proceed with commit anyway? (y/n): " proceed
+  if [[ "$proceed" != "y" ]]; then
+    echo "❌ Commit aborted. Take a moment to sync or revise."
+    exit 1
+  fi
+fi
+
+echo "✅ Commit approved. Proceeding..."
+exit 0

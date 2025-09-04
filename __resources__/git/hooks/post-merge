@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Check if package.json changed and auto-install
+if git diff-tree -r --name-only --no-commit-id HEAD@{1} HEAD | grep --quiet "package.json"; then
+    echo "📦 package.json changed, running npm install..."
+    npm install
+fi
+
+# Check for security vulnerabilities
+npm audit --audit-level=high

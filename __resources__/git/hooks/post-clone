@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Auto-setup development environment
+echo "🚀 Setting up development environment..."
+
+# Install dependencies
+npm install
+
+# Setup environment files
+cp .env.example .env.local
+
+# Setup git hooks
+chmod +x .git/hooks/*
+
+# Create development database
+npm run db:setup
+
+echo "✅ Development environment ready!"

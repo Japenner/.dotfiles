@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Prevent pushing to main/master
+protected_branch='main'
+current_branch=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+
+if [ $protected_branch = $current_branch ]; then
+    echo "❌ Direct push to main branch is not allowed!"
+    exit 1
+fi
+
+# Type checking (usually needs full project context)
+echo "📝 Type checking..."
+npm run type-check || exit 1
+
+# Run tests (you might want to run only related tests)
+echo "🧪 Running tests..."
+npm test || exit 1
+npm run test:supabase
+
+# cd ../supabase/functions &&\
+#   npx deno test --env=./.env.test --allow-all --unsafely-ignore-certificate-errors --quiet ../ &&\
+#   cd -
+
+# Check for secrets in staged files only
+echo "🔒 Checking for secrets..."
+if [ ! -z "$staged_files" ]; then
+    echo "$staged_files" | xargs grep -l "password\|secret\|key" && echo "⚠️ Potential secrets found!" && exit 1
+fi
+
+echo "✅ All checks passed!"

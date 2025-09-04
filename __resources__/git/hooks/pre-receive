@@ -1,0 +1,20 @@
+#!/bin/bash
+# filepath: .git/hooks/pre-receive
+
+# Server-side hook for quality gates
+while read oldrev newrev refname; do
+    # Run coverage check
+    coverage=$(npm run test:coverage | grep "All files" | awk '{print $10}' | sed 's/%//')
+    if [ "$coverage" -lt 80 ]; then
+        echo "❌ Code coverage below 80% ($coverage%)"
+        exit 1
+    fi
+
+    # Check bundle size
+    npm run build
+    bundle_size=$(du -k dist/main.js | cut -f1)
+    if [ "$bundle_size" -gt 500 ]; then
+        echo "❌ Bundle size too large: ${bundle_size}KB"
+        exit 1
+    fi
+done
