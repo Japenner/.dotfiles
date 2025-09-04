@@ -7,8 +7,8 @@ set -euo pipefail
 # ----------------------------#
 
 readonly SCRIPT_NAME="$(basename "$0")"
-readonly PROMPT_TEMPLATE_PATH="$DOTFILES/prompts/review_pr.md"
-readonly CHATGPT_SCRIPT="$DOTFILES/.local/bin/scripts/chatgpt"
+readonly PROMPT_TEMPLATE_PATH="$DOTFILES/__resources__/prompts/review_pr.md"
+readonly CHATGPT_SCRIPT="$DOTFILES/.local/bin/dev/chatgpt"
 
 # Default Arguments
 PULL_REQUEST_ID="${1:-}"
