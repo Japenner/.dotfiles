@@ -11,7 +11,11 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.yarn/bin:$PATH"
 export PATH="$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 export PATH="$GOPATH/bin:$PATH"
-export PATH="$HOME/.dotfiles/.local/bin/scripts:$PATH"
+export PATH="$DOTFILES/.local/bin/dev:$PATH"
+export PATH="$DOTFILES/.local/bin/dotfiles:$PATH"
+export PATH="$DOTFILES/.local/bin/git:$PATH"
+export PATH="$DOTFILES/.local/bin/tmux:$PATH"
+export PATH="$HOME/.console-ninja/.bin:$PATH"
 export PATH="$PATH"
 
 # Clean up $PATH redundancies
