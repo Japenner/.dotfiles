@@ -5,9 +5,9 @@
 - **Task Summary**: Provide a concise description of the task or bug.
 - **Context**: Explain why this issue is important, any background information, and the expected outcome.
 - **Main Actions**:
-  - **Implementation Reference**: Include any relevant scripts, standards, or documentation to reference.
-  - **Functionality Requirements**: Describe the primary functionality to be added or the bug to be resolved.
-  - **Additional Considerations**: Note any special setup, permissions, or environment-specific configurations.
+    - **Implementation Reference**: Include any relevant scripts, standards, or documentation to reference.
+    - **Functionality Requirements**: Describe the primary functionality to be added or the bug to be resolved.
+    - **Additional Considerations**: Note any special setup, permissions, or environment-specific configurations.
 
 ### Acceptance Criteria
 
@@ -24,6 +24,10 @@
 ### Dependencies
 
 - Identify other issues, tasks, or external dependencies that must be resolved.
+
+### Testing Steps
+
+- Steps to take in order to test the outcome of this work
 
 ### Definition of Done
 
