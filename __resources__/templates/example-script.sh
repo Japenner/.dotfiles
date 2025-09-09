@@ -307,6 +307,16 @@ run_command() {
 }
 
 # ----------------------------#
+# Business Logic              #
+# ----------------------------#
+
+do_the_thing() {
+  log_info "Doing the thing with ARG1=$ARG1"
+
+}
+
+
+# ----------------------------#
 # Main Execution              #
 # ----------------------------#
 
@@ -332,6 +342,8 @@ main() {
 
   # Example of using run_command
   # run_command "echo 'Hello, World!'" "Saying hello"
+
+  do_the_thing
 
   # Example of confirmation for destructive operations
   # if ! confirm "This will delete files. Continue?"; then

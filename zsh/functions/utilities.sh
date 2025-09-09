@@ -3,6 +3,7 @@
 # Generate a new script from the template
 generate_script() {
   script_name=${1:-"new-script.sh"}
+  templates_path="${DOTFILES}/__resources__/templates"
   cat ${templates_path}/example-script.sh > $script_name
   chmod +x $script_name
   echo "Created $script_name"
