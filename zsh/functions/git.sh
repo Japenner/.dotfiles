@@ -49,6 +49,17 @@ git_default_branch() {
   git -C "$file_path" symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
 }
 
+# Get the worktree directory for the default branch
+git_default_worktree_dir() {
+  local file_path=${1:-$(pwd)}
+  local default_branch=$(git_default_branch "$file_path")
+
+  git worktree list --porcelain | awk -v branch="$default_branch" '
+    /^worktree / { worktree = $2 }
+    /^branch / && $2 == "refs/heads/" branch { print worktree; exit }
+  '
+}
+
 # Get the current branch for a given path (default: current directory)
 git_current_branch() {
   local file_path=${1:-$(pwd)}
@@ -157,6 +168,108 @@ git_prune_local_branches() {
   else
     echo "❌ No branches deleted."
   fi
+}
+
+# Create and switch to a new worktree for a given branch name
+git_new_worktree() {
+  local branch_name=${1:-"new-branch"}
+  local default_branch=$(git_default_branch)
+  local default_worktree_dir=$(git_default_worktree_dir)
+
+  # If we couldn't find it, fall back to looking for a directory named after the default branch
+  if [[ -z "$default_worktree_dir" ]]; then
+    default_worktree_dir="../../${default_branch}"
+    if [[ ! -d "$default_worktree_dir" ]]; then
+      echo "Error: Could not find worktree for default branch '${default_branch}'" >&2
+      return 1
+    fi
+  fi
+
+  # Create new branch from the default branch without changing directories
+  git -C "$default_worktree_dir" checkout -b "jap/${branch_name}"
+  git -C "$default_worktree_dir" checkout -
+
+  # Create new worktree for the branch
+  # git -C "$default_worktree_dir" worktree add "../${branch_name}" "jap/${branch_name}"
+  g:cw "${branch_name}"
+
+  # Navigate to the new worktree
+  cd "$(dirname "$default_worktree_dir")/${branch_name}"
+}
+
+# Remove a worktree for a given branch name
+git_remove_worktree() {
+  local branch_name=${1}
+
+  # Validate branch name is provided
+  if [[ -z "$branch_name" ]]; then
+    echo "Error: Branch name is required." >&2
+    return 1
+  fi
+
+  local full_branch_name="jap/${branch_name}"
+  local default_worktree_dir=$(git_default_worktree_dir)
+
+  # If we couldn't find the default worktree, fall back to current directory
+  if [[ -z "$default_worktree_dir" ]]; then
+    default_worktree_dir=$(pwd)
+  fi
+
+  # Change to the default worktree directory
+  pushd "$default_worktree_dir" >/dev/null || {
+    echo "Error: Could not access default worktree directory." >&2
+    return 1
+  }
+
+  local worktree_dir="$(dirname "$default_worktree_dir")/${branch_name}"
+
+  # Check if the worktree directory exists or is registered with git
+  local worktree_exists=false
+  if [[ -d "$worktree_dir" ]] || git worktree list | grep -q "$worktree_dir"; then
+    worktree_exists=true
+  fi
+
+  if [[ "$worktree_exists" == false ]]; then
+    echo "Error: Worktree '$branch_name' does not exist." >&2
+    popd >/dev/null
+    return 1
+  fi
+
+  # Remove the worktree using git (this handles both the directory and git's tracking)
+  echo "Removing worktree: $worktree_dir"
+  if [[ -d "$worktree_dir" ]]; then
+    git worktree remove "$worktree_dir" --force 2>/dev/null || {
+      echo "Warning: Could not remove worktree cleanly, removing directory manually..."
+      rm -rf "$worktree_dir"
+      git worktree prune
+    }
+  else
+    # Worktree is registered but directory doesn't exist, just prune
+    git worktree prune
+  fi
+
+  # Clean up empty parent directories
+  local parent_dir="$(dirname "$worktree_dir")"
+  local repo_root="$(dirname "$default_worktree_dir")"
+
+  # Only remove directories that are within the repo structure and are empty
+  while [[ "$parent_dir" != "$repo_root" && "$parent_dir" != "/" ]]; do
+    if [[ -d "$parent_dir" ]] && [[ -z "$(ls -A "$parent_dir" 2>/dev/null)" ]]; then
+      echo "Removing empty directory: $parent_dir"
+      rmdir "$parent_dir" 2>/dev/null || break
+      parent_dir="$(dirname "$parent_dir")"
+    else
+      break
+    fi
+  done
+
+  # Delete the branch if it exists
+  if git show-ref --verify --quiet "refs/heads/$full_branch_name"; then
+    echo "Deleting branch: $full_branch_name"
+    git branch -D "$full_branch_name"
+  fi
+
+  echo "✅ Worktree '$branch_name' removed successfully."
 }
 
 # Validate that we're in a git repository

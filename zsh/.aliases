@@ -70,12 +70,15 @@ alias g:find:branch="gb -a | grep -i"                                           
 alias g:prune="git_prune_local_branches"                                               # Prune local branches that have been deleted on the remote
 alias g:rb='git fetch origin && git rebase origin/"$(g:default)"'                      # Stash changes, rebase with default branch, and reapply stash
 alias g:repo="github_user_repo"                                                        # Get the user/repo of the remote repository
-alias g:rsf='gco origin/"$(g:default)" --'                                             # Revert a file to the state of the default branch
 alias g:rs='git reset origin/"$(g:default)"'                                           # Reset to the state of the remote default branch
+alias g:rsf='gco origin/"$(g:default)" --'                                             # Revert a file to the state of the default branch
 alias g:undo="git reset --soft HEAD~1"                                                 # Undo the last commit, keeping changes in the working directory
 alias g:update="git stash -u && g:rb && git push -f"                                   # Rebase with default branch and force push
 alias g:wip="git_commit_wip"                                                           # Commit all changes under a 'WIP' message without verification
 alias g:yolo="git push origin master --force --no-verify"                              # Force push changes to master without verification
+
+alias gwt:n="git_new_worktree"                                                         # Create a new git worktree and switch to it
+alias gwt:rm="git_worktree_remove"                                                     # Remove a git worktree
 
 # =========================== GitHub ========================== #
 
@@ -100,6 +103,10 @@ alias java:rs="docker container prune &&\
 
 alias npm:clean="rm -rf node_modules && npm cache clean && npm install"    # Clean and reinstall npm packages
 alias yarn:clean="rm -rf node_modules && yarn cache clean && yarn install" # Clean and reinstall Yarn packages
+
+# ============================ Jira =========================== #
+
+alias jira="jira"
 
 # ============================ MacOS ========================== #
 
