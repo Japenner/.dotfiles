@@ -1,6 +1,6 @@
+.local/bin/console-ninja
 .local/state/*
 
+zsh/.p10k.zsh
 zsh/local/*
 !zsh/local/*.example
-
-zsh/.p10k.zsh
