@@ -1,0 +1,114 @@
+{
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
+
+  "[python]": {
+    "editor.formatOnType": true
+  },
+
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  "diffEditor.ignoreTrimWhitespace": false,
+
+  "editor.accessibilitySupport": "off",
+  "editor.cursorBlinking": "solid",
+  "editor.cursorStyle": "line",
+  "editor.cursorWidth": 5,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.fontFamily": "Operator Mono, Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontSize": 14,
+  "editor.fontWeight": "400",
+  "editor.formatOnSave": true,
+  "editor.letterSpacing": 0.5,
+  "editor.lineHeight": 25,
+  "editor.renderWhitespace": "all",
+  "editor.rulers": [120],
+  "editor.suggestSelection": "first",
+  "editor.tabSize": 2,
+
+  "errorLens.excludeBySource": [
+    "ts(2604)",
+    "css(css-semicolonexpected)",
+    "ts(2448)"
+  ],
+
+  "eslint.codeActionsOnSave.rules": ["eslint:recommended", "eslint:fix"],
+  "eslint.format.enable": true,
+
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+
+  "files.associations": {
+    "*.erb": "erb"
+  },
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  },
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableCommitSigning": true,
+  "git.enableSmartCommit": true,
+
+  "go.inferGopath": true,
+  "go.toolsManagement.autoUpdate": true,
+
+  "mssql.connections": [
+    {
+      "server": "{{put-server-name-here}}",
+      "database": "{{put-database-name-here}}",
+      "user": "{{put-username-here}}",
+      "password": "{{put-password-here}}"
+    }
+  ],
+
+  "nxConsole.showNodeVersionOnStartup": false,
+
+  "redhat.telemetry.enabled": false,
+
+  "ruby.codeCompletion": "rcodetools",
+  "ruby.format": "rubocop",
+  "ruby.lint": {
+    "rubocop": {
+      "useBundler": true
+    }
+  },
+
+  "search.smartCase": true,
+
+  "security.workspace.trust.untrustedFiles": "open",
+
+  "solargraph.autoformat": true,
+  "solargraph.checkGemVersion": true,
+  "solargraph.completion": true,
+  "solargraph.definitions": true,
+  "solargraph.formatting": true,
+
+  "sync.autoUpload": true,
+  "sync.gist": "216674d854479feea2addf7f870098b7",
+  "sync.quietSync": true,
+  "sync.removeExtensions": false,
+
+  "typescript.updateImportsOnFileMove.enabled": "always",
+
+  "window.restoreWindows": "all",
+  "window.zoomLevel": 1,
+
+  "workbench.colorTheme": "Cobalt2",
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.sideBar.location": "right",
+
+  "yaml.customTags": ["!encrypted/pkcs1-oaep scalar", "!vault scalar"]
+}
