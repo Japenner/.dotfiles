@@ -1,0 +1,14 @@
+[
+  {
+    "date": "2024-11-08",
+    "clock_in": null,
+    "clock_out": null,
+    "breaks": [
+      {
+        "break_start": null,
+        "break_end": null
+      }
+    ],
+    "hours_worked": 0
+  }
+]
