@@ -89,7 +89,7 @@ fi
 
 # HTTP client
 if command -v http >/dev/null 2>&1; then
-  alias curl='http'  # HTTPie uses 'http' command
+  # alias curl='http'  # HTTPie uses 'http' command
 fi
 
 # Auto-load environment variables
