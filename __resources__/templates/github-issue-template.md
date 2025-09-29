@@ -1,6 +1,6 @@
 # LLM Prompt Template for GitHub Issue Creation
 
-### Description
+## Description
 
 - **Task Summary**: Provide a concise description of the task or bug.
 - **Context**: Explain why this issue is important, any background information, and the expected outcome.
@@ -9,27 +9,27 @@
     - **Functionality Requirements**: Describe the primary functionality to be added or the bug to be resolved.
     - **Additional Considerations**: Note any special setup, permissions, or environment-specific configurations.
 
-### Acceptance Criteria
+## Acceptance Criteria
 
 - List measurable outcomes that define when the task is complete.
 
-### Technical Details
+## Technical Details
 
 - Include any code references, libraries, or configuration details important to the solution.
 
-### Attachments / Links
+## Attachments / Links
 
 - Add links or references to supporting documentation, architectural plans, or resources that clarify the task.
 
-### Dependencies
+## Dependencies
 
 - Identify other issues, tasks, or external dependencies that must be resolved.
 
-### Testing Steps
+## Testing Steps
 
 - Steps to take in order to test the outcome of this work
 
-### Definition of Done
+## Definition of Done
 
 - Specify criteria required to consider the task complete, such as testing, documentation updates, or specific validations.
 

@@ -4,23 +4,23 @@
 - (Summarize the changes that have been made to the platform)
 - (If bug, how to reproduce)
 - (What is the solution, why is this the solution?)
-- (Which team do you work for, does your team own the maintenance of this component?)
-- (If introducing a flipper, what is the success criteria being targeted?)
+- (Which team do you work for, does your team own the maintenance of this code?)
+- (If introducing a feature flag, what is the success criteria being targeted?)
 
 ## Related issue(s)
 
-- Link to ticket created in va.gov-team repo OR screenshot of Jira ticket if your team uses Jira
+- Link to OR screenshot of ticket
 - Link to previous change of the code/bug (if applicable)
-- Link to epic if not included in ticket
+- Link to epic or parent if not included in ticket
 
 ## Testing done
 
 - [ ] New code is covered by unit tests
 - Describe what the old behavior was prior to the change
 - Describe the steps required to verify your changes are working as expected. Exclusively stating 'Specs run' is NOT acceptable as appropriate testing
-- If this work is behind a flipper:
-  - Tests need to be written for both the flipper on and flipper off scenarios. [Docs](https://depo-platform-documentation.scrollhelp.site/developer-docs/feature-toggles-guide#Featuretogglesguide-Backendexample).
-  - What is the testing plan for rolling out the feature?
+- If this work is behind a feature flag:
+    - Tests need to be written for both the feature flag on and feature flag off scenarios. [Docs](https://depo-platform-documentation.scrollhelp.site/developer-docs/feature-toggles-guide#Featuretogglesguide-Backendexample).
+    - What is the testing plan for rolling out the feature?
 
 ## Screenshots
 
@@ -28,7 +28,7 @@
 
 ## What areas of the site does it impact?
 
-- (Describe what parts of the site are impacted and*if*code touched other areas)
+- (Describe what parts of the site are impacted and *if* code touched other areas)
 
 ## Acceptance criteria
 
